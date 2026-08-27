@@ -74,11 +74,20 @@ Verst. ND     = verstNachtVonVerst[Verst.TD]  EingabeSchicht!W47:X51
     ],
     "listen": { "abwesenheit": [], "einteilung": [], "einsatzzug": [], "bestand": [] },
     "abstVorlagen": [
-      { "titel": "Wachbesetzung / Streife",
+      { "titel": "Wache Terminal 3", "farbe": "#c2410c",
         "felder": ["Anlass","Beamte","L- Wache","Wache","Streife"] },
-      { "titel": "Abstellung / BSOD",
+      { "titel": "Abstellung / BSOD", "farbe": "#b45309",
         "felder": ["Anlass","Bea.","Name","MOZ","Dienstanz.","bes. FEM"] }
-    ]
+    ],
+    "farben": {                       // Signalfarbe je Listeneintrag
+      "Krank": "#b3261e", "Urlaub genehmigt": "#6d28d9", "DGL": "#1d4ed8", "…": "…"
+    },
+    "wachstaerke": {
+      "regulaer": { "TD": 5, "ND": 4 },       // geforderte Stärke je Schicht
+      "terminal": { "TD": 3, "ND": 3 },
+      "reduziert":       ["Krank","Urlaub genehmigt","Dienstfrei","Lehrgang","…"],
+      "terminalGruende": ["Terminal 3"]
+    }
   },
   "rotation": {
     "startDatum": "2026-08-01", "startDgTag": 2,
@@ -113,10 +122,29 @@ Zwei Entscheidungen sind wichtig:
 
 * **Beamte werden über `id` referenziert, nicht über den Namen.** Eine Namensänderung
   („Haas, A." → „Haas-Meier, A.") verändert damit keine historischen Tage.
+* **Farben und Wachstärke liegen in den Stammdaten, nicht in den Einstellungen.**
+  Sie sind eine Festlegung der Dienststelle und gelten deshalb für alle
+  Arbeitsplätze; die Einstellungen enthalten nur, was den einzelnen Rechner
+  betrifft (Name, Rolle, Ordner, Druckdichte).
 * **Die laufende Nummer wird nicht gespeichert.** Sie ist eine Funktion der
   Reihenfolge der aktiven Beamten: `nr = Position in [b for b in beamte if b.aktiv]`.
   Deshalb ist sie nach jedem Hinzufügen, Verschieben oder Deaktivieren automatisch
   wieder lückenlos.
+
+## 3a. Automatische Anpassung älterer Stände
+
+Beim Laden — auch beim Einlesen einer Sicherung und beim ersten Ordnerabgleich —
+zieht `Store.migrieren()` ältere Stände still nach:
+
+* fehlende `farben` und `wachstaerke` werden mit den Vorgaben aufgefüllt;
+* die Einteilung `DGL- EZF` (mit dem Leerzeichen aus dem Tabellenblatt) wird zu
+  `DGL-EZF` — in der Liste **und** in allen bereits erfassten Tagen;
+* `DGL`, `V-DGL`, `DGL-EZF`, `V-DGL-EZF` stehen danach in dieser Reihenfolge am
+  Anfang der Einteilungsliste;
+* der erste Abstellungsblock heißt `Wache Terminal 3`.
+
+Die Migration schreibt keine Ops. Jeder Arbeitsplatz kommt für sich zum selben
+Ergebnis, es entsteht also kein Abgleichsverkehr und kein Konflikt.
 
 ## 4. Persistenz und Synchronisation
 

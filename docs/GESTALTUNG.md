@@ -11,8 +11,10 @@ Die Oberfläche ist deshalb als **Schichtkonsole** angelegt und nicht als Formul
 
 ## Aussage
 
-**Leitstelle bei Nacht.** Graphit, sparsame Signalfarben, technischer Schriftschnitt.
-Ruhig genug für zwölf Stunden Bildschirm, deutlich genug für einen Blick im Vorbeigehen.
+**Dienststelle bei Tageslicht.** Warmes Papierweiß, ruhige Graustufen, kräftige
+Signalfarben nur dort, wo sie etwas bedeuten. Ruhig genug für zwölf Stunden
+Bildschirm, deutlich genug für einen Blick im Vorbeigehen — und nah genug am
+Ausdruck, dass Bildschirm und Papier zusammengehören.
 
 ## Schrift
 
@@ -27,20 +29,45 @@ Schrift, ohne dass das Layout springt.
 
 ## Farbe trägt Bedeutung
 
-Farbe ist hier kein Schmuck, sondern die schnellste Informationsschicht:
+Farbe ist hier kein Schmuck, sondern die schnellste Informationsschicht. **Jeder
+Listeneintrag** — jede Abwesenheit, jede Einteilung, jede Abstellungsart — trägt
+seine eigene Farbe, frei zuweisbar in den Einstellungen.
 
-| Farbe | Bedeutung |
+Die Palette hat **24 Töne**, bewusst alle in ähnlicher Helligkeit gehalten: dunkel
+genug, um als Text auf einer hellen Tönung derselben Farbe zu stehen. Genau das
+macht die Plakette aus — heller Grund, kräftige Schrift, dünne Kontur, alles aus
+einem Farbwert abgeleitet. Wer einen eigenen Farbwert braucht, bekommt ihn.
+
+Vorbelegt ist eine Systematik, die man nicht lernen muss, sondern sieht:
+
+| Familie | Vorbelegt für |
 |---|---|
-| Bernstein | Tagdienst · Sondereinsatz, Terminal 3, Flex |
-| Türkis | Nachtdienst |
-| Rot | Krank, VD — alles, was die Besetzung ungeplant trifft |
-| Violett | Urlaub, Elternzeit — geplante Abwesenheit |
-| Blau | Lehrgang, Abordnung, Hospitation, Praktikum |
-| Grau | Dienstfrei, LAK, Teilzeit — planmäßig nicht im Dienst |
+| Rot / Rosé | Krank, VD — alles, was die Besetzung ungeplant trifft |
+| Violett / Purpur | Urlaub, Elternzeit — geplante Abwesenheit |
+| Bernstein / Ziegel | Sondereinsatz, Terminal 3, Flex |
+| Blau / Cyan | Lehrgang, Abordnung, Hospitation, BA |
+| Grün / Smaragd | Wache, Tag- und Nachtdienst |
+| Grau / Taupe | Dienstfrei, LAK, Teilzeit — planmäßig nicht im Dienst |
 
 Ungeplante Ausfälle und genehmigter Urlaub sehen damit verschieden aus, ohne dass
-jemand die Spalte lesen muss. Die drei Grundfarben sind in den Einstellungen frei
-wählbar, drei Farbsätze stehen bereit.
+jemand die Spalte lesen muss. Die Zuordnung liegt in den Stammdaten und gilt
+deshalb für alle Arbeitsplätze gleich.
+
+## Die Wachstärke als Ampel
+
+Zwei Anzeigen im Kartenkopf beantworten die Frage, für die es die Kladde gibt:
+**reicht die Besetzung?** „Wache 8 / 5" grün heißt erfüllt, rot heißt unterschritten
+— dann pulst die Zahl langsam, damit es auffällt, ohne zu blinken.
+
+Gezählt werden Stammbesetzung und Ergänzungsdienst gemeinsam; beide stehen an
+diesem Tag auf dieser Wache. Welche Gründe die Stärke reduzieren (Urlaub, krank,
+dienstfrei, Lehrgang, Abordnung, BSOD …) und welche als Besetzung des Terminal 3
+zählen, entscheidet die Dienststelle selbst in den Einstellungen — die Regel gehört
+in die Wache, nicht in den Programmcode. Die geforderte Stärke ist für Tag- und
+Nachtdienst getrennt einstellbar; eine 0 schaltet die Prüfung ab.
+
+Auf dem Ausdruck bleibt die Aussage erhalten, ohne Farbe: eine unterschrittene
+Stärke bekommt den Zusatz „unterschritten".
 
 ## Die Bausteine
 
@@ -56,9 +83,15 @@ rot = fehlt. „6 / 14 im Dienst" steht daneben, aber das Bild ist schneller.
 Gerätekennzeichnung. Sie beantwortet die häufigste Frage („welche DG ist das?") aus
 drei Metern Entfernung.
 
-**Signalplaketten** statt Auswahlfelder. Die Abwesenheit ist eine gefärbte Pille, die
-Einteilung eine Monospace-Kennung. Beides sind echte `<select>`-Elemente: mit Tastatur
-bedienbar, ohne Bibliothek, nur ohne den Formularkasten drumherum.
+**Signalplaketten** statt Auswahlfelder. Abwesenheit und Einteilung sind gefärbte
+Pillen, die Einteilung zusätzlich in Monospace. Beides sind echte `<select>`-Elemente:
+mit Tastatur bedienbar, ohne Bibliothek, nur ohne den Formularkasten drumherum.
+
+**Abstellungsblöcke** tragen eine farbige Kante und einen Farbtupfer im Titel. Der
+erste Block ist für die **Wache Terminal 3** vorgesehen und hat dafür eigene
+Feldnamen; die Grundfarbe je Blockart steht in den Einstellungen, einzelne Blöcke
+lassen sich davon abweichend färben — etwa um eine Lage über mehrere Tage
+wiederzuerkennen.
 
 **Fehlende Beamte** dimmen ab, bekommen eine farbige Kante links und einen sanften
 Farbverlauf über die Zeile. Anwesende bleiben kräftig. Der Blick landet zuerst auf dem,
@@ -88,3 +121,11 @@ Zum Vergleich: die Excel-Vorlage druckte auf 49 % skaliert.
 Zurückhaltend und einmalig: Schichtkarten fahren beim Tageswechsel gestaffelt ein,
 der Verbindungspunkt pulst, Tageschips heben sich beim Überfahren leicht an. Kein
 Effekt, der beim zwanzigsten Tageswechsel noch auffällt — genau das ist die Absicht.
+Die einzige Ausnahme ist die unterschrittene Wachstärke: sie darf auffallen.
+
+## Eine Ansicht, nicht zwei
+
+Es gab zwischenzeitlich einen Dunkelmodus. Er ist wieder entfernt. Zwei Farbwelten
+zu pflegen kostet bei jeder Änderung doppelt, und die Kladde wird ausgedruckt und
+unterschrieben — der Bildschirm sollte aussehen wie das, was hinterher aus dem
+Drucker kommt.

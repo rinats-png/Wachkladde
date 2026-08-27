@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de" data-theme="nacht">
+<html lang="de">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -23,34 +23,20 @@
   --ease:cubic-bezier(.22,.61,.36,1);
 }
 
-/* ── Nachtschicht (Vorgabe) ───────────────────────────────────────────── */
-[data-theme="nacht"]{
-  --bg:#080b10;      --bg-1:#0e131b;    --bg-2:#141b25;   --bg-3:#1b2431;
-  --line:#212c3a;    --line-2:#2e3b4d;
-  --txt:#e8eef7;     --txt-2:#93a2b8;   --txt-3:#5d6d85;
-  --td:#ffb02e;      --td-w:#4a3510;
-  --nd:#35d0ba;      --nd-w:#0e3b37;
-  --rot:#ff6b6b;     --rot-w:#4a1d1d;
-  --violett:#a78bfa; --violett-w:#2f2650;
-  --blau:#5eb0ef;    --blau-w:#123146;
-  --grau:#7d8ba1;    --grau-w:#242c38;
-  --schatten:0 1px 2px rgba(0,0,0,.5), 0 8px 28px -12px rgba(0,0,0,.8);
-  --glanz:rgba(255,255,255,.045);
-  color-scheme:dark;
-}
-/* ── Tagschicht ───────────────────────────────────────────────────────── */
-[data-theme="tag"]{
-  --bg:#f4f2ed;      --bg-1:#fbfaf7;    --bg-2:#ffffff;   --bg-3:#f0ede6;
-  --line:#ddd8cd;    --line-2:#c6bfb0;
-  --txt:#15191f;     --txt-2:#5b6472;   --txt-3:#8b95a5;
-  --td:#b06e00;      --td-w:#fdf0d5;
-  --nd:#0d7d70;      --nd-w:#d9f3ef;
-  --rot:#c02626;     --rot-w:#fbe0e0;
-  --violett:#6d4bcc; --violett-w:#ece5fd;
-  --blau:#1668b5;    --blau-w:#dceaf8;
-  --grau:#6a7484;    --grau-w:#e8e5de;
-  --schatten:0 1px 2px rgba(60,50,30,.07), 0 10px 30px -18px rgba(60,50,30,.4);
-  --glanz:rgba(0,0,0,.02);
+/* ── Farbwelt: helles Papier, ruhige Graustufen, kräftige Signalfarben ── */
+:root{
+  --bg:#f2f0ec;      --bg-1:#ffffff;    --bg-2:#faf9f6;   --bg-3:#efece5;
+  --line:#dcd7cc;    --line-2:#bfb8a9;
+  --txt:#14181e;     --txt-2:#59626f;   --txt-3:#8a93a1;
+  --td:#a35a00;      --td-w:#fdf1dd;
+  --nd:#0b6f63;      --nd-w:#d9f2ee;
+  --rot:#b3261e;     --rot-w:#fbe3e1;
+  --gruen:#15803d;   --gruen-w:#dff3e5;
+  --violett:#6d28d9; --violett-w:#eee6fd;
+  --blau:#0369a1;    --blau-w:#dcecf8;
+  --grau:#57534e;    --grau-w:#eae7e0;
+  --schatten:0 1px 2px rgba(70,58,38,.06), 0 10px 28px -18px rgba(70,58,38,.38);
+  --glanz:rgba(120,100,60,.05);
   color-scheme:light;
 }
 
@@ -221,7 +207,7 @@ main{padding:18px;max-width:1680px;margin:0 auto}
 .liste tbody tr:hover{background:var(--bg-2)}
 .liste td{padding:5px 10px;vertical-align:middle}
 .liste .c-nr{width:34px;text-align:right;font-family:var(--f-mono);font-size:11px;color:var(--txt-3)}
-.liste .c-name{min-width:0}
+.liste .c-name{min-width:0;white-space:nowrap}
 .liste .c-ist{width:34px;text-align:center;font-family:var(--f-mono);font-size:12px;color:var(--txt-3)}
 .liste .c-stat{width:180px} .liste .c-eint{width:112px}
 .liste .c-bem{width:26%}
@@ -403,13 +389,59 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
   border-radius:99px;padding:3px 11px 3px 4px;font-size:12px}
 .online .p .kopfbild{width:22px;height:22px;font-size:9px}
 
+/* ── Wachstärke ────────────────────────────────────────────────────── */
+.staerken{display:flex;gap:7px;margin-top:9px;position:relative;z-index:1;flex-wrap:wrap}
+.st{display:inline-flex;align-items:baseline;gap:6px;padding:3px 10px;border-radius:99px;
+  font-size:11.5px;border:1px solid;white-space:nowrap}
+.st em{font-style:normal;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;opacity:.85}
+.st b{font-family:var(--f-display);font-variation-settings:'wght' 700,'wdth' 87;font-size:14px}
+.st span{font-size:11px;opacity:.7}
+.st.gut  {background:var(--gruen-w);border-color:color-mix(in srgb,var(--gruen) 38%,transparent);
+  color:var(--gruen)}
+.st.knapp{background:var(--rot-w);border-color:color-mix(in srgb,var(--rot) 40%,transparent);
+  color:var(--rot)}
+.st.knapp b{animation:pochen 2.2s ease-in-out infinite}
+@keyframes pochen{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* ── Farbtupfer und Farbwähler ─────────────────────────────────────── */
+.tupfer{width:14px;height:14px;border-radius:4px;flex-shrink:0;
+  border:1px solid var(--line-2);background:transparent;cursor:pointer;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.tupfer.klein{width:10px;height:10px;border-radius:3px;cursor:default}
+.kachel .kt{display:flex;align-items:center;gap:7px}
+.kachel{border-left:3px solid var(--akz,var(--line))}
+
+.palette{position:absolute;z-index:90;width:228px;padding:9px;border-radius:var(--r-m);
+  background:var(--bg-1);border:1px solid var(--line-2);box-shadow:0 12px 40px -12px rgba(60,50,30,.45)}
+.palette .pgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+.palette .pf{height:26px;border-radius:5px;border:1px solid rgba(0,0,0,.12);
+  transition:transform .12s var(--ease)}
+.palette .pf:hover{transform:scale(1.14)}
+.palette .pf.an{box-shadow:0 0 0 2px var(--bg-1),0 0 0 4px var(--txt)}
+.palette .pfuss{display:flex;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+
+.farbliste{display:flex;flex-direction:column;gap:1px;max-height:330px;overflow:auto;
+  border:1px solid var(--line);border-radius:var(--r-s);padding:4px;background:var(--bg-2)}
+.farbzeile{display:grid;grid-template-columns:14px 1fr auto;align-items:center;gap:9px;
+  padding:4px 7px;border-radius:5px;text-align:left;font-size:12.5px;color:var(--txt-2);
+  transition:background .12s}
+.farbzeile:hover{background:var(--bg-3)}
+.fl-hex{font-size:10px;color:var(--txt-3)}
+
+.hakenliste{display:flex;flex-direction:column;gap:1px;max-height:290px;overflow:auto;
+  border:1px solid var(--line);border-radius:var(--r-s);padding:4px;background:var(--bg-2)}
+.haken{display:flex;align-items:center;gap:8px;padding:3px 7px;border-radius:5px;
+  font-size:12.5px;color:var(--txt-2);cursor:pointer}
+.haken:hover{background:var(--bg-3)}
+.haken.an{color:var(--txt)}
+.haken input{width:14px;height:14px;accent-color:var(--td);cursor:pointer}
+
 .nur-druck{display:none}
 .dw{display:none}
 
 /* ═══ Papierform für den Ausdruck ═════════════════════════════════════ */
 @page{size:A4 portrait;margin:11mm 9mm}
 @media print{
-  :root{color-scheme:light}
   html{ --td:#000; --nd:#000 }
   body{background:#fff!important;background-image:none!important;color:#000;font-size:8.4pt;
     font-family:var(--f-ui)}
@@ -425,6 +457,14 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
   .s-titel h2,.s-titel .dg{color:#000;background:#fff;border-color:#000}
   .s-datum,.s-datum b{color:#000}
   .meter{margin-top:2mm} .meter .zahl,.meter .zahl b,.meter .zahl span{color:#000;font-size:9pt}
+  .staerken{margin-top:1.5mm}
+  .st{border-color:#000!important;background:#fff!important;color:#000!important;
+    padding:.3mm 2mm;font-size:8pt}
+  .st.knapp{background:#eee!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .st.knapp b{animation:none}
+  .st.knapp::after{content:" unterschritten";font-size:7pt}
+  .tupfer,.palette{display:none!important}
+  .kachel{border-left:.5pt solid #000}
   .s-koerper{padding:0}
   .liste thead th{color:#000;border-bottom:.6pt solid #000;background:#eee;
     -webkit-print-color-adjust:exact;print-color-adjust:exact;padding:1mm 1.4mm;font-size:7pt}
@@ -490,7 +530,6 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
   <div class="rechts">
     <span class="puls" id="syncStatus">lokal</span>
     <div class="wer" id="wer" title="weitere Arbeitsplätze im Ordner"></div>
-    <button class="knopf nur-symbol" id="btnTheme" title="Tag-/Nachtansicht">◐</button>
     <button class="knopf stark" id="btnPrint">Drucken</button>
   </div>
 </header>
@@ -564,15 +603,27 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
     </div>
 
     <div class="karte">
+      <h2>Mindestwachstärke</h2>
+      <p class="unter">Wird die geforderte Stärke erreicht, erscheint die Anzeige im Kartenkopf
+        grün, sonst rot. Eine 0 schaltet die Prüfung ab.</p>
+      <table class="rot-tab" id="wsTabelle"></table>
+      <p class="unter" style="margin-top:16px">Welche Gründe die reguläre Wachstärke
+        <b>reduzieren</b> — und welche als Besetzung des Terminal 3 <b>zählen</b>:</p>
+      <div class="zeile" id="wsGruende" style="align-items:flex-start"></div>
+    </div>
+
+    <div class="karte">
+      <h2>Farben der Einträge</h2>
+      <p class="unter">Jeder Eintrag kann eine eigene Signalfarbe bekommen — 24 stehen zur Wahl,
+        eigene Farbwerte ebenso. Die Zuordnung gilt für alle Arbeitsplätze.</p>
+      <div id="farbListen"></div>
+    </div>
+
+    <div class="karte">
       <h2>Darstellung</h2>
       <div class="zeile">
-        <label class="feld"><span>Ansicht</span>
-          <select id="cfgTheme"><option value="nacht">Nacht — dunkel</option>
-            <option value="tag">Tag — hell</option></select></label>
-        <label class="feld" style="justify-content:flex-end">
-          <span>&nbsp;</span>
-          <label class="knopf" style="cursor:pointer"><input type="checkbox" id="cbKompakt"
-            style="margin-right:7px;width:14px;height:14px">kompakt drucken</label></label>
+        <label class="knopf" style="cursor:pointer"><input type="checkbox" id="cbKompakt"
+          style="margin-right:7px;width:14px;height:14px">kompakt drucken</label>
       </div>
       <div class="zeile" id="farbfelder"></div>
       <div class="zeile">
@@ -626,7 +677,8 @@ const DEFAULT_LISTEN = {
   abwesenheit:['','Terminal 3','Krank','Dienstfrei','Urlaub geplant','Urlaub genehmigt',
     'Sondereinsatz','LAK','Elternz.','Dbfr.','Tagdienst','Nachtdienst','Praktikant','Lehrgang',
     'Teilzeit','BEM','Abordnung','Hospitation','BA','Flex','VD','???'],
-  einteilung:['','DGL','DGL- EZF','EZF','Wache','19/4','19/5','19/12','19/13','19/14','19/15',
+  einteilung:['','DGL','V-DGL','DGL-EZF','V-DGL-EZF','EZF','Wache',
+    '19/4','19/5','19/12','19/13','19/14','19/15',
     '19/16','19/17','19/18','19/41','19/97','19/98','19/99','Kommt','ZF','GF','TaktKom','QEZ'],
   einsatzzug:['','vorstrukturiert','ausgelöst'],
   bestand:['Verwarngeld D219 - bar','Verwarngeld D200 / OS - bar','Führerscheinkasse - bar',
@@ -643,7 +695,43 @@ const DEFAULT_ROTATION = {
   verstVonTag:        {1:2, 2:4, 4:5, 5:3, 3:1},   /* Verstärkung TD           */
   verstNachtVonVerst: {1:4, 2:5, 4:3, 5:1, 3:2}    /* Verstärkung ND           */
 };
-/* Farben: die Themenvorgabe liefert alles; hier nur die frei wählbaren Signalfarben. */
+/* 24 Signalfarben, alle dunkel genug, um als Text auf einer hellen Tönung
+   derselben Farbe zu stehen – so bleibt jede Plakette lesbar.            */
+const PALETTE = [
+  ['#b3261e','Rot'],       ['#c2410c','Ziegel'],   ['#b45309','Bernstein'], ['#a16207','Gold'],
+  ['#4d7c0f','Oliv'],      ['#15803d','Grün'],     ['#047857','Smaragd'],   ['#0f766e','Petrol'],
+  ['#0e7490','Cyan'],      ['#0369a1','Himmel'],   ['#1d4ed8','Blau'],      ['#4338ca','Indigo'],
+  ['#6d28d9','Violett'],   ['#7e22ce','Purpur'],   ['#a21caf','Fuchsia'],   ['#be185d','Pink'],
+  ['#9f1239','Rosé'],      ['#7c2d12','Kastanie'], ['#065f46','Tanne'],     ['#334155','Marine'],
+  ['#475569','Schiefer'],  ['#57534e','Taupe'],    ['#78716c','Stein'],     ['#3f3f46','Graphit']
+];
+
+/* Vorbelegung: gleiche Art von Abwesenheit, gleiche Farbfamilie.
+   Alles hier ist in den Einstellungen frei änderbar.                     */
+const FARBEN_VORGABE = {
+  'Krank':'#b3261e', 'VD':'#9f1239',
+  'Urlaub genehmigt':'#6d28d9','Urlaub geplant':'#7e22ce','Elternz.':'#a21caf',
+  'Dienstfrei':'#78716c','Dbfr.':'#78716c','LAK':'#57534e','Teilzeit':'#57534e',
+  'Sondereinsatz':'#b45309','Terminal 3':'#c2410c','Flex':'#a16207',
+  'Lehrgang':'#0369a1','BA':'#0e7490','Hospitation':'#0e7490','Abordnung':'#1d4ed8',
+  'BEM':'#4338ca','Praktikant':'#0f766e','Tagdienst':'#047857','Nachtdienst':'#065f46',
+  '???':'#3f3f46',
+  'DGL':'#1d4ed8','V-DGL':'#4338ca','DGL-EZF':'#6d28d9','V-DGL-EZF':'#7e22ce',
+  'EZF':'#0369a1','Wache':'#15803d','TaktKom':'#0f766e','QEZ':'#0e7490',
+  'ZF':'#4d7c0f','GF':'#4d7c0f','Kommt':'#78716c'
+};
+
+/* Mindestwachstärke: was zählt, was reduziert, und ab wann es rot wird.  */
+const WACHSTAERKE_VORGABE = {
+  regulaer:{TD:5, ND:4},
+  terminal:{TD:3, ND:3},
+  reduziert:['Krank','VD','Urlaub genehmigt','Urlaub geplant','Dienstfrei','Dbfr.',
+             'Lehrgang','Abordnung','Terminal 3','Sondereinsatz','LAK','Elternz.',
+             'BEM','Hospitation','BA','Teilzeit'],
+  terminalGruende:['Terminal 3']
+};
+
+/* Die Grundtöne der beiden Schichten bleiben getrennt einstellbar. */
 const FARB_LABELS = {'--td':'Tagdienst','--nd':'Nachtdienst','--rot':'Abwesend'};
 const FARBSAETZE = {
   standard:{},
@@ -671,8 +759,10 @@ function emptySchicht(datum,schicht,dgNr){
     sonstiges:'', bestand:{}, dglAb:'', dglAn:''};
 }
 const ABST_VORLAGEN = [
-  {titel:'Wachbesetzung / Streife', felder:['Anlass','Beamte','L- Wache','Wache','Streife']},
-  {titel:'Abstellung / BSOD',       felder:['Anlass','Bea.','Name','MOZ','Dienstanz.','bes. FEM']}
+  {titel:'Wache Terminal 3', farbe:'#c2410c',
+   felder:['Anlass','Beamte','L- Wache','Wache','Streife']},
+  {titel:'Abstellung / BSOD', farbe:'#b45309',
+   felder:['Anlass','Bea.','Name','MOZ','Dienstanz.','bes. FEM']}
 ];
 const nAbst = (v=1)=>({vorlage:v, werte:{}});
 const nLehr = ()=>({name:'',art:'',ort:'',zeit:'',eintrag:''});
@@ -687,9 +777,11 @@ function seedState(){
     schemaVersion:1,
     meta:{revier:'19. Polizeirevier', titel:'Wachdienstplan für'},
     settings:{user:'', rolle:'dgl', syncMode:'off', syncUrl:'', syncInt:8,
-      colors:{}, theme:'nacht', kompakt:false, datum:iso(new Date())},
+      colors:{}, kompakt:false, datum:iso(new Date())},
     stammdaten:{dienstgruppen:dgs, listen:structuredClone(DEFAULT_LISTEN),
-      abstVorlagen:structuredClone(ABST_VORLAGEN)},
+      abstVorlagen:structuredClone(ABST_VORLAGEN),
+      farben:{...FARBEN_VORGABE},
+      wachstaerke:structuredClone(WACHSTAERKE_VORGABE)},
     rotation:structuredClone(DEFAULT_ROTATION),
     tage:{}, _cursor:0
   };
@@ -703,7 +795,44 @@ const Store = {
     try{ this.state = JSON.parse(localStorage.getItem(KEY)) || seedState(); }
     catch(e){ this.state = seedState(); }
     try{ this.pending = JSON.parse(localStorage.getItem(OPKEY)) || []; }catch(e){ this.pending=[]; }
+    this.migrieren();
     return this.state;
+  },
+
+  /* Ältere Stände nachziehen. Läuft still und ohne Änderungsprotokoll –
+     jeder Arbeitsplatz kommt für sich zum selben Ergebnis.               */
+  migrieren(){
+    const st=this.state, sd=st.stammdaten;
+    if(!sd) return;
+    sd.farben      = {...FARBEN_VORGABE, ...(sd.farben||{})};
+    sd.wachstaerke = {...structuredClone(WACHSTAERKE_VORGABE), ...(sd.wachstaerke||{})};
+
+    /* 'DGL- EZF' hieß im Tabellenblatt versehentlich mit Leerzeichen. */
+    const um={'DGL- EZF':'DGL-EZF'};
+    if(sd.listen?.einteilung){
+      const rang=['DGL','V-DGL','DGL-EZF','V-DGL-EZF'];        /* feste Reihenfolge */
+      const rest=sd.listen.einteilung.map(v=>um[v]||v).filter(v=>!rang.includes(v));
+      const ab=rest[0]==='' ? 1 : 0;
+      sd.listen.einteilung=[...rest.slice(0,ab), ...rang, ...rest.slice(ab)];
+    }
+    for(const tag of Object.values(st.tage||{}))
+      for(const sch of Object.values(tag||{})){
+        for(const e of Object.values(sch.einteilungen||{}))
+          if(um[e.einteilung]) e.einteilung=um[e.einteilung];
+        for(const e of (sch.ergaenzung?.eintraege||[]))
+          if(um[e.einteilung]) e.einteilung=um[e.einteilung];
+      }
+
+    /* Erster Abstellungsblock steht für die Wache am Terminal 3. */
+    (sd.abstVorlagen||[]).forEach((v,i)=>{
+      if(i===0 && /Wachbesetzung/.test(v.titel||'')) v.titel='Wache Terminal 3';
+      if(!v.farbe) v.farbe = ABST_VORLAGEN[Math.min(i,1)].farbe;
+    });
+    for(const tag of Object.values(st.tage||{}))
+      for(const sch of Object.values(tag||{}))
+        (sch.abstellungen||[]).forEach(a=>{
+          if(a.titel && /Wachbesetzung/.test(a.titel)) a.titel='Wache Terminal 3';
+        });
   },
   save(){ clearTimeout(this._t); this._t=setTimeout(()=>{
     localStorage.setItem(KEY,JSON.stringify(this.state));
@@ -848,6 +977,7 @@ const Folder = {
       const eigene=Store.pending.slice();          /* noch nicht geteilte eigene Änderungen */
       Store.state={...snap.state, settings:Store.state.settings};
       Store.state._stand=snap.stand||{};
+      Store.migrieren();                 /* auch ein älterer Ordnerstand wird nachgezogen */
       Store.saveNow();
       Merge.applyOps(eigene);                      /* eigene Änderungen bleiben erhalten */
       await this.pull();
@@ -1051,6 +1181,25 @@ const Logik = {
     let n=0; return list.map(b=>{ const e=sObj.einteilungen[b.id]||{};
       if(!e.abwesenheit) n++; return n; });
   },
+  /* Wachstärke einer Schicht.
+     Gezählt werden Stammbesetzung und Ergänzungsdienst gemeinsam – beide
+     stehen an diesem Tag auf dieser Wache.                               */
+  wachstaerke(s, man){
+    const W = Store.state.stammdaten.wachstaerke || WACHSTAERKE_VORGABE;
+    const red = new Set(W.reduziert||[]);
+    const t3  = new Set(W.terminalGruende||[]);
+    const gruende = [
+      ...man.map(b=>(s.einteilungen[b.id]||{}).abwesenheit||''),
+      ...(s.ergaenzung?.eintraege||[]).map(e=>e.abwesenheit||'')
+    ];
+    const regulaer = gruende.filter(g=>!red.has(g)).length;
+    const terminal = gruende.filter(g=>t3.has(g)).length;
+    const minR = (W.regulaer||{})[s.schicht] ?? 0;
+    const minT = (W.terminal||{})[s.schicht] ?? 0;
+    return {regulaer, terminal, minR, minT,
+            okR: !minR || regulaer>=minR, okT: !minT || terminal>=minT};
+  },
+
   darfBearbeiten(beamtId){
     const r=Store.state.settings.rolle;
     if(r==='leser') return false;
@@ -1067,26 +1216,56 @@ function nameOf(id){
 
 /* ---------- 5. Oberfläche ---------- */
 
-/* Abwesenheitsgründe bekommen eine Signalfarbe – der DGL sieht die Lage,
-   ohne zu lesen. Alles Unbekannte bleibt neutral.                        */
-const TON = {
-  'Krank':'--rot', 'VD':'--rot',
-  'Urlaub genehmigt':'--violett','Urlaub geplant':'--violett','Elternz.':'--violett',
-  'Dienstfrei':'--grau','Dbfr.':'--grau','LAK':'--grau','Teilzeit':'--grau','???':'--grau',
-  'Sondereinsatz':'--td','Terminal 3':'--td','Flex':'--td',
-  'Lehrgang':'--blau','BA':'--blau','Hospitation':'--blau','Abordnung':'--blau',
-  'BEM':'--blau','Praktikant':'--blau','Tagdienst':'--nd','Nachtdienst':'--nd'
-};
-const ton = v => v ? (TON[v]||'--grau') : null;
+/* Jeder Listeneintrag kann eine eigene Signalfarbe tragen – der DGL sieht
+   die Lage, ohne zu lesen. Gepflegt wird das in den Einstellungen.       */
+const ton = v => v ? (Store.state.stammdaten.farben||{})[v] || null : null;
 const initialen = n => (n||'?').replace(/[^\wÄÖÜäöüß ,.-]/g,'').split(/[\s,]+/)
   .filter(Boolean).slice(0,2).map(t=>t[0]).join('').toUpperCase() || '?';
+
+/* Farbwähler: ein einziges Fenster, das sich an den angeklickten Tupfer hängt. */
+const Palette = {
+  el:null, ziel:null,
+  bauen(){
+    if(this.el) return this.el;
+    const d=document.createElement('div');
+    d.className='palette'; d.hidden=true;
+    d.innerHTML = `<div class="pgrid">${PALETTE.map(([hex,name])=>
+        `<button class="pf" data-hex="${hex}" style="background:${hex}" title="${name}"></button>`).join('')}</div>
+      <div class="pfuss">
+        <button class="knopf klein" data-hex="">ohne Farbe</button>
+        <label class="knopf klein" style="cursor:pointer">eigene…
+          <input type="color" class="peigen" style="width:0;height:0;opacity:0;position:absolute"></label>
+      </div>`;
+    document.body.appendChild(d);
+    d.addEventListener('click',e=>{
+      const b=e.target.closest('[data-hex]'); if(!b) return;
+      this.waehlen(b.dataset.hex);
+    });
+    $('.peigen',d).oninput=e=>this.waehlen(e.target.value);
+    document.addEventListener('click',e=>{
+      if(this.el && !this.el.hidden && !this.el.contains(e.target)) this.schliessen();
+    });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') this.schliessen(); });
+    return this.el=d;
+  },
+  oeffnen(anker, aktuell, rueck){
+    const d=this.bauen(); this.rueck=rueck;
+    $$('.pf',d).forEach(b=>b.classList.toggle('an', b.dataset.hex===aktuell));
+    $('.peigen',d).value = aktuell || '#888888';
+    d.hidden=false;
+    const r=anker.getBoundingClientRect(), h=d.offsetHeight||180;
+    d.style.left = Math.max(8, Math.min(r.left, innerWidth-244))+'px';
+    d.style.top  = ((r.bottom+h+12>innerHeight ? r.top-h-6 : r.bottom+6)+scrollY)+'px';
+  },
+  waehlen(hex){ const f=this.rueck; this.schliessen(); if(f) f(hex); },
+  schliessen(){ if(this.el) this.el.hidden=true; this.rueck=null; }
+};
 
 const UI = {
   ansicht:'kladde',
 
   init(){
     Store.load(); Meta.load();
-    this.theme(Store.state.settings.theme||'nacht');
     this.farben();
     document.body.classList.toggle('kompakt', !!Store.state.settings.kompakt);
     $('#revier').textContent = Store.state.meta.revier;
@@ -1104,10 +1283,6 @@ const UI = {
       this.render();
     });
     $('#btnPrint').onclick =()=>window.print();
-    $('#btnTheme').onclick =()=>{
-      const t = (Store.state.settings.theme==='tag') ? 'nacht' : 'tag';
-      Store.apply('settings.theme',t,true); this.theme(t); this.render();
-    };
     $('#btnSyncNow').onclick=()=>{ Sync.tick(); Folder.tick(); };
     $('#btnFolder').onclick=()=>this.ordnerVerbinden(false);
     $('#btnFolderNew').onclick=()=>this.ordnerVerbinden(true);
@@ -1136,11 +1311,9 @@ const UI = {
       this.farben(); this.render();
     });
     [['cfgUser','settings.user'],['cfgRole','settings.rolle'],['cfgSyncMode','settings.syncMode'],
-     ['cfgSyncUrl','settings.syncUrl'],['cfgSyncInt','settings.syncInt'],
-     ['cfgTheme','settings.theme']].forEach(([id,pfad])=>{
+     ['cfgSyncUrl','settings.syncUrl'],['cfgSyncInt','settings.syncInt']].forEach(([id,pfad])=>{
       $('#'+id).onchange=e=>{
         Store.apply(pfad, id==='cfgSyncInt' ? +e.target.value : e.target.value, true);
-        if(id==='cfgTheme') this.theme(e.target.value);
         Sync.start(); this.render();
       };
     });
@@ -1152,7 +1325,6 @@ const UI = {
     });
   },
 
-  theme(t){ document.documentElement.dataset.theme=t; },
   farben(){
     const c=Store.state.settings.colors||{};
     Object.keys(FARB_LABELS).forEach(k=>document.documentElement.style.removeProperty(k));
@@ -1207,19 +1379,20 @@ const UI = {
     const da  = ist.length?ist[ist.length-1]:0;
     const wd  = WD[new Date(datum+'T12:00').getDay()];
     const plan= Logik.dgFuer(datum,sch), abw = s.dgNr!==plan;
+    const W   = Logik.wachstaerke(s,man);
     const opt = (arr,v)=>arr.map(o=>`<option${o===v?' selected':''}>${esc(o)}</option>`).join('');
 
     const dw = v => `<span class="dw">${esc(v||'')}</span>`;
     const plakette=(arr,wert,feld,klasse='')=>{
       const t=ton(wert);
-      return `<span class="plak ${klasse}"${t?` data-ton style="--ton:var(${t})"`:''}>
+      return `<span class="plak ${klasse}"${t?` data-ton style="--ton:${t}"`:''}>
         <select data-f="${feld}">${opt(arr,wert||'')}</select></span>${dw(wert)}`;
     };
 
     const zeilen = man.map((b,i)=>{
       const e=s.einteilungen[b.id]||{}, t=ton(e.abwesenheit);
       return `<tr class="${e.abwesenheit?'fehlt':''}" data-b="${b.id}"
-                  ${t?`style="--ton:var(${t})"`:''}>
+                  ${t?`style="--ton:${t}"`:''}>
         <td class="c-nr">${b.nr}</td>
         <td class="c-name"><span class="nam">${esc(b.name)}</span>
             <span class="abz">&nbsp;${esc(b.amtsbez)}</span></td>
@@ -1232,7 +1405,7 @@ const UI = {
 
     const erg = s.ergaenzung.eintraege.map((e,i)=>{
       const t=ton(e.abwesenheit);
-      return `<tr class="${e.abwesenheit?'fehlt':''}" data-erg="${i}" ${t?`style="--ton:var(${t})"`:''}>
+      return `<tr class="${e.abwesenheit?'fehlt':''}" data-erg="${i}" ${t?`style="--ton:${t}"`:''}>
         <td class="c-nr">${i+1}</td>
         <td class="c-name"><input class="bem" data-f="name" placeholder="Name"
             value="${esc(e.name||'')}" style="font-weight:600">${dw(e.name)}</td>
@@ -1248,8 +1421,13 @@ const UI = {
       const v=(a.felder&&a.felder.length) ? {titel:a.titel||'Abstellung',felder:a.felder}
                                           : (VOR[a.vorlage] || VOR[VOR.length-1]);
       const leer=!v.felder.some(f=>((a.werte||{})[f]||'').trim());
-      return `<div class="kachel${leer?' leer':''}" data-abst="${i}">
-        <div class="kt">${esc(v.titel)}</div>
+      /* Grundfarbe kommt aus der gleichnamigen Vorlage, der Block darf abweichen */
+      const f=a.farbe || v.farbe || (VOR.find(x=>x.titel===v.titel)||{}).farbe || '';
+      return `<div class="kachel${leer?' leer':''}" data-abst="${i}"
+                   ${f?`style="--akz:${f}"`:''}>
+        <div class="kt"><button class="tupfer nicht-drucken" data-farbwahl="abst:${i}"
+            style="background:${f||'transparent'}" title="Farbe dieses Blocks wählen"></button>
+          <span>${esc(v.titel)}</span></div>
         ${v.felder.map(f=>`<div class="feldzeile"><label>${esc(f)}</label>
           <span><input data-fk="${esc(f)}" value="${esc((a.werte||{})[f]||'')}"
             >${dw((a.werte||{})[f])}</span></div>`).join('')}
@@ -1284,6 +1462,14 @@ const UI = {
             const weg=!!(s.einteilungen[b.id]||{}).abwesenheit;
             return `<i class="${weg?'weg':'da'}"></i>`;}).join('')}</div>
           <div class="zahl"><b>${da}</b><span> / ${man.length} im Dienst</span></div>
+        </div>
+        <div class="staerken">
+          <span class="st ${W.okR?'gut':'knapp'}" title="Reguläre Wachstärke${
+            W.minR?' – gefordert '+W.minR:''}">
+            <em>Wache</em> <b>${W.regulaer}</b>${W.minR?`<span>/ ${W.minR}</span>`:''}</span>
+          <span class="st ${W.okT?'gut':'knapp'}" title="Besetzung Terminal 3${
+            W.minT?' – gefordert '+W.minT:''}">
+            <em>Terminal 3</em> <b>${W.terminal}</b>${W.minT?`<span>/ ${W.minT}</span>`:''}</span>
         </div>
       </header>
 
@@ -1366,6 +1552,13 @@ const UI = {
       const l=Logik.schicht(datum,sch).ergaenzung.eintraege.slice();
       l.push({name:'',abwesenheit:'',einteilung:'',bemerkung:''});
       setz('ergaenzung.eintraege',l); this.render(); };
+    $$('[data-farbwahl]',k).forEach(btn=>btn.onclick=e=>{
+      const i=btn.dataset.farbwahl.split(':')[1];
+      Palette.oeffnen(btn, Logik.schicht(datum,sch).abstellungen[i]?.farbe||'', wert=>{
+        setz(`abstellungen.${i}.farbe`, wert); this.render();
+      });
+      e.stopPropagation();
+    });
     const an=$('.abstNeu',k); if(an) an.onclick=()=>{
       const l=Logik.schicht(datum,sch).abstellungen.slice();
       l.push({vorlage:1,werte:{}}); setz('abstellungen',l); this.render(); };
@@ -1503,7 +1696,7 @@ const UI = {
     const s=Store.state.settings;
     $('#cfgUser').value=s.user; $('#cfgRole').value=s.rolle;
     $('#cfgSyncMode').value=s.syncMode; $('#cfgSyncUrl').value=s.syncUrl;
-    $('#cfgSyncInt').value=s.syncInt; $('#cfgTheme').value=s.theme||'nacht';
+    $('#cfgSyncInt').value=s.syncInt;
     $('#cbKompakt').checked=!!s.kompakt;
 
     const gelesen=k=>getComputedStyle(document.documentElement).getPropertyValue(k).trim();
@@ -1516,6 +1709,9 @@ const UI = {
       Store.apply('settings.colors',c,true); this.farben();
     });
 
+    this.renderWachstaerke();
+    this.renderFarbListen();
+
     const fi=$('#folderInfo');
     if(!Folder.verfuegbar){ fi.textContent='Browser ohne Ordnerzugriff'; fi.className='puls fehl'; }
     else if(Folder.on){ fi.textContent='verbunden: '+(s.ordnerName||'?'); fi.className='puls gut'; }
@@ -1526,6 +1722,94 @@ const UI = {
     $('#stats').textContent=`${tage} erfasste Tage · ${bea} aktive Beamte · `+
       `${Store.pending.length} noch nicht abgeglichene Änderungen · `+
       `${(JSON.stringify(Store.state).length/1024).toFixed(1)} KB auf diesem Rechner`;
+  },
+
+  /* ── Mindestwachstärke ─────────────────────────────────────────────── */
+  renderWachstaerke(){
+    const W=Store.state.stammdaten.wachstaerke || WACHSTAERKE_VORGABE;
+    $('#wsTabelle').innerHTML=`
+      <thead><tr><th>Geforderte Stärke</th><th>Tagdienst</th><th>Nachtdienst</th></tr></thead>
+      <tbody>
+        ${[['regulaer','Regulärer Dienst (Wache)'],['terminal','Terminal 3']].map(([k,lab])=>
+          `<tr data-ws="${k}"><td>${lab}</td>
+            ${['TD','ND'].map(sch=>`<td><input type="number" min="0" max="40" data-sch="${sch}"
+              value="${W[k]?.[sch] ?? 0}"></td>`).join('')}</tr>`).join('')}
+      </tbody>`;
+    $$('#wsTabelle input').forEach(el=>el.onchange=()=>{
+      Store.apply(`stammdaten.wachstaerke.${el.closest('tr').dataset.ws}.${el.dataset.sch}`,
+        +el.value||0);
+      this.render();
+    });
+
+    const alle=(Store.state.stammdaten.listen?.abwesenheit||[]).filter(Boolean);
+    const gruppe=(schluessel,titel,hinweis)=>{
+      const gesetzt=new Set(W[schluessel]||[]);
+      return `<div class="listenfeld" style="flex:1;min-width:290px">
+        <span>${titel}</span>
+        <p class="merk" style="margin-bottom:6px">${hinweis}</p>
+        <div class="hakenliste" data-ws-liste="${schluessel}">
+          ${alle.map(g=>`<label class="haken${gesetzt.has(g)?' an':''}">
+            <input type="checkbox" value="${esc(g)}" ${gesetzt.has(g)?'checked':''}>
+            <span class="tupfer klein" style="background:${ton(g)||'transparent'}"></span>
+            ${esc(g)}</label>`).join('')}
+        </div></div>`;
+    };
+    $('#wsGruende').innerHTML =
+      gruppe('reduziert','reduziert die reguläre Stärke',
+             'Angekreuzte Gründe zählen nicht zur Wachstärke.') +
+      gruppe('terminalGruende','zählt für Terminal 3',
+             'Angekreuzte Gründe werden als Besetzung des Terminal 3 gewertet.');
+    $$('#wsGruende [data-ws-liste]').forEach(box=>{
+      const k=box.dataset.wsListe;
+      $$('input',box).forEach(cb=>cb.onchange=()=>{
+        const l=new Set(Store.state.stammdaten.wachstaerke[k]||[]);
+        cb.checked ? l.add(cb.value) : l.delete(cb.value);
+        Store.apply('stammdaten.wachstaerke.'+k, [...l]);
+        this.render();
+      });
+    });
+  },
+
+  /* ── Farbe je Listeneintrag ────────────────────────────────────────── */
+  renderFarbListen(){
+    const F=Store.state.stammdaten.farben||{};
+    /* eintraege: [schlüssel, beschriftung, farbe] */
+    const block=(titel,eintraege,hinweis)=>`
+      <div class="listenfeld" style="flex:1;min-width:250px">
+        <span>${titel}</span>
+        ${hinweis?`<p class="merk" style="margin-bottom:6px">${hinweis}</p>`:''}
+        <div class="farbliste">
+          ${eintraege.map(([wert,lab,farbe])=>`<button class="farbzeile" data-fw="${esc(wert)}">
+            <span class="tupfer" style="background:${farbe||'transparent'}"></span>
+            <span class="fl-text"${farbe?` style="color:${farbe};font-weight:600"`:''}
+              >${esc(lab)}</span>
+            <span class="fl-hex mono">${farbe||'—'}</span></button>`).join('')}
+        </div></div>`;
+    const L=Store.state.stammdaten.listen;
+    const V=Store.state.stammdaten.abstVorlagen||ABST_VORLAGEN;
+    $('#farbListen').innerHTML=`<div class="zeile" style="align-items:flex-start">
+      ${block('Abwesenheiten', L.abwesenheit.filter(Boolean).map(v=>[v,v,F[v]]))}
+      ${block('Einteilungen',  L.einteilung.filter(Boolean).map(v=>[v,v,F[v]]))}
+      ${block('Abstellungen / BSOD', V.map((v,i)=>['abstv:'+i, v.titel, v.farbe]),
+              'Grundfarbe je Blockart. In der Kladde lässt sich jeder einzelne Block davon abweichend färben.')}
+    </div>`;
+    $$('#farbListen .farbzeile').forEach(b=>b.onclick=e=>{
+      const key=b.dataset.fw;
+      e.stopPropagation();
+      if(key.startsWith('abstv:')){
+        const i=+key.split(':')[1];
+        Palette.oeffnen(b, V[i].farbe||'', hex=>{
+          const neu=structuredClone(Store.state.stammdaten.abstVorlagen||ABST_VORLAGEN);
+          neu[i].farbe=hex; Store.apply('stammdaten.abstVorlagen',neu); this.render();
+        });
+      }else{
+        Palette.oeffnen(b, F[key]||'', hex=>{
+          const neu={...(Store.state.stammdaten.farben||{})};
+          hex ? neu[key]=hex : delete neu[key];
+          Store.apply('stammdaten.farben',neu); this.render();
+        });
+      }
+    });
   },
 
   async ordnerVerbinden(neu){
@@ -1547,7 +1831,7 @@ const UI = {
       const d=JSON.parse(await datei.text());
       if(!d.schemaVersion) throw new Error('keine gültige Wachkladde-Sicherung');
       Store.state={...d, settings:{...d.settings, ...Store.state.settings}};
-      Store.saveNow(); this.theme(Store.state.settings.theme); this.farben(); this.render();
+      Store.migrieren(); Store.saveNow(); this.farben(); this.render();
       alert('Sicherung eingelesen.');
     }catch(e){ alert('Einlesen fehlgeschlagen: '+e.message); }
   }

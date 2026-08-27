@@ -6,7 +6,7 @@ Farbanpassung und verwaltbaren Dienstgruppen.
 
 Die Oberfläche ist bewusst **keine Tabelle mehr**, sondern eine Schichtkonsole:
 Tagesleiste statt Datumsfeld, Besetzungsanzeige statt Zählspalte, farbcodierte
-Abwesenheiten statt gleichförmiger Zellen, Nacht- und Tagansicht. Nur der
+Einträge statt gleichförmiger Zellen, Ampel für die Mindestwachstärke. Nur der
 **Ausdruck** bleibt die vertraute Papierform — siehe `docs/GESTALTUNG.md`.
 
 ## Dateien
@@ -75,10 +75,18 @@ Dann in der Anwendung *Einstellungen → Daten → JSON importieren*.
 - **Rollen**: Admin, DGL, Beamter (nur eigene Zeile), Leser.
 - **Gemeinsamer Ordner**: mehrere Arbeitsplätze gleichzeitig ohne Server;
   Anwesenheitsanzeige, feldgenaue Zusammenführung, sichtbare Konflikthinweise.
+- **Einteilungen** inklusive DGL, V-DGL, DGL-EZF und V-DGL-EZF.
 - **Farben** frei konfigurierbar, drei Voreinstellungen.
 - **Druck**: A4 hochkant, eine Seite je Schicht, optional „kompakt". Auf Papier
   werden Werte als Fließtext gesetzt, damit lange Bemerkungen nicht abschneiden.
-- **Nacht- und Tagansicht**, drei Farbsätze, drei frei wählbare Signalfarben.
+- **Farbe je Eintrag**: jede Abwesenheit, jede Einteilung und jede Abstellungsart
+  bekommt in den Einstellungen ihre eigene Signalfarbe — 24 Töne zur Auswahl,
+  eigene Farbwerte ebenso. Einzelne BSOD-Blöcke lassen sich in der Kladde
+  abweichend färben.
+- **Mindestwachstärke** für regulären Dienst und Terminal 3, je Tag- und
+  Nachtdienst getrennt. Erreicht = grün, unterschritten = rot. Welche
+  Abwesenheitsgründe die Stärke reduzieren und welche als Terminal-3-Besetzung
+  zählen, ist frei einstellbar.
 - **Tastatur**: ← → wechselt den Tag, `t` springt auf heute.
 
 ## Sicherheitshinweis

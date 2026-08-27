@@ -40,11 +40,16 @@ TÄGLICHER BETRIEB
   einen Hinweis oben in der Kladde eingeblendet.
 * Blättern: Tagesleiste oben anklicken, oder Pfeiltasten links/rechts.
   Die Taste  t  springt auf den heutigen Tag.
-* Farben: Bernstein = Tagdienst und Sondereinsatz, Türkis = Nachtdienst,
-  Rot = Krank/VD, Violett = Urlaub, Blau = Lehrgang, Grau = dienstfrei.
+* Farben: rot = ungeplanter Ausfall, violett = Urlaub, bernstein =
+  Sondereinsatz und Terminal 3, blau = Lehrgang, grün = Wachdienst,
+  grau = planmäßig frei. Jede Farbe ist unter Einstellungen -> "Farben der
+  Einträge" frei änderbar; 24 Farben stehen zur Wahl.
 * Die Balkenleiste im Kartenkopf zeigt die Besetzung: ein Strich je Beamter,
   rot = fehlt.
-* Umschalter oben rechts wechselt zwischen Nacht- und Tagansicht.
+* Darunter die Wachstärke: "Wache 8 / 5" und "Terminal 3  4 / 3".
+  Grün heißt, die geforderte Stärke ist erreicht, rot heißt unterschritten.
+  Die geforderten Zahlen und die Frage, welche Gründe die Stärke reduzieren,
+  stehen unter Einstellungen -> "Mindestwachstärke".
 * Drucken: Knopf "Drucken" oben rechts. Eine Seite je Schicht.
   Für sehr volle Tage vorher unter Einstellungen "kompakt drucken" ankreuzen.
 
