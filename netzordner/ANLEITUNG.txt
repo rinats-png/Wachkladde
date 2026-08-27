@@ -38,8 +38,15 @@ TÄGLICHER BETRIEB
 * Zwei Personen können gleichzeitig arbeiten. Bearbeiten beide zufällig
   dasselbe Feld, gilt der zuletzt eingetragene Wert; beide bekommen dazu
   einen Hinweis oben in der Kladde eingeblendet.
-* Drucken: Knopf "Drucken / PDF" oben rechts. Eine Seite je Schicht.
-  Für sehr volle Tage vorher "kompakt drucken" ankreuzen.
+* Blättern: Tagesleiste oben anklicken, oder Pfeiltasten links/rechts.
+  Die Taste  t  springt auf den heutigen Tag.
+* Farben: Bernstein = Tagdienst und Sondereinsatz, Türkis = Nachtdienst,
+  Rot = Krank/VD, Violett = Urlaub, Blau = Lehrgang, Grau = dienstfrei.
+* Die Balkenleiste im Kartenkopf zeigt die Besetzung: ein Strich je Beamter,
+  rot = fehlt.
+* Umschalter oben rechts wechselt zwischen Nacht- und Tagansicht.
+* Drucken: Knopf "Drucken" oben rechts. Eine Seite je Schicht.
+  Für sehr volle Tage vorher unter Einstellungen "kompakt drucken" ankreuzen.
 
 
 WENN ETWAS NICHT STIMMT

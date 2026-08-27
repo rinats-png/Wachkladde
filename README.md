@@ -4,6 +4,11 @@ Ersetzt `Wachkladde_<Monat>_<Jahr>.xlsm` (35 Blätter, VBA, Blattschutz) durch e
 einzelne HTML-Datei mit lokaler Speicherung, Netzwerk-Synchronisation, Druckansicht,
 Farbanpassung und verwaltbaren Dienstgruppen.
 
+Die Oberfläche ist bewusst **keine Tabelle mehr**, sondern eine Schichtkonsole:
+Tagesleiste statt Datumsfeld, Besetzungsanzeige statt Zählspalte, farbcodierte
+Abwesenheiten statt gleichförmiger Zellen, Nacht- und Tagansicht. Nur der
+**Ausdruck** bleibt die vertraute Papierform — siehe `docs/GESTALTUNG.md`.
+
 ## Dateien
 
 | Datei | Zweck |
@@ -13,6 +18,7 @@ Farbanpassung und verwaltbaren Dienstgruppen.
 | `server/server.js` | optionaler Sync-Server (Node.js, ohne npm-Pakete, ~110 Zeilen) |
 | `tools/import_xlsm.py` | Migration: liest die vorhandene `.xlsm` und erzeugt `wachkladde.json` |
 | `docs/NETZORDNER.md` | wie der gemeinsame Ordner funktioniert, mit Grenzen |
+| `docs/GESTALTUNG.md` | die gestalterischen Entscheidungen und warum |
 | `docs/MIGRATION.md` | Schritt-für-Schritt-Umstellung und Datenschema |
 
 ## Schnellstart
@@ -70,7 +76,10 @@ Dann in der Anwendung *Einstellungen → Daten → JSON importieren*.
 - **Gemeinsamer Ordner**: mehrere Arbeitsplätze gleichzeitig ohne Server;
   Anwesenheitsanzeige, feldgenaue Zusammenführung, sichtbare Konflikthinweise.
 - **Farben** frei konfigurierbar, drei Voreinstellungen.
-- **Druck**: A4 hochkant, eine Seite je Schicht, optional „kompakt".
+- **Druck**: A4 hochkant, eine Seite je Schicht, optional „kompakt". Auf Papier
+  werden Werte als Fließtext gesetzt, damit lange Bemerkungen nicht abschneiden.
+- **Nacht- und Tagansicht**, drei Farbsätze, drei frei wählbare Signalfarben.
+- **Tastatur**: ← → wechselt den Tag, `t` springt auf heute.
 
 ## Sicherheitshinweis
 
