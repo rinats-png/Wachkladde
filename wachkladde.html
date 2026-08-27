@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wachkladde</title>
+<link rel="icon" href="data:,">
+<style>
+/* ===================== Design-Tokens (Farbanpassung) ===================== */
+:root{
+  --c-accent:#1b4b8f;      /* Kopfzeilen / Marke        */
+  --c-accent-2:#0f6b52;    /* Nachtdienst-Akzent        */
+  --c-bg:#f4f6f9;
+  --c-panel:#ffffff;
+  --c-line:#c9d2de;
+  --c-text:#16202c;
+  --c-muted:#657288;
+  --c-head:#e8eef6;        /* Tabellenkopf              */
+  --c-abw:#fdecec;         /* Zeile mit Abwesenheit     */
+  --c-warn:#b4361d;
+  --c-ok:#15803d;
+  --font:13px/1.35 "Segoe UI",system-ui,sans-serif;
+  --row-h:22px;
+}
+[data-shift="ND"]{--c-accent:var(--c-accent-2);}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font:var(--font);color:var(--c-text);background:var(--c-bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+
+/* ===================== Rahmen ===================== */
+header.app{display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  padding:8px 14px;background:var(--c-accent);color:#fff}
+header.app h1{font-size:15px;margin:0;font-weight:600;letter-spacing:.3px}
+header.app .sp{flex:1}
+header.app button,header.app select,header.app input[type=date]{
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);
+  color:#fff;border-radius:5px;padding:4px 9px;cursor:pointer}
+header.app button:hover{background:rgba(255,255,255,.28)}
+header.app option{color:#000}
+nav.tabs{display:flex;gap:2px;padding:6px 14px 0;background:var(--c-accent);}
+nav.tabs button{background:rgba(255,255,255,.12);border:0;color:#fff;
+  padding:6px 14px;border-radius:6px 6px 0 0;cursor:pointer}
+nav.tabs button[aria-selected=true]{background:var(--c-bg);color:var(--c-text);font-weight:600}
+main{padding:12px}
+.panel{background:var(--c-panel);border:1px solid var(--c-line);border-radius:8px;
+  padding:12px;margin-bottom:12px}
+.panel h2{margin:0 0 8px;font-size:14px;color:var(--c-accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+@media(max-width:1100px){.grid2{grid-template-columns:1fr}}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+label.f{display:flex;flex-direction:column;gap:2px;font-size:11px;color:var(--c-muted)}
+label.f>input,label.f>select{border:1px solid var(--c-line);border-radius:4px;padding:3px 6px;background:#fff}
+.status{font-size:11px;padding:2px 8px;border-radius:99px;background:#eef2f7;color:var(--c-muted)}
+.status.on{background:#dcfce7;color:var(--c-ok)}
+.status.err{background:#fee2e2;color:var(--c-warn)}
+.btn{border:1px solid var(--c-line);background:#fff;border-radius:5px;padding:4px 10px;cursor:pointer}
+.btn:hover{background:#eef2f7}
+.btn.pri{background:var(--c-accent);color:#fff;border-color:transparent}
+.btn.danger{color:var(--c-warn)}
+.hint{font-size:11px;color:var(--c-muted)}
+
+/* ===================== Schichtbogen ===================== */
+.sheet{background:#fff;border:1px solid var(--c-line);border-radius:8px;overflow:hidden}
+.sheet-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+  padding:6px 10px;background:var(--c-accent);color:#fff}
+.sheet-head b{font-size:14px}
+.sheet-head .dg{font-size:12px;opacity:.9}
+.sheet .body{padding:8px}
+table.k{width:100%;border-collapse:collapse;table-layout:fixed}
+table.k th,table.k td{border:1px solid var(--c-line);padding:0 3px;height:var(--row-h);
+  font-size:12px;vertical-align:middle;overflow:hidden}
+table.k th{background:var(--c-head);font-weight:600;font-size:11px;text-align:left;
+  padding:2px 3px;height:auto}
+table.k td.nr{text-align:center;color:var(--c-muted);width:26px}
+table.k td.ist{text-align:center;width:30px;font-variant-numeric:tabular-nums}
+table.k td.name{font-weight:600}
+table.k tr.abw td.name{font-weight:400;color:var(--c-muted);text-decoration:line-through}
+table.k tr.abw{background:var(--c-abw)}
+table.k td>input,table.k td>select{width:100%;border:0;background:transparent;padding:1px 2px;height:calc(var(--row-h) - 2px)}
+table.k td>input:focus,table.k td>select:focus{outline:2px solid var(--c-accent);outline-offset:-2px;background:#fff}
+.sec{margin-top:10px}
+.sec>h3{margin:0 0 3px;font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--c-accent)}
+.kv{display:grid;grid-template-columns:88px 1fr;gap:2px 6px;align-items:center}
+.kv label{font-size:11px;color:var(--c-muted)}
+.kv input{border:1px solid var(--c-line);border-radius:3px;padding:2px 5px;width:100%}
+.abst{border:1px solid var(--c-line);border-radius:5px;padding:6px;margin-bottom:6px;background:#fbfcfe}
+textarea.sonst{width:100%;min-height:60px;border:1px solid var(--c-line);border-radius:4px;padding:5px;resize:vertical}
+.summary{display:flex;gap:14px;font-size:12px;color:var(--c-muted);padding:4px 0}
+.summary b{color:var(--c-text)}
+.conflict{background:#fff7ed;border:1px solid #fdba74;border-radius:5px;padding:6px;font-size:11px;margin-bottom:6px}
+
+/* ===================== Druck ===================== */
+@page{size:A4 portrait;margin:12mm 10mm}
+.print-only{display:none}
+@media print{
+  body{background:#fff;font-size:9pt}
+  header.app,nav.tabs,.no-print,.hint,#view-stamm,#view-setup{display:none!important}
+  main{padding:0}
+  .print-only{display:block}
+  .panel{border:0;padding:0;margin:0}
+  .grid2{display:block}
+  .sheet{border:1px solid #000;border-radius:0;page-break-after:always;margin:0}
+  .sheet:last-child{page-break-after:auto}
+  .sheet-head{background:#fff!important;color:#000!important;border-bottom:1.5px solid #000;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  table.k th{background:#e8e8e8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  table.k tr.abw{background:#f2f2f2!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  table.k th,table.k td{border:.5pt solid #000;height:auto;font-size:8pt;padding:1px 2px}
+  table.k td>input,table.k td>select{border:0;-webkit-appearance:none;appearance:none;height:auto;font-size:8pt}
+  .kv input,textarea.sonst,.abst{border:0}
+  .kv input{border-bottom:.4pt solid #999;border-radius:0}
+  .abst{background:#fff;border:.5pt solid #000}
+  textarea.sonst{border:.5pt solid #000;min-height:22mm}
+  .sec>h3{color:#000}
+  .kv label,label.f,.summary{color:#000!important}
+  label.f{flex-direction:row;gap:6px;align-items:baseline;font-size:8pt}
+  label.f>select{border:0;border-bottom:.4pt solid #000;min-width:40mm}
+  .sheet .body{padding:4mm}
+  span.print-only{display:inline}
+  .abst.leer,.row.leer{display:none}
+  .sec>h3{margin-top:2mm}
+  body.kompakt{font-size:7.6pt}
+  body.kompakt table.k th,body.kompakt table.k td{font-size:7pt;padding:0 1px}
+  body.kompakt .abstwrap{display:grid;grid-template-columns:1fr 1fr;gap:2mm}
+  body.kompakt textarea.sonst{min-height:14mm}
+  body.kompakt .kv{grid-template-columns:70px 1fr}
+  tr,td,th,.abst{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header class="app">
+  <h1 id="brand">Wachkladde</h1>
+  <input type="date" id="datum" title="Dienstdatum">
+  <button class="btn" id="prev" title="Vortag">‹</button>
+  <button class="btn" id="next" title="Folgetag">›</button>
+  <span class="sp"></span>
+  <span class="status" id="syncStatus">lokal</span>
+  <span class="status" id="userChip"></span>
+  <label style="display:flex;gap:4px;align-items:center;font-size:12px">
+    <input type="checkbox" id="cbKompakt"> kompakt drucken</label>
+  <button id="btnPrint">Drucken / PDF</button>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" aria-selected="true" data-view="kladde">Kladde</button>
+  <button role="tab" aria-selected="false" data-view="stamm">Stammdaten</button>
+  <button role="tab" aria-selected="false" data-view="setup">Einstellungen</button>
+</nav>
+
+<main>
+  <section id="view-kladde">
+    <div id="conflicts"></div>
+    <div class="grid2" id="sheets"></div>
+  </section>
+
+  <section id="view-stamm" hidden>
+    <div class="panel">
+      <h2>Dienstgruppen &amp; Beamte</h2>
+      <p class="hint">Nummerierung je Dienstgruppe ist fortlaufend und wird automatisch neu vergeben,
+        wenn Beamte hinzugefügt, entfernt oder verschoben werden.</p>
+      <div id="stammList"></div>
+      <button class="btn" id="addDg">+ Dienstgruppe</button>
+    </div>
+    <div class="panel">
+      <h2>Auswahllisten</h2>
+      <div class="grid2" id="listen"></div>
+    </div>
+    <div class="panel">
+      <h2>Schichtrotation (Wochentag → Dienstgruppe)</h2>
+      <div id="rotation"></div>
+    </div>
+  </section>
+
+  <section id="view-setup" hidden>
+    <div class="panel">
+      <h2>Benutzer &amp; Rolle</h2>
+      <div class="row">
+        <label class="f">Name (erscheint bei Änderungen)<input id="cfgUser"></label>
+        <label class="f">Rolle
+          <select id="cfgRole">
+            <option value="dgl">DGL (Vollzugriff Schicht)</option>
+            <option value="beamter">Beamter (nur eigene Zeile)</option>
+            <option value="leser">Leser (nur lesen)</option>
+            <option value="admin">Admin (Stammdaten)</option>
+          </select></label>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Synchronisation</h2>
+      <div class="row">
+        <label class="f">Sync-Modus
+          <select id="cfgSyncMode">
+            <option value="off">Aus – nur dieser Rechner</option>
+            <option value="rest">Server (REST /api)</option>
+          </select></label>
+        <label class="f">Server-URL<input id="cfgSyncUrl" placeholder="http://wache-srv:8080" size="30"></label>
+        <label class="f">Intervall (s)<input id="cfgSyncInt" type="number" min="2" max="120" style="width:70px"></label>
+        <button class="btn" id="btnSyncNow">Jetzt synchronisieren</button>
+      </div>
+      <p class="hint">Ohne Server bleibt alles im Browser (localStorage). Datenaustausch dann über
+        Export/Import der JSON-Datei.</p>
+    </div>
+    <div class="panel">
+      <h2>Farben</h2>
+      <div class="row" id="colorFields"></div>
+      <div class="row">
+        <button class="btn" data-preset="standard">Standard</button>
+        <button class="btn" data-preset="kontrast">Hoher Kontrast</button>
+        <button class="btn" data-preset="dunkel">Dunkel</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Daten</h2>
+      <div class="row">
+        <button class="btn" id="btnExport">JSON exportieren</button>
+        <button class="btn" id="btnImport">JSON importieren</button>
+        <input type="file" id="fileImport" accept="application/json" hidden>
+        <button class="btn danger" id="btnReset">Alles zurücksetzen</button>
+      </div>
+      <p class="hint" id="stats"></p>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ============================================================================
+   Wachkladde – Einzeldatei-Anwendung
+   Module: Store (Persistenz) · Ops (Änderungsprotokoll) · Sync · UI · Print
+   ========================================================================== */
+
+/* ---------- 0. Hilfen ---------- */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const uid = p => p+'_'+Math.random().toString(36).slice(2,9);
+const iso = d => new Date(d).toISOString().slice(0,10);
+const deDate = s => { const [y,m,d]=s.split('-'); return `${d}.${m}.${y}`; };
+const WD = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- 1. Datenmodell / Vorgaben ---------- */
+const DEFAULT_LISTEN = {
+  abwesenheit:['','Terminal 3','Krank','Dienstfrei','Urlaub geplant','Urlaub genehmigt',
+    'Sondereinsatz','LAK','Elternz.','Dbfr.','Tagdienst','Nachtdienst','Praktikant','Lehrgang',
+    'Teilzeit','BEM','Abordnung','Hospitation','BA','Flex','VD','???'],
+  einteilung:['','DGL','DGL- EZF','EZF','Wache','19/4','19/5','19/12','19/13','19/14','19/15',
+    '19/16','19/17','19/18','19/41','19/97','19/98','19/99','Kommt','ZF','GF','TaktKom','QEZ'],
+  einsatzzug:['','vorstrukturiert','ausgelöst'],
+  bestand:['Verwarngeld D219 - bar','Verwarngeld D200 / OS - bar','Führerscheinkasse - bar',
+    'Asservate - StPO','Asservate - BTM','Asservate - Fundsache','Asservate - HSOG',
+    'DGL Schlüsselbund','Token T3','Haftbefehle','Sicherheitsleistungen']
+};
+/* Rotation (aus EingabeSchicht!Q47:R51, K47:L51, Z47:AA51, W47:X51).
+   Wichtig: die Dienstgruppen rotieren als KETTE über die DG-Nummer, nicht über
+   den Wochentag. Aus dem Anfangsdatum + Anfangs-DG ergibt sich jeder Folgetag. */
+const DEFAULT_ROTATION = {
+  startDatum:'2026-08-01', startDgTag:2,
+  nextTag:            {1:2, 2:4, 4:5, 5:3, 3:1},   /* TD morgen aus TD heute   */
+  nachtVonTag:        {1:3, 2:1, 4:2, 3:5, 5:4},   /* ND aus TD desselben Tages*/
+  verstVonTag:        {1:2, 2:4, 4:5, 5:3, 3:1},   /* Verstärkung TD           */
+  verstNachtVonVerst: {1:4, 2:5, 4:3, 5:1, 3:2}    /* Verstärkung ND           */
+};
+const DEFAULT_COLORS = {
+  '--c-accent':'#1b4b8f','--c-accent-2':'#0f6b52','--c-bg':'#f4f6f9','--c-panel':'#ffffff',
+  '--c-line':'#c9d2de','--c-text':'#16202c','--c-head':'#e8eef6','--c-abw':'#fdecec'
+};
+const COLOR_LABELS = {'--c-accent':'Kopf Tagdienst','--c-accent-2':'Kopf Nachtdienst',
+  '--c-bg':'Hintergrund','--c-panel':'Flächen','--c-line':'Linien','--c-text':'Schrift',
+  '--c-head':'Tabellenkopf','--c-abw':'Abwesenheit'};
+const PRESETS = {
+  standard:DEFAULT_COLORS,
+  kontrast:{...DEFAULT_COLORS,'--c-accent':'#000000','--c-accent-2':'#333333','--c-bg':'#ffffff',
+    '--c-line':'#000000','--c-head':'#dddddd','--c-abw':'#ffe08a','--c-text':'#000000'},
+  dunkel:{'--c-accent':'#22406b','--c-accent-2':'#1d5c4a','--c-bg':'#161b22','--c-panel':'#1e2530',
+    '--c-line':'#3a4553','--c-text':'#e6edf3','--c-head':'#2a3341','--c-abw':'#4a2626'}
+};
+const SEED_DG = [
+  ['DG 1',['Holtschke','Ibel','Kerber','Gburczyk','Heuchert','Skowronnek','Ünver','Abel',
+    'Gonzalez Bellmunt','Hartwig','Liedtke','Preus','Ruppert','Usinger'],'Badnjar'],
+  ['DG 2',['Wagner','Jakobi','Kammerer','Behbudov','Eva','Gath','Hinteregger','Weinpert','Jesse',
+    'Löhr','Luckhardt','Nagel','Weber','Weimer'],'Meinig'],
+  ['DG 3',['Fink','Schmidt','Kalupa','Filali','Hafez','Arsic','Bartos','Bouaoud','Darilmaz',
+    'Fathali','Lausenmeyer','Mahr','Sahebi'],'Herrmann'],
+  ['DG 4',['Schäfer','Gawro','Haas, A.','Braun','Haas, J.','Kastner','Sucur','Vaerst','Botz',
+    'Everling','Hutschenreiter','Seelbach','Winkler','Zorba'],'Krug'],
+  ['DG 5',['Kaaden','Weinlein','Heckmann','Fege','Kansy','Mayer','Metz','Wink','Budig',
+    'Del Rayo','Frehe','Schwarzhaupt','Wolfarth'],'Mabrouk']
+];
+
+function emptySchicht(datum,schicht,dgNr){
+  return {datum,schicht,dgNr,einsatzzug:'',
+    einteilungen:{}, ergaenzung:{dgNr:null,eintraege:[]},
+    abstellungen:[nAbst(0),nAbst(1),nAbst(1),nAbst(1)],
+    lehrgaenge:[nLehr(),nLehr(),nLehr(),nLehr(),nLehr()],
+    sonstiges:'', bestand:{}, dglAb:'', dglAn:''};
+}
+const ABST_VORLAGEN = [
+  {titel:'Wachbesetzung / Streife', felder:['Anlass','Beamte','L- Wache','Wache','Streife']},
+  {titel:'Abstellung / BSOD',       felder:['Anlass','Bea.','Name','MOZ','Dienstanz.','bes. FEM']}
+];
+const nAbst = (v=1)=>({vorlage:v, werte:{}});
+const nLehr = ()=>({name:'',art:'',ort:'',zeit:'',eintrag:''});
+
+function seedState(){
+  const dgs = SEED_DG.map((s,i)=>({
+    id:uid('dg'), nr:i+1, name:s[0],
+    beamte:[...s[1].map(n=>({id:uid('b'),name:n,amtsbez:'NIT',rolle:'beamter',aktiv:true})),
+            {id:uid('b'),name:s[2],amtsbez:'PK-A',rolle:'praktikant',aktiv:true}]
+  }));
+  return {
+    schemaVersion:1,
+    meta:{revier:'19. Polizeirevier', titel:'Wachdienstplan für'},
+    settings:{user:'', rolle:'dgl', syncMode:'off', syncUrl:'', syncInt:10,
+      colors:{...DEFAULT_COLORS}, datum:iso(new Date())},
+    stammdaten:{dienstgruppen:dgs, listen:structuredClone(DEFAULT_LISTEN),
+      abstVorlagen:structuredClone(ABST_VORLAGEN)},
+    rotation:structuredClone(DEFAULT_ROTATION),
+    tage:{}, _cursor:0
+  };
+}
+
+/* ---------- 2. Store: localStorage + Änderungsprotokoll (Ops) ---------- */
+const KEY='wachkladde.v1', OPKEY='wachkladde.v1.ops';
+const Store = {
+  state:null, pending:[], _t:null,
+  load(){
+    try{ this.state = JSON.parse(localStorage.getItem(KEY)) || seedState(); }
+    catch(e){ this.state = seedState(); }
+    try{ this.pending = JSON.parse(localStorage.getItem(OPKEY)) || []; }catch(e){ this.pending=[]; }
+    return this.state;
+  },
+  save(){ clearTimeout(this._t); this._t=setTimeout(()=>{
+    localStorage.setItem(KEY,JSON.stringify(this.state));
+    localStorage.setItem(OPKEY,JSON.stringify(this.pending));
+  },150); },
+  saveNow(){ clearTimeout(this._t);
+    localStorage.setItem(KEY,JSON.stringify(this.state));
+    localStorage.setItem(OPKEY,JSON.stringify(this.pending)); },
+
+  /* Wert über Pfad lesen/schreiben, z.B. "tage.2026-08-08.TD.sonstiges" */
+  get(path){ return path.split('.').reduce((o,k)=>o==null?o:o[k], this.state); },
+  setRaw(path,val){
+    const ks=path.split('.'); const last=ks.pop();
+    let o=this.state; for(const k of ks){ if(o[k]==null||typeof o[k]!=='object') o[k]={}; o=o[k]; }
+    o[last]=val;
+  },
+  /* Lokale Änderung: schreiben + Op protokollieren (für Sync/LWW) */
+  apply(path,val,silent){
+    this.setRaw(path,val);
+    if(!silent){
+      const op={id:uid('op'),path,val,ts:Date.now(),by:this.state.settings.user||'unbekannt'};
+      this.pending.push(op); Meta.stamp(path,op);
+    }
+    this.save();
+  }
+};
+/* Zeitstempel je Feld – Basis für Last-Write-Wins beim Zusammenführen */
+const Meta = {
+  map:{},
+  load(){ try{ this.map=JSON.parse(localStorage.getItem(KEY+'.meta'))||{} }catch(e){ this.map={} } },
+  save(){ localStorage.setItem(KEY+'.meta',JSON.stringify(this.map)) },
+  stamp(path,op){ this.map[path]={ts:op.ts,by:op.by}; this.save() },
+  ts(path){ return this.map[path]?.ts||0 }
+};
+
+/* ---------- 3. Sync: REST-Adapter mit Op-Log und LWW-Merge ---------- */
+const Sync = {
+  timer:null, conflicts:[],
+  get on(){ return Store.state.settings.syncMode==='rest' && !!Store.state.settings.syncUrl },
+  start(){ clearInterval(this.timer);
+    if(this.on) this.timer=setInterval(()=>this.tick(), (Store.state.settings.syncInt||10)*1000);
+    this.status(this.on?'verbunden…':'lokal', this.on?'':'');
+  },
+  status(txt,cls=''){ const el=$('#syncStatus'); el.textContent=txt; el.className='status '+cls; },
+  async tick(){
+    if(!this.on) return;
+    const base=Store.state.settings.syncUrl.replace(/\/$/,'');
+    try{
+      /* 1) eigene Änderungen senden */
+      if(Store.pending.length){
+        const send=Store.pending.slice();
+        const r=await fetch(base+'/api/ops',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({ops:send})});
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        Store.pending = Store.pending.filter(o=>!send.includes(o));
+      }
+      /* 2) fremde Änderungen holen */
+      const r2=await fetch(base+'/api/ops?since='+(Store.state._cursor||0));
+      if(!r2.ok) throw new Error('HTTP '+r2.status);
+      const {cursor,ops}=await r2.json();
+      let applied=0;
+      for(const op of ops){
+        if(op.by===(Store.state.settings.user||'unbekannt') && Meta.ts(op.path)>=op.ts) continue;
+        const localTs=Meta.ts(op.path);
+        if(localTs>op.ts){                                   /* Konflikt: lokal ist neuer */
+          this.note(op.path,op.by,op.val); continue;
+        }
+        if(localTs && localTs<op.ts && JSON.stringify(Store.get(op.path))!==JSON.stringify(op.val))
+          this.note(op.path,op.by,op.val,true);              /* überschrieben – protokollieren */
+        Store.setRaw(op.path,op.val); Meta.map[op.path]={ts:op.ts,by:op.by}; applied++;
+      }
+      Store.state._cursor=cursor; Meta.save(); Store.saveNow();
+      if(applied) UI.render();
+      this.status('sync ok · '+new Date().toLocaleTimeString('de-DE'),'on');
+    }catch(e){ this.status('offline ('+e.message+')','err'); }
+  },
+  note(path,by,val,overwritten){
+    this.conflicts.unshift({path,by,val,overwritten,t:Date.now()});
+    this.conflicts=this.conflicts.slice(0,8); UI.renderConflicts();
+  }
+};
+/* Mehrere Tabs desselben Rechners sofort synchron halten */
+const BC = ('BroadcastChannel' in window) ? new BroadcastChannel('wachkladde') : null;
+if(BC) BC.onmessage=e=>{ if(e.data==='changed'){ Store.load(); Meta.load(); UI.render(); } };
+
+/* ---------- 4. Fachlogik ---------- */
+const Logik = {
+  /* TD-Dienstgruppe: von Anfangsdatum/Anfangs-DG aus die Kette entlanglaufen */
+  dgTag(datum){
+    const R=Store.state.rotation;
+    const d0=new Date(R.startDatum+'T12:00'), d1=new Date(datum+'T12:00');
+    let n=Math.round((d1-d0)/864e5), dg=R.startDgTag;
+    const zyklus=Object.keys(R.nextTag).length||5;
+    n=((n%zyklus)+zyklus)%zyklus;                 /* auch für Daten vor dem Start */
+    for(let i=0;i<n;i++) dg=R.nextTag[dg] ?? dg;
+    return dg;
+  },
+  dgFuer(datum,schicht){
+    const td=this.dgTag(datum);
+    return schicht==='TD' ? td : (Store.state.rotation.nachtVonTag[td] ?? td);
+  },
+  verstFuer(datum,schicht){
+    const R=Store.state.rotation, v=R.verstVonTag[this.dgTag(datum)];
+    return schicht==='TD' ? v : (R.verstNachtVonVerst[v] ?? v);
+  },
+  dgByNr(nr){ return Store.state.stammdaten.dienstgruppen.find(d=>d.nr===nr) },
+  /* fortlaufende Nummerierung: aktive Beamte 1..n, Reihenfolge = Listenreihenfolge */
+  nummeriert(dg){ let n=0; return (dg?.beamte||[]).filter(b=>b.aktiv)
+      .map(b=>({...b, nr:++n, kennung:dg.nr+'-'+n})) },
+  schicht(datum,schicht){
+    const t=Store.state.tage[datum];
+    if(t && t[schicht]) return t[schicht];
+    const s=emptySchicht(datum,schicht,this.dgFuer(datum,schicht));
+    s.ergaenzung.dgNr=this.verstFuer(datum,schicht);
+    Store.setRaw('tage.'+datum+'.'+schicht, s); Store.save();
+    return s;
+  },
+  /* "Ist"-Spalte: kumulierte Zahl tatsächlich anwesender Beamter */
+  istReihe(list, sObj){
+    let n=0; return list.map(b=>{ const e=sObj.einteilungen[b.id]||{};
+      if(!e.abwesenheit) n++; return n; });
+  },
+  darfBearbeiten(beamtId){
+    const r=Store.state.settings.rolle;
+    if(r==='leser') return false;
+    if(r==='beamter') return beamtId && Store.state.settings.user &&
+      (beamtId===Store.state.settings.user || nameOf(beamtId)===Store.state.settings.user);
+    return true;
+  }
+};
+function nameOf(id){
+  for(const dg of Store.state.stammdaten.dienstgruppen){
+    const b=dg.beamte.find(x=>x.id===id); if(b) return b.name;
+  } return '';
+}
+
+/* ---------- 5. UI ---------- */
+const UI = {
+  view:'kladde',
+  init(){
+    Store.load(); Meta.load();
+    this.applyColors();
+    $('#datum').value = Store.state.settings.datum || iso(new Date());
+    $('#brand').textContent = Store.state.meta.revier+' – Wachkladde';
+    this.bind(); this.render(); Sync.start();
+  },
+  bind(){
+    $$('nav.tabs button').forEach(b=>b.onclick=()=>{
+      this.view=b.dataset.view;
+      $$('nav.tabs button').forEach(x=>x.setAttribute('aria-selected', x===b));
+      ['kladde','stamm','setup'].forEach(v=>$('#view-'+v).hidden = v!==this.view);
+      this.render();
+    });
+    $('#datum').onchange=e=>{ Store.apply('settings.datum',e.target.value,true); this.render() };
+    $('#prev').onclick=()=>this.shiftDay(-1);
+    $('#next').onclick=()=>this.shiftDay(1);
+    $('#cbKompakt').checked = !!Store.state.settings.kompakt;
+    document.body.classList.toggle('kompakt', !!Store.state.settings.kompakt);
+    $('#cbKompakt').onchange=e=>{ Store.apply('settings.kompakt',e.target.checked,true);
+      document.body.classList.toggle('kompakt', e.target.checked); };
+    $('#btnPrint').onclick=()=>window.print();
+    $('#btnSyncNow').onclick=()=>Sync.tick();
+    $('#btnExport').onclick=()=>this.exportJson();
+    $('#btnImport').onclick=()=>$('#fileImport').click();
+    $('#fileImport').onchange=e=>this.importJson(e.target.files[0]);
+    $('#btnReset').onclick=()=>{ if(confirm('Alle lokalen Daten löschen?')){
+      localStorage.clear(); location.reload(); } };
+    $('#addDg').onclick=()=>{
+      const dgs=Store.state.stammdaten.dienstgruppen;
+      dgs.push({id:uid('dg'),nr:dgs.length+1,name:'DG '+(dgs.length+1),beamte:[]});
+      Store.apply('stammdaten.dienstgruppen',dgs); this.render();
+    };
+    $$('[data-preset]').forEach(b=>b.onclick=()=>{
+      Store.apply('settings.colors',{...PRESETS[b.dataset.preset]});
+      this.applyColors(); this.render();
+    });
+    ['cfgUser:settings.user','cfgRole:settings.rolle','cfgSyncMode:settings.syncMode',
+     'cfgSyncUrl:settings.syncUrl','cfgSyncInt:settings.syncInt'].forEach(p=>{
+      const [id,path]=p.split(':'); const el=$('#'+id);
+      el.onchange=()=>{ Store.apply(path, id==='cfgSyncInt'?+el.value:el.value, true);
+        Sync.start(); this.render(); };
+    });
+  },
+  shiftDay(d){
+    const t=new Date($('#datum').value+'T12:00'); t.setDate(t.getDate()+d);
+    $('#datum').value=iso(t); Store.apply('settings.datum',iso(t),true); this.render();
+  },
+  applyColors(){
+    const c=Store.state.settings.colors||DEFAULT_COLORS;
+    Object.entries(c).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
+  },
+  render(){
+    $('#userChip').textContent = (Store.state.settings.user||'kein Name')+' · '+
+      ({dgl:'DGL',beamter:'Beamter',leser:'Leser',admin:'Admin'}[Store.state.settings.rolle]);
+    if(this.view==='kladde') this.renderKladde();
+    if(this.view==='stamm')  this.renderStamm();
+    if(this.view==='setup')  this.renderSetup();
+    this.renderConflicts();
+    if(BC) BC.postMessage('changed');
+  },
+
+  /* ----- Kladde ----- */
+  renderKladde(){
+    const datum=$('#datum').value;
+    $('#sheets').innerHTML = ['TD','ND'].map(s=>this.sheetHtml(datum,s)).join('');
+    this.bindSheets(datum);
+  },
+  sheetHtml(datum,schicht){
+    const s=Logik.schicht(datum,schicht);
+    const dg=Logik.dgByNr(s.dgNr); const list=Logik.nummeriert(dg);
+    const ist=Logik.istReihe(list,s);
+    const L=Store.state.stammdaten.listen;
+    const opt=(arr,v)=>arr.map(o=>`<option${o===v?' selected':''}>${esc(o)}</option>`).join('');
+    const wd=WD[new Date(datum+'T12:00').getDay()];
+    const planDg=Logik.dgFuer(datum,schicht), abweichend=(s.dgNr!==planDg);
+    const anwesend=ist.length?ist[ist.length-1]:0;
+
+    const zeilen=list.map((b,i)=>{
+      const e=s.einteilungen[b.id]||{};
+      return `<tr class="${e.abwesenheit?'abw':''}" data-b="${b.id}">
+        <td class="nr">${b.nr}</td>
+        <td class="name" title="${esc(b.kennung)}">${esc(b.name)}</td>
+        <td>${esc(b.amtsbez)}</td>
+        <td><select data-f="abwesenheit">${opt(L.abwesenheit,e.abwesenheit||'')}</select></td>
+        <td class="ist">${e.abwesenheit?'':ist[i]}</td>
+        <td><select data-f="einteilung">${opt(L.einteilung,e.einteilung||'')}</select></td>
+        <td><input data-f="bemerkung" value="${esc(e.bemerkung||'')}"></td></tr>`;
+    }).join('');
+
+    const erg=s.ergaenzung.eintraege.map((e,i)=>`<tr data-erg="${i}">
+        <td class="nr">${i+1}</td>
+        <td><input data-f="name" value="${esc(e.name||'')}"></td>
+        <td><input data-f="amtsbez" value="${esc(e.amtsbez||'')}"></td>
+        <td><select data-f="abwesenheit">${opt(L.abwesenheit,e.abwesenheit||'')}</select></td>
+        <td class="ist"></td>
+        <td><select data-f="einteilung">${opt(L.einteilung,e.einteilung||'')}</select></td>
+        <td><input data-f="bemerkung" value="${esc(e.bemerkung||'')}"></td></tr>`).join('');
+
+    const VOR=Store.state.stammdaten.abstVorlagen||ABST_VORLAGEN;
+    const abst=s.abstellungen.map((a,i)=>{
+      /* Block kann eigene Feldliste mitbringen (Excel-Import) oder eine Vorlage nutzen */
+      const v=(a.felder&&a.felder.length) ? {titel:a.titel||'Abstellung',felder:a.felder}
+                                          : (VOR[a.vorlage] || VOR[VOR.length-1]);
+      const leer=!v.felder.some(f=>((a.werte||{})[f]||'').trim());
+      return `<div class="abst${leer?' leer':''}" data-abst="${i}">
+        <div class="hint" style="margin-bottom:2px">${esc(v.titel)}</div><div class="kv">
+        ${v.felder.map(f=>`<label>${esc(f)}</label>
+          <input data-fk="${esc(f)}" value="${esc((a.werte||{})[f]||'')}">`).join('')}
+      </div></div>`;
+    }).join('');
+
+    const lehr=s.lehrgaenge.map((l,i)=>`<tr data-lehr="${i}">
+        <td><input data-f="name" value="${esc(l.name)}"></td>
+        <td><input data-f="art" value="${esc(l.art)}"></td>
+        <td><input data-f="ort" value="${esc(l.ort)}"></td>
+        <td><input data-f="zeit" value="${esc(l.zeit)}"></td>
+        <td><input data-f="eintrag" value="${esc(l.eintrag)}"></td></tr>`).join('');
+
+    const best=L.bestand.map(k=>`<tr data-best="${esc(k)}">
+        <td>${esc(k)}</td><td><input data-f="wert" value="${esc(s.bestand[k]||'')}"></td></tr>`).join('');
+
+    return `<div class="sheet" data-shift="${schicht}" data-datum="${datum}">
+      <div class="sheet-head">
+        <b>${esc(Store.state.meta.revier)} · ${schicht==='TD'?'Tagdienst':'Nachtdienst'}</b>
+        <span class="dg">Dienstgruppe
+          <input class="dgnr no-print" type="number" min="1" max="9" value="${s.dgNr??''}"
+            style="width:42px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);
+                   border-radius:4px;color:#fff">
+          <span class="print-only">${s.dgNr}</span> · ${esc(dg?.name||'—')}
+          ${abweichend?`<button class="btn no-print resetDg" style="padding:0 6px"
+             title="Abweichend vom Dienstplan – auf ${planDg} zurücksetzen">≠ Plan ${planDg} ↺</button>`:''}
+        </span>
+      </div>
+      <div class="body">
+        <div class="summary no-print">
+          <span>${esc(Store.state.meta.titel)} <b>${wd}, ${deDate(datum)}</b></span>
+          <span>Soll <b>${list.length}</b></span><span>Ist <b>${anwesend}</b></span>
+        </div>
+        <div class="print-only" style="margin-bottom:4px">
+          <b>${esc(Store.state.meta.titel)} ${wd}, ${deDate(datum)}</b> —
+          Dienstgruppe ${s.dgNr} — Soll ${list.length} / Ist ${anwesend}
+        </div>
+        <div class="row${s.einsatzzug?'':' leer'}" style="margin-bottom:4px">
+          <label class="f">Einsatzzug
+            <select data-f2="einsatzzug">${opt(L.einsatzzug,s.einsatzzug)}</select></label>
+        </div>
+        <table class="k"><colgroup><col style="width:26px"><col style="width:24%">
+          <col style="width:9%"><col style="width:17%"><col style="width:30px">
+          <col style="width:14%"><col></colgroup>
+          <thead><tr><th>#</th><th>Name</th><th>A-Bez</th><th>Abwesenheit</th><th>Ist</th>
+            <th>Einteilung</th><th>Bemerkung</th></tr></thead>
+          <tbody class="tb-haupt">${zeilen}</tbody>
+          <tbody class="tb-erg">
+            <tr><th colspan="7">Ergänzungsdienst — DG
+              <input class="ergdg" type="number" min="1" max="9" style="width:38px"
+                value="${s.ergaenzung.dgNr||''}">
+              <button class="btn no-print addErg" style="padding:0 6px">+ Zeile</button></th></tr>
+            ${erg}</tbody>
+        </table>
+
+        <div class="sec"><h3>Abstellungen / BSOD</h3><div class="abstwrap">${abst}</div>
+          <button class="btn no-print addAbst">+ Abstellung</button></div>
+
+        <div class="sec"><h3>Lehrgänge / Gerichtstermine</h3>
+          <table class="k"><thead><tr><th>Name</th><th>Art</th><th>Ort</th><th>Zeit</th>
+            <th>Eintrag</th></tr></thead><tbody class="tb-lehr">${lehr}</tbody></table></div>
+
+        <div class="sec"><h3>Sonstiges</h3>
+          <textarea class="sonst" data-f2="sonstiges">${esc(s.sonstiges)}</textarea></div>
+
+        <div class="sec"><h3>Bestandsübergabe</h3>
+          <table class="k"><colgroup><col style="width:52%"><col></colgroup>
+            <tbody class="tb-best">${best}</tbody></table></div>
+
+        <div class="sec"><div class="kv">
+          <label>übergebender DGL</label><input data-f2="dglAb" value="${esc(s.dglAb)}">
+          <label>übernehmender DGL</label><input data-f2="dglAn" value="${esc(s.dglAn)}">
+        </div></div>
+      </div></div>`;
+  },
+  bindSheets(datum){
+    const ro = Store.state.settings.rolle==='leser';
+    $$('#sheets .sheet').forEach(sheet=>{
+      const sch=sheet.dataset.shift, base='tage.'+datum+'.'+sch;
+      const put=(p,v)=>{ Store.apply(base+'.'+p,v); };
+      if(ro) $$('input,select,textarea',sheet).forEach(e=>e.disabled=true);
+
+      $$('[data-f2]',sheet).forEach(el=>el.onchange=()=>put(el.dataset.f2, el.value));
+      const dn=$('.dgnr',sheet); if(dn) dn.onchange=()=>{ put('dgNr', +dn.value||null); UI.render() };
+      const rd=$('.resetDg',sheet); if(rd) rd.onclick=()=>{
+        put('dgNr', Logik.dgFuer(datum,sch)); UI.render() };
+
+      $$('.tb-haupt tr',sheet).forEach(tr=>$$('[data-f]',tr).forEach(el=>el.onchange=()=>{
+        const id=tr.dataset.b;
+        if(!Logik.darfBearbeiten(id)){ alert('Keine Berechtigung für diese Zeile.'); UI.render(); return }
+        put(`einteilungen.${id}.${el.dataset.f}`, el.value);
+        if(el.dataset.f==='abwesenheit') UI.render();
+      }));
+
+      $$('.tb-erg tr[data-erg]',sheet).forEach(tr=>$$('[data-f]',tr).forEach(el=>el.onchange=()=>
+        put(`ergaenzung.eintraege.${tr.dataset.erg}.${el.dataset.f}`, el.value)));
+      const eg=$('.ergdg',sheet); if(eg) eg.onchange=()=>put('ergaenzung.dgNr', +eg.value||null);
+      const ae=$('.addErg',sheet); if(ae) ae.onclick=()=>{
+        const s=Logik.schicht(datum,sch);
+        s.ergaenzung.eintraege.push({name:'',amtsbez:'',abwesenheit:'',einteilung:'',bemerkung:''});
+        put('ergaenzung.eintraege', s.ergaenzung.eintraege); UI.render();
+      };
+
+      $$('.tb-lehr tr',sheet).forEach(tr=>$$('[data-f]',tr).forEach(el=>el.onchange=()=>
+        put(`lehrgaenge.${tr.dataset.lehr}.${el.dataset.f}`, el.value)));
+      $$('[data-abst]',sheet).forEach(d=>$$('[data-fk]',d).forEach(el=>el.onchange=()=>
+        put(`abstellungen.${d.dataset.abst}.werte.${el.dataset.fk}`, el.value)));
+      const aa=$('.addAbst',sheet); if(aa) aa.onclick=()=>{
+        const cur=Logik.schicht(datum,sch).abstellungen.slice();
+        cur.push({vorlage:1,werte:{}}); put('abstellungen',cur); UI.render(); };
+      $$('.tb-best tr',sheet).forEach(tr=>$$('[data-f]',tr).forEach(el=>el.onchange=()=>
+        put(`bestand.${tr.dataset.best}`, el.value)));
+    });
+  },
+  renderConflicts(){
+    const c=Sync.conflicts;
+    $('#conflicts').innerHTML = c.length ? c.map(x=>`<div class="conflict">
+      <b>${x.overwritten?'Übernommen':'Konflikt'}:</b> ${esc(x.path)} — geändert von
+      <b>${esc(x.by)}</b> → „${esc(String(x.val).slice(0,40))}“
+      ${x.overwritten?'(neuere Fassung übernommen)':'(Ihre neuere Fassung bleibt bestehen)'}
+      · ${new Date(x.t).toLocaleTimeString('de-DE')}</div>`).join('') : '';
+  },
+
+  /* ----- Stammdaten ----- */
+  renderStamm(){
+    const admin = ['admin','dgl'].includes(Store.state.settings.rolle);
+    $('#stammList').innerHTML = Store.state.stammdaten.dienstgruppen.map((dg,di)=>{
+      const rows=Logik.nummeriert(dg).map(b=>`<tr data-b="${b.id}">
+          <td class="nr">${b.kennung}</td>
+          <td><input data-f="name" value="${esc(b.name)}"></td>
+          <td><input data-f="amtsbez" value="${esc(b.amtsbez)}" style="width:70px"></td>
+          <td><select data-f="rolle">
+            ${['beamter','praktikant','dgl'].map(r=>`<option${r===b.rolle?' selected':''}>${r}</option>`).join('')}
+          </select></td>
+          <td style="width:120px">
+            <button class="btn up" title="nach oben">↑</button>
+            <button class="btn down" title="nach unten">↓</button>
+            <button class="btn danger del" title="deaktivieren">×</button></td></tr>`).join('');
+      const inaktiv=dg.beamte.filter(b=>!b.aktiv);
+      return `<div class="panel" data-dg="${dg.id}">
+        <div class="row"><b>${esc(dg.name)}</b>
+          <input class="dgname" value="${esc(dg.name)}" style="width:140px">
+          <span class="hint">Nr. ${dg.nr} · ${Logik.nummeriert(dg).length} aktive Beamte</span></div>
+        <table class="k"><colgroup><col style="width:52px"><col><col style="width:80px">
+          <col style="width:110px"><col style="width:126px"></colgroup>
+          <thead><tr><th>Kennung</th><th>Name</th><th>A-Bez</th><th>Rolle</th><th></th></tr></thead>
+          <tbody>${rows}</tbody></table>
+        <div class="row" style="margin-top:6px">
+          <input class="newName" placeholder="Name des neuen Beamten">
+          <input class="newAmt" placeholder="A-Bez" value="NIT" style="width:70px">
+          <button class="btn pri addB">+ Beamten hinzufügen</button>
+          ${inaktiv.length?`<span class="hint">${inaktiv.length} inaktiv
+            <button class="btn showInact">einblenden</button></span>`:''}
+        </div></div>`;
+    }).join('');
+
+    $$('#stammList [data-dg]').forEach(box=>{
+      const dg=Store.state.stammdaten.dienstgruppen.find(d=>d.id===box.dataset.dg);
+      const commit=()=>{ Store.apply('stammdaten.dienstgruppen',
+        Store.state.stammdaten.dienstgruppen); UI.render(); };
+      if(!admin) $$('input,select,button',box).forEach(e=>e.disabled=true);
+      $('.dgname',box).onchange=e=>{ dg.name=e.target.value; commit() };
+      $('.addB',box).onclick=()=>{
+        const n=$('.newName',box).value.trim(); if(!n) return;
+        dg.beamte.push({id:uid('b'),name:n,amtsbez:$('.newAmt',box).value.trim()||'NIT',
+          rolle:'beamter',aktiv:true});
+        commit();                       /* Nummerierung ergibt sich automatisch fortlaufend */
+      };
+      const si=$('.showInact',box); if(si) si.onclick=()=>{
+        dg.beamte.forEach(b=>b.aktiv=true); commit() };
+      $$('tbody tr',box).forEach(tr=>{
+        const b=dg.beamte.find(x=>x.id===tr.dataset.b);
+        $$('[data-f]',tr).forEach(el=>el.onchange=()=>{ b[el.dataset.f]=el.value; commit() });
+        const i=dg.beamte.indexOf(b);
+        $('.up',tr).onclick=()=>{ if(i>0){ dg.beamte.splice(i-1,0,dg.beamte.splice(i,1)[0]); commit() } };
+        $('.down',tr).onclick=()=>{ if(i<dg.beamte.length-1){
+          dg.beamte.splice(i+1,0,dg.beamte.splice(i,1)[0]); commit() } };
+        $('.del',tr).onclick=()=>{ if(confirm(b.name+' deaktivieren? (Historie bleibt erhalten)')){
+          b.aktiv=false; commit() } };
+      });
+    });
+
+    /* Auswahllisten */
+    $('#listen').innerHTML = Object.keys(Store.state.stammdaten.listen).map(k=>
+      `<label class="f">${k}<textarea data-liste="${k}" rows="8"
+        >${esc(Store.state.stammdaten.listen[k].join('\n'))}</textarea></label>`).join('');
+    $$('[data-liste]').forEach(t=>t.onchange=()=>{
+      Store.apply('stammdaten.listen.'+t.dataset.liste, t.value.split('\n')); UI.render() });
+
+    /* Rotation: Kette über DG-Nummern */
+    const R=Store.state.rotation;
+    const dgNrs=Store.state.stammdaten.dienstgruppen.map(d=>d.nr);
+    const rk=[['nextTag','TD Folgetag'],['nachtVonTag','ND desselben Tages'],
+              ['verstVonTag','Verstärkung TD'],['verstNachtVonVerst','Verstärkung ND (aus Verst. TD)']];
+    $('#rotation').innerHTML=`
+      <div class="row"><label class="f">Anfangsdatum
+        <input type="date" id="rotStart" value="${R.startDatum}"></label>
+        <label class="f">TD-Dienstgruppe am Anfangsdatum
+          <input type="number" min="1" max="9" id="rotStartDg" value="${R.startDgTag}"></label>
+        <span class="hint">Alle weiteren Tage ergeben sich automatisch aus der Kette.</span></div>
+      <table class="k"><thead><tr><th>Zuordnung</th>
+        ${dgNrs.map(n=>`<th>von DG ${n}</th>`).join('')}</tr></thead><tbody>
+        ${rk.map(([k,lab])=>`<tr data-rot="${k}"><td>${lab}</td>${dgNrs.map(n=>
+          `<td><input type="number" min="1" max="9" data-k="${n}"
+             value="${R[k]?.[n]??''}"></td>`).join('')}</tr>`).join('')}
+      </tbody></table>
+      <p class="hint">Vorschau: ${[0,1,2,3,4,5,6].map(i=>{
+        const d=new Date($('#datum').value+'T12:00'); d.setDate(d.getDate()+i);
+        const k=iso(d);
+        return `${deDate(k).slice(0,5)} TD${Logik.dgFuer(k,'TD')}/ND${Logik.dgFuer(k,'ND')}`;
+      }).join(' · ')}</p>`;
+    $('#rotStart').onchange=e=>{ Store.apply('rotation.startDatum',e.target.value); this.render() };
+    $('#rotStartDg').onchange=e=>{ Store.apply('rotation.startDgTag',+e.target.value); this.render() };
+    $$('#rotation tr[data-rot] input').forEach(el=>el.onchange=()=>{
+      Store.apply(`rotation.${el.closest('tr').dataset.rot}.${el.dataset.k}`, +el.value||null);
+      this.render();
+    });
+  },
+
+  /* ----- Einstellungen ----- */
+  renderSetup(){
+    const s=Store.state.settings;
+    $('#cfgUser').value=s.user; $('#cfgRole').value=s.rolle;
+    $('#cfgSyncMode').value=s.syncMode; $('#cfgSyncUrl').value=s.syncUrl;
+    $('#cfgSyncInt').value=s.syncInt;
+    $('#colorFields').innerHTML=Object.keys(DEFAULT_COLORS).map(k=>
+      `<label class="f">${COLOR_LABELS[k]}<input type="color" data-col="${k}"
+        value="${(s.colors||DEFAULT_COLORS)[k]}"></label>`).join('');
+    $$('[data-col]').forEach(el=>el.oninput=()=>{
+      const c={...(Store.state.settings.colors||DEFAULT_COLORS)}; c[el.dataset.col]=el.value;
+      Store.apply('settings.colors',c); UI.applyColors();
+    });
+    const tage=Object.keys(Store.state.tage).length;
+    const bea=Store.state.stammdaten.dienstgruppen.reduce((n,d)=>n+d.beamte.filter(b=>b.aktiv).length,0);
+    $('#stats').textContent=`${tage} erfasste Tage · ${bea} aktive Beamte · `+
+      `${Store.pending.length} noch nicht synchronisierte Änderungen · `+
+      `${(JSON.stringify(Store.state).length/1024).toFixed(1)} KB lokal`;
+  },
+  exportJson(){
+    const blob=new Blob([JSON.stringify(Store.state,null,2)],{type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='wachkladde_'+iso(new Date())+'.json'; a.click();
+  },
+  async importJson(file){
+    if(!file) return;
+    try{
+      const data=JSON.parse(await file.text());
+      if(!data.schemaVersion) throw new Error('kein gültiges Wachkladde-JSON');
+      Store.state=data; Store.saveNow(); this.applyColors(); this.render();
+      alert('Import erfolgreich.');
+    }catch(e){ alert('Import fehlgeschlagen: '+e.message) }
+  }
+};
+UI.init();
+</script>
+</body>
+</html>
