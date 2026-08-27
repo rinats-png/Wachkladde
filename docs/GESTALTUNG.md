@@ -63,8 +63,13 @@ Gezählt werden Stammbesetzung und Ergänzungsdienst gemeinsam; beide stehen an
 diesem Tag auf dieser Wache. Welche Gründe die Stärke reduzieren (Urlaub, krank,
 dienstfrei, Lehrgang, Abordnung, BSOD …) und welche als Besetzung des Terminal 3
 zählen, entscheidet die Dienststelle selbst in den Einstellungen — die Regel gehört
-in die Wache, nicht in den Programmcode. Die geforderte Stärke ist für Tag- und
-Nachtdienst getrennt einstellbar; eine 0 schaltet die Prüfung ab.
+in die Wache, nicht in den Programmcode.
+
+Die geforderte Stärke steht in einer Tabelle **Wochentag × Schicht**: vier Zeilen
+(regulär TD/ND, Terminal 3 TD/ND) mal sieben Spalten Mo–So. Ein Samstagsdienst darf
+damit anders gefordert sein als ein Mittwoch. Der aktuell geöffnete Wochentag ist in
+der Tabelle hervorgehoben, „= alle" überträgt den Montagswert auf die ganze Woche,
+und eine 0 schaltet die Prüfung für diesen Tag ab.
 
 Auf dem Ausdruck bleibt die Aussage erhalten, ohne Farbe: eine unterschrittene
 Stärke bekommt den Zusatz „unterschritten".
@@ -105,16 +110,26 @@ Tabellenblatt aussehen tut sie trotzdem nicht: keine senkrechten Linien, keine
 Zellkästen, großzügige Zeilenhöhe, Kopfzeile als Kleinschrift-Beschriftung. Der
 Excel-Eindruck kam von umrandeten Zellen, nicht vom Tabellenelement.
 
-## Der Ausdruck bleibt Papier
+## Der Ausdruck bleibt Papier — aber in Farbe
 
-Auf dem Bildschirm eine Konsole, auf dem Papier ein Vordruck. Der Druckmodus schaltet
-auf Weiß, zieht Haarlinien, blendet alles Bedienbare aus — und ersetzt jedes
-Eingabefeld durch den Wert als Fließtext. Das ist der Grund, warum lange Bemerkungen
-im Ausdruck vollständig stehen, während sie im Feld abgeschnitten wären.
-Leergebliebene Zeilen behalten ihre Höhe, damit von Hand ergänzt werden kann.
+Auf dem Bildschirm eine Konsole, auf dem Papier ein Vordruck. Der Druckmodus zieht
+Haarlinien, blendet alles Bedienbare aus und ersetzt jedes Eingabefeld durch den Wert
+als Fließtext. Das ist der Grund, warum lange Bemerkungen im Ausdruck vollständig
+stehen, während sie im Feld abgeschnitten wären. Leergebliebene Zeilen der Lehrgangs-
+liste behalten ihre Höhe, damit von Hand ergänzt werden kann, und die Unterschriften
+stehen auf einer Linie unter dem Freiraum, nicht darüber.
 
-Eine Seite je Schicht, A4 hochkant. Für sehr volle Tage gibt es „kompakt drucken".
-Zum Vergleich: die Excel-Vorlage druckte auf 49 % skaliert.
+**Die Signalfarben bleiben erhalten.** Flächen werden mit `print-color-adjust:exact`
+erzwungen, damit sie auch dann kommen, wenn im Druckdialog „Hintergrundgrafiken"
+nicht angehakt ist. Die Aussage trägt zusätzlich Text- und Rahmenfarbe — ein reiner
+Schwarzweißdruck bleibt deshalb vollständig lesbar.
+
+**Eine Seite je Schicht.** Die Personalliste läuft über die volle Breite, darunter
+teilt sich das Blatt: links die Abstellungen, rechts Lehrgänge, Sonstiges,
+Bestandsübergabe und Unterschriften. Das ist der Unterschied zwischen zwei Blättern
+und einem. Nachgemessen für alle 62 Schichten eines vollen Monats — keine läuft über.
+Für Ausnahmefälle gibt es zusätzlich „kompakt drucken". Zum Vergleich: die
+Excel-Vorlage druckte auf 49 % skaliert.
 
 ## Bewegung
 

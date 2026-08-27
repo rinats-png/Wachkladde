@@ -82,9 +82,9 @@ Verst. ND     = verstNachtVonVerst[Verst.TD]  EingabeSchicht!W47:X51
     "farben": {                       // Signalfarbe je Listeneintrag
       "Krank": "#b3261e", "Urlaub genehmigt": "#6d28d9", "DGL": "#1d4ed8", "…": "…"
     },
-    "wachstaerke": {
-      "regulaer": { "TD": 5, "ND": 4 },       // geforderte Stärke je Schicht
-      "terminal": { "TD": 3, "ND": 3 },
+    "wachstaerke": {                          // Schlüssel 0=So … 6=Sa (JS-Wochentag)
+      "regulaer": { "TD": {"1":5,"2":5,"…":0}, "ND": {"1":4,"…":0} },
+      "terminal": { "TD": {"1":3,"…":0},       "ND": {"1":3,"…":0} },
       "reduziert":       ["Krank","Urlaub genehmigt","Dienstfrei","Lehrgang","…"],
       "terminalGruende": ["Terminal 3"]
     }
@@ -137,6 +137,8 @@ Beim Laden — auch beim Einlesen einer Sicherung und beim ersten Ordnerabgleich
 zieht `Store.migrieren()` ältere Stände still nach:
 
 * fehlende `farben` und `wachstaerke` werden mit den Vorgaben aufgefüllt;
+* eine `wachstaerke`, die je Schicht noch **eine** Zahl enthielt, wird auf alle
+  sieben Wochentage verteilt;
 * die Einteilung `DGL- EZF` (mit dem Leerzeichen aus dem Tabellenblatt) wird zu
   `DGL-EZF` — in der Liste **und** in allen bereits erfassten Tagen;
 * `DGL`, `V-DGL`, `DGL-EZF`, `V-DGL-EZF` stehen danach in dieser Reihenfolge am

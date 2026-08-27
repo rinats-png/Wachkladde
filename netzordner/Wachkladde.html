@@ -379,6 +379,10 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
   font-size:12px;color:var(--txt-2)}
 .rot-tab input{width:44px;height:26px;text-align:center;border-radius:5px;background:var(--bg-2);
   border:1px solid var(--line);font-family:var(--f-mono);font-size:12px}
+.rot-tab th.we{color:var(--rot)}
+.rot-tab th.jetzt,.rot-tab td.jetzt{background:var(--bg-3)}
+.rot-tab th.jetzt{color:var(--txt);font-weight:700}
+.rot-tab tr:hover td{background:color-mix(in srgb,var(--bg-3) 55%,transparent)}
 .vorschau{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
 .vorschau .v{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-s);
   padding:5px 9px;font-size:11px;font-family:var(--f-mono);color:var(--txt-2)}
@@ -436,84 +440,109 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
 .haken.an{color:var(--txt)}
 .haken input{width:14px;height:14px;accent-color:var(--td);cursor:pointer}
 
+.unterteil{display:block}
 .nur-druck{display:none}
 .dw{display:none}
 
-/* ═══ Papierform für den Ausdruck ═════════════════════════════════════ */
-@page{size:A4 portrait;margin:11mm 9mm}
+/* ═══ Papierform für den Ausdruck ═════════════════════════════════════
+   Farbdruck: die Signalfarben bleiben erhalten. Flächen werden mit
+   print-color-adjust:exact erzwungen, damit sie auch dann kommen, wenn
+   im Druckdialog „Hintergrundgrafiken" nicht angehakt ist. Die Aussage
+   trägt zusätzlich Text- und Rahmenfarbe – ein reiner Schwarzweißdruck
+   bleibt damit vollständig lesbar.
+   ═════════════════════════════════════════════════════════════════════ */
+@page{size:A4 portrait;margin:9mm 8mm}
 @media print{
-  html{ --td:#000; --nd:#000 }
-  body{background:#fff!important;background-image:none!important;color:#000;font-size:8.4pt;
-    font-family:var(--f-ui)}
-  .kopf,.reiter,.nicht-drucken,#ansicht-stamm,#ansicht-setup,.hinweise,.meter .balken{display:none!important}
+  html,body{background:#fff!important;background-image:none!important}
+  body{font-size:7.8pt;line-height:1.18;color:#000;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .kopf,.reiter,.nicht-drucken,#ansicht-stamm,#ansicht-setup,.hinweise,
+  .meter .balken,.tupfer,.palette{display:none!important}
   .nur-druck{display:block} span.nur-druck{display:inline}
   main{padding:0;max-width:none}
+
+  /* eine Schicht je Blatt – nichts wird abgeschnitten */
   .schichten{display:block}
-  .schicht{border:1pt solid #000;border-radius:0;box-shadow:none;background:#fff;
-    page-break-after:always;animation:none;margin:0}
-  .schicht:last-child{page-break-after:auto}
-  .s-kopf{background:#fff;border-bottom:1pt solid #000;padding:3mm 4mm 2mm}
-  .s-kopf::before,.s-kopf .geist{display:none}
-  .s-titel h2,.s-titel .dg{color:#000;background:#fff;border-color:#000}
-  .s-datum,.s-datum b{color:#000}
-  .meter{margin-top:2mm} .meter .zahl,.meter .zahl b,.meter .zahl span{color:#000;font-size:9pt}
-  .staerken{margin-top:1.5mm}
-  .st{border-color:#000!important;background:#fff!important;color:#000!important;
-    padding:.3mm 2mm;font-size:8pt}
-  .st.knapp{background:#eee!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .st.knapp b{animation:none}
-  .st.knapp::after{content:" unterschritten";font-size:7pt}
-  .tupfer,.palette{display:none!important}
-  .kachel{border-left:.5pt solid #000}
-  .s-koerper{padding:0}
-  .liste thead th{color:#000;border-bottom:.6pt solid #000;background:#eee;
-    -webkit-print-color-adjust:exact;print-color-adjust:exact;padding:1mm 1.4mm;font-size:7pt}
-  .liste td{padding:.5mm 1.4mm;border-bottom:.3pt solid #999;font-size:8pt}
-  .liste tbody tr{border:0}
-  tr.fehlt{background:#f1f1f1!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  tr.fehlt td:first-child{box-shadow:none}
-  .nam,tr.fehlt .nam{color:#000} .abz{color:#333}
-  /* Auf Papier stehen Werte als Fließtext – ein Eingabefeld kann nicht umbrechen. */
-  .liste input,.liste select,.kachel input,.bestand input,.uebergabe .u input{display:none}
-  .dw{display:block;white-space:normal;overflow-wrap:anywhere;color:#000;line-height:1.25}
-  .liste td .dw{min-height:3.9mm}          /* leere Zeilen bleiben beschreibbar */
-  .liste tr.trenner .dw{min-height:0;display:inline}
-  .c-stat .dw,.c-eint .dw{font-weight:400}
-  .c-eint .dw{font-family:var(--f-mono)}
-  .feldzeile .dw{border-bottom:.3pt solid #bbb;min-height:3.6mm}
-  .bestand .dw{font-family:var(--f-mono);text-align:right}
-  .uebergabe .u .dw{min-height:7mm}
-  .plak::after{display:none}
-  .notiz{color:transparent!important}
-  .notizwert{display:block;border:.5pt solid #000;padding:1.5mm 2mm;min-height:16mm;
-    white-space:pre-wrap;overflow-wrap:anywhere}
+  .schicht{border:.8pt solid #000;border-radius:0;box-shadow:none;background:#fff;
+    overflow:visible;animation:none;margin:0;page-break-after:always;break-after:page}
+  .schicht:last-child{page-break-after:auto;break-after:auto}
+
+  .s-kopf{background:#fff;border-bottom:.8pt solid #000;padding:1.8mm 3mm 1.4mm;overflow:visible}
+  .s-kopf::before{display:block;width:2.2mm}          /* Signalkante bleibt farbig */
+  .s-kopf .geist{display:none}
+  .s-titel h2{font-size:12pt}
   .s-titel .dg{border:0!important;background:none!important;padding:0!important;
-    font-family:var(--f-ui);font-size:9pt}
-  .absch{padding:2.5mm 4mm 0} .absch>h3{color:#000;font-size:7pt}
-  .absch>h3::after{background:#000}
-  .kacheln{grid-template-columns:1fr 1fr;gap:2mm}
-  .kachel{background:#fff;border:.5pt solid #000;border-radius:0;padding:1.5mm 2mm}
-  .kachel.leer{display:none}
-  .kachel .kt{color:#000}
-  .feldzeile{grid-template-columns:58px 1fr}
-  .feldzeile label{color:#000;font-size:7pt}
-  .feldzeile input{border-bottom:.3pt solid #bbb!important;border-radius:0}
-  .notiz{display:none}
-  .bestand{border:.5pt solid #000;border-radius:0;background:#fff}
-  .bestand .bz{padding:.4mm 2mm;border-bottom:.3pt solid #999}
-  .bestand label{color:#000;font-size:8pt}
-  .bestand input{border-bottom:0!important;text-align:left;width:auto}
-  .uebergabe .u{border-top:.6pt solid #000}
-  .uebergabe .u label{color:#000}
-  .uebergabe .u input{border-bottom:0!important}
-  .liste tr.trenner td{color:#000;padding:2mm 1.4mm .5mm;font-size:7pt}
+    font-family:var(--f-ui);font-size:8.5pt;color:#000}
+  .s-datum,.s-datum b{color:#000;font-size:8.4pt}
+  .meter{margin-top:1.4mm} .meter .zahl{color:#000;font-size:8.6pt}
+  .meter .zahl b{color:inherit}
+  .staerken{margin-top:1.4mm}
+  .st{padding:.3mm 2.2mm;font-size:7.6pt}
+  .st.knapp::after{content:" unterschritten";font-size:6.6pt}
+  .st.knapp b{animation:none}
+
+  /* Personalliste */
+  .s-koerper{padding:0}
+  .liste thead th{color:#000;border-bottom:.5pt solid #000;background:#e9e6e0;
+    padding:.8mm 1.3mm;font-size:6.6pt}
+  .liste td{padding:.2mm 1.3mm;border-bottom:.25pt solid #b9b3a8;font-size:7.6pt;height:auto}
+  .liste tbody tr{border:0}
+  tr.fehlt{background:#f4f2ee}
+  tr.fehlt td:first-child{box-shadow:inset 1.6pt 0 0 var(--ton,#999)}
+  .nam,tr.fehlt .nam{color:#000} .abz{color:#555;font-size:6.4pt}
+  .liste tr.trenner td{color:#000;padding:1.4mm 1.3mm .4mm;font-size:6.8pt}
   .liste tr.trenner .zeile::after{background:#000}
   .dgfeld{background:#fff;border:0;color:#000}
-  tr,.kachel,.bz{page-break-inside:avoid}
-  body.kompakt{font-size:7.4pt}
-  body.kompakt .liste td{font-size:7.2pt;padding:.2mm 1.2mm}
-  body.kompakt .notizwert{min-height:11mm}
-  body.kompakt .kacheln{grid-template-columns:1fr 1fr 1fr}
+
+  /* Werte als Fließtext – ein Eingabefeld kann nicht umbrechen */
+  .liste input,.liste select,.kachel input,.bestand input,.uebergabe .u input,
+  .notiz{display:none}
+  .dw{display:block;white-space:normal;overflow-wrap:anywhere;line-height:1.15}
+  .liste td .dw{color:#000}
+  .tb-lehr td .dw{min-height:3.6mm}      /* nur die Lehrgangszeilen bleiben beschreibbar */
+  .liste tr.trenner .dw{min-height:0;display:inline}
+  .c-stat .dw{font-weight:600;color:var(--ton,#000)}       /* Grund in seiner Farbe */
+  .c-eint .dw{font-family:var(--f-mono)}
+  .plak::after{display:none}
+
+  /* Unterer Teil zweispaltig – so passt ein voller Tag auf ein Blatt */
+  .unterteil{display:grid;grid-template-columns:1fr 1fr;gap:0 3mm;
+    padding:1.2mm 3mm 2.5mm;align-items:start}
+  .absch{padding:0;margin-bottom:1.8mm;break-inside:avoid}
+  .absch>h3{color:#000;font-size:6.8pt;margin-bottom:1mm}
+  .absch>h3::after{background:#000}
+  .kacheln{grid-template-columns:1fr;gap:1.5mm}
+  .kachel{background:#fff;border:.4pt solid #666;border-left-width:1.6pt;border-radius:0;
+    padding:1.2mm 1.6mm}
+  .kachel.leer{display:none}
+  .kachel .kt{color:var(--akz,#000);font-size:6.8pt;margin-bottom:.8mm}
+  .feldzeile{grid-template-columns:52px 1fr;gap:0 1.5mm;padding:0}
+  .feldzeile label{color:#333;font-size:6.6pt}
+  .feldzeile .dw{border-bottom:.25pt solid #bbb;min-height:2.9mm}
+  span.notizwert{display:block;border:.4pt solid #000;padding:1.2mm 1.6mm;min-height:12mm;
+    white-space:pre-wrap;overflow-wrap:anywhere;font-size:7.6pt}
+  .bestand{border:.4pt solid #666;border-radius:0;background:#fff}
+  .bestand .bz{padding:.25mm 1.6mm;border-bottom:.25pt solid #c8c2b6;grid-template-columns:1fr 1fr}
+  .bestand label{color:#000;font-size:7.2pt}
+  .bestand .dw{font-family:var(--f-mono);text-align:right;font-size:7.2pt}
+  /* Unterschrift: Beschriftung oben, Freiraum, Linie unten – so unterschreibt man */
+  .uebergabe{gap:3mm;margin-top:0}
+  .uebergabe .u{border-top:0;padding-top:0;break-inside:avoid}
+  .uebergabe .u label{color:#000;font-size:6.6pt}
+  .uebergabe .u .dw{min-height:9mm;border-bottom:.6pt solid #000;
+    display:flex;align-items:flex-end;padding-bottom:.4mm}
+
+  tr,.kachel,.bz,.absch{break-inside:avoid;page-break-inside:avoid}
+
+  /* noch dichter, wenn ein Tag besonders voll ist */
+  body.kompakt{font-size:7pt}
+  body.kompakt .liste td{font-size:6.9pt;padding:.15mm 1.1mm}
+  body.kompakt .liste td .dw{min-height:3mm}
+  body.kompakt .notizwert{min-height:9mm}
+  body.kompakt .uebergabe .u .dw{min-height:8mm}
+  body.kompakt span.notizwert{min-height:10mm}
+  body.kompakt .unterteil{gap:0 2.4mm;padding:1mm 2.4mm 2mm}
 }
 </style>
 </head>
@@ -722,9 +751,11 @@ const FARBEN_VORGABE = {
 };
 
 /* Mindestwachstärke: was zählt, was reduziert, und ab wann es rot wird.  */
+const WOCHE = [1,2,3,4,5,6,0];                  /* Anzeigefolge Mo … So */
+const proTag = n => Object.fromEntries(WOCHE.map(d=>[d,n]));
 const WACHSTAERKE_VORGABE = {
-  regulaer:{TD:5, ND:4},
-  terminal:{TD:3, ND:3},
+  regulaer:{TD:proTag(5), ND:proTag(4)},        /* je Wochentag eigener Wert */
+  terminal:{TD:proTag(3), ND:proTag(3)},
   reduziert:['Krank','VD','Urlaub genehmigt','Urlaub geplant','Dienstfrei','Dbfr.',
              'Lehrgang','Abordnung','Terminal 3','Sondereinsatz','LAK','Elternz.',
              'BEM','Hospitation','BA','Teilzeit'],
@@ -806,6 +837,13 @@ const Store = {
     if(!sd) return;
     sd.farben      = {...FARBEN_VORGABE, ...(sd.farben||{})};
     sd.wachstaerke = {...structuredClone(WACHSTAERKE_VORGABE), ...(sd.wachstaerke||{})};
+    /* Frühere Fassung kannte je Schicht nur eine Zahl – die gilt dann für alle Tage. */
+    for(const k of ['regulaer','terminal']){
+      const v=sd.wachstaerke[k]||{};
+      sd.wachstaerke[k]=Object.fromEntries(['TD','ND'].map(sch=>
+        [sch, (v[sch] && typeof v[sch]==='object') ? {...proTag(0), ...v[sch]}
+                                                   : proTag(+v[sch]||0)]));
+    }
 
     /* 'DGL- EZF' hieß im Tabellenblatt versehentlich mit Leerzeichen. */
     const um={'DGL- EZF':'DGL-EZF'};
@@ -1194,8 +1232,9 @@ const Logik = {
     ];
     const regulaer = gruende.filter(g=>!red.has(g)).length;
     const terminal = gruende.filter(g=>t3.has(g)).length;
-    const minR = (W.regulaer||{})[s.schicht] ?? 0;
-    const minT = (W.terminal||{})[s.schicht] ?? 0;
+    const wt   = new Date(s.datum+'T12:00').getDay();
+    const holen= k => ((W[k]||{})[s.schicht]||{})[wt] ?? 0;
+    const minR = holen('regulaer'), minT = holen('terminal');
     return {regulaer, terminal, minR, minT,
             okR: !minR || regulaer>=minR, okT: !minT || terminal>=minT};
   },
@@ -1489,10 +1528,14 @@ const UI = {
           </tbody>
         </table>
 
+        <div class="unterteil">
+        <div class="us us-links">
         <section class="absch"><h3>Abstellungen / BSOD</h3>
           <div class="kacheln">${abst}</div>
           <button class="knopf klein nicht-drucken abstNeu" style="margin-top:8px">+ Abstellung</button>
         </section>
+        </div>
+        <div class="us us-rechts">
 
         <section class="absch"><h3>Lehrgänge / Gerichtstermine</h3>
           <table class="liste"><thead><tr><th>Name</th><th>Art</th><th>Ort</th><th>Zeit</th>
@@ -1514,6 +1557,7 @@ const UI = {
             <div class="u"><label>übernehmender DGL</label>
               <input data-f2="dglAn" value="${esc(s.dglAn)}">${dw(s.dglAn)}</div>
           </div></section>
+        </div></div>
       </div></article>`;
   },
 
@@ -1727,17 +1771,29 @@ const UI = {
   /* ── Mindestwachstärke ─────────────────────────────────────────────── */
   renderWachstaerke(){
     const W=Store.state.stammdaten.wachstaerke || WACHSTAERKE_VORGABE;
+    const heute=new Date(Store.state.settings.datum+'T12:00').getDay();
     $('#wsTabelle').innerHTML=`
-      <thead><tr><th>Geforderte Stärke</th><th>Tagdienst</th><th>Nachtdienst</th></tr></thead>
+      <thead><tr><th>Geforderte Stärke</th>
+        ${WOCHE.map(d=>`<th class="${d===heute?'jetzt':''}${d===0||d===6?' we':''}"
+          >${WD[d].slice(0,2)}</th>`).join('')}<th></th></tr></thead>
       <tbody>
-        ${[['regulaer','Regulärer Dienst (Wache)'],['terminal','Terminal 3']].map(([k,lab])=>
-          `<tr data-ws="${k}"><td>${lab}</td>
-            ${['TD','ND'].map(sch=>`<td><input type="number" min="0" max="40" data-sch="${sch}"
-              value="${W[k]?.[sch] ?? 0}"></td>`).join('')}</tr>`).join('')}
+        ${[['regulaer','Regulärer Dienst (Wache)'],['terminal','Terminal 3']].flatMap(([k,lab])=>
+          ['TD','ND'].map(sch=>`<tr data-ws="${k}" data-sch="${sch}">
+            <td>${lab} · <b>${sch==='TD'?'Tagdienst':'Nachtdienst'}</b></td>
+            ${WOCHE.map(d=>`<td class="${d===heute?'jetzt':''}"><input type="number" min="0" max="40"
+              data-tag="${d}" value="${W[k]?.[sch]?.[d] ?? 0}"></td>`).join('')}
+            <td><button class="knopf klein alleTage" title="Wert von Montag auf alle Tage">= alle</button></td>
+          </tr>`)).join('')}
       </tbody>`;
     $$('#wsTabelle input').forEach(el=>el.onchange=()=>{
-      Store.apply(`stammdaten.wachstaerke.${el.closest('tr').dataset.ws}.${el.dataset.sch}`,
+      const tr=el.closest('tr');
+      Store.apply(`stammdaten.wachstaerke.${tr.dataset.ws}.${tr.dataset.sch}.${el.dataset.tag}`,
         +el.value||0);
+      this.render();
+    });
+    $$('#wsTabelle .alleTage').forEach(b=>b.onclick=()=>{
+      const tr=b.closest('tr'), n=+$('input',tr).value||0;
+      Store.apply(`stammdaten.wachstaerke.${tr.dataset.ws}.${tr.dataset.sch}`, proTag(n));
       this.render();
     });
 

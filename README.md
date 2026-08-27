@@ -77,16 +77,19 @@ Dann in der Anwendung *Einstellungen → Daten → JSON importieren*.
   Anwesenheitsanzeige, feldgenaue Zusammenführung, sichtbare Konflikthinweise.
 - **Einteilungen** inklusive DGL, V-DGL, DGL-EZF und V-DGL-EZF.
 - **Farben** frei konfigurierbar, drei Voreinstellungen.
-- **Druck**: A4 hochkant, eine Seite je Schicht, optional „kompakt". Auf Papier
-  werden Werte als Fließtext gesetzt, damit lange Bemerkungen nicht abschneiden.
+- **Druck**: A4 hochkant, **eine Seite je Schicht** — geprüft für alle 62 Schichten
+  eines vollen Monats. In Farbe: die Signalfarben bleiben erhalten, ein
+  Schwarzweißdruck bleibt trotzdem vollständig lesbar. Werte werden als Fließtext
+  gesetzt, damit lange Bemerkungen nicht abschneiden; der Unterschriftsbereich
+  steht immer vollständig auf dem Blatt.
 - **Farbe je Eintrag**: jede Abwesenheit, jede Einteilung und jede Abstellungsart
   bekommt in den Einstellungen ihre eigene Signalfarbe — 24 Töne zur Auswahl,
   eigene Farbwerte ebenso. Einzelne BSOD-Blöcke lassen sich in der Kladde
   abweichend färben.
-- **Mindestwachstärke** für regulären Dienst und Terminal 3, je Tag- und
-  Nachtdienst getrennt. Erreicht = grün, unterschritten = rot. Welche
-  Abwesenheitsgründe die Stärke reduzieren und welche als Terminal-3-Besetzung
-  zählen, ist frei einstellbar.
+- **Mindestwachstärke** für regulären Dienst und Terminal 3 — getrennt nach
+  Tag- und Nachtdienst und **für jeden Wochentag einzeln**. Erreicht = grün,
+  unterschritten = rot. Welche Abwesenheitsgründe die Stärke reduzieren und
+  welche als Terminal-3-Besetzung zählen, ist frei einstellbar.
 - **Tastatur**: ← → wechselt den Tag, `t` springt auf heute.
 
 ## Sicherheitshinweis

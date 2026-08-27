@@ -48,10 +48,17 @@ TÄGLICHER BETRIEB
   rot = fehlt.
 * Darunter die Wachstärke: "Wache 8 / 5" und "Terminal 3  4 / 3".
   Grün heißt, die geforderte Stärke ist erreicht, rot heißt unterschritten.
-  Die geforderten Zahlen und die Frage, welche Gründe die Stärke reduzieren,
-  stehen unter Einstellungen -> "Mindestwachstärke".
-* Drucken: Knopf "Drucken" oben rechts. Eine Seite je Schicht.
-  Für sehr volle Tage vorher unter Einstellungen "kompakt drucken" ankreuzen.
+  Die geforderten Zahlen stehen unter Einstellungen -> "Mindestwachstärke",
+  und zwar für jeden Wochentag und jede Schicht einzeln. Dort steht auch,
+  welche Gründe die Stärke reduzieren.
+* Drucken: Knopf "Drucken" oben rechts. Eine Seite je Schicht, also zwei
+  Blätter für Tag- und Nachtdienst zusammen.
+  Für den Farbdruck im Druckdialog von Edge darauf achten, dass unter
+  "Weitere Einstellungen" NICHT "Schwarzweiss" gewählt ist. Die Flächen
+  kommen von selbst mit; "Hintergrundgrafiken" muss nicht angehakt werden.
+  Ein Schwarzweissdruck bleibt trotzdem vollstaendig lesbar.
+  Wird ein Tag doch einmal zu voll, hilft unter Einstellungen der Haken
+  "kompakt drucken".
 
 
 WENN ETWAS NICHT STIMMT
