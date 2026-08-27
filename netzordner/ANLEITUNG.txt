@@ -38,6 +38,9 @@ TÄGLICHER BETRIEB
 * Zwei Personen können gleichzeitig arbeiten. Bearbeiten beide zufällig
   dasselbe Feld, gilt der zuletzt eingetragene Wert; beide bekommen dazu
   einen Hinweis oben in der Kladde eingeblendet.
+* Ist der Ordner einmal nicht erreichbar, erscheint oben ein rotes Band mit
+  der Zahl der noch nicht uebertragenen Aenderungen. Die Kladde laeuft weiter
+  und gleicht ab, sobald die Freigabe wieder da ist.
 * Blättern: Tagesleiste oben anklicken, oder Pfeiltasten links/rechts.
   Die Taste  t  springt auf den heutigen Tag.
 * Farben: rot = ungeplanter Ausfall, violett = Urlaub, bernstein =
@@ -60,6 +63,36 @@ TÄGLICHER BETRIEB
   Wird ein Tag doch einmal zu voll, hilft unter Einstellungen der Haken
   "kompakt drucken".
 
+
+SUCHEN, KORRIGIEREN, AUSWERTEN
+------------------------------
+* Suchfeld oben rechts (oder Taste  /  ): Nachnamen eintippen und man sieht
+  alle Tage dieses Beamten. Ein Klick springt zum Tag.
+* Vertippt?  Strg+Z  macht rückgängig,  Strg+Y  stellt wieder her. Betrifft
+  die Änderung einen anderen Tag, springt die Kladde von selbst dorthin.
+* Statuswechsel im Dienst (z.B. bis 12:00 Wache, danach BSOD): in der Zeile
+  auf das  +  hinter dem Namen klicken - darunter erscheint eine zweite
+  Zeile mit eigener Uhrzeit und eigenem Status. Die Spalte ZEIT nimmt
+  Beginn und Ende auf.
+* Reiter AUSWERTUNG: Monatsuebersicht mit einer Zeile je Beamter, dazu
+  Krankenstand, unterschrittene Wachstaerken und Abstellungsaufkommen.
+  Laesst sich ebenfalls drucken.
+
+MONATSABSCHLUSS
+---------------
+Am Monatsende unter AUSWERTUNG auf "Monat abschliessen":
+  * der Monat wird als JSON und als druckfertige HTML nach
+    <Ordner>\archiv\<Monat>\ gelegt,
+  * der gemeinsame Ordner wird aufgeraeumt,
+  * die Tage des Monats werden gegen Aenderungen gesperrt.
+Die Tage bleiben lesbar. DGL und Admin koennen ueber den Hinweis oben
+wieder entsperren; das Archiv bleibt dabei erhalten.
+
+VERSETZUNG EINES BEAMTEN
+------------------------
+Reiter DIENSTGRUPPEN, in der Zeile des Beamten auf  ⇄ . Zieldienstgruppe
+und Stichtag angeben. Bis zum Vortag steht er in der alten, ab dem Stichtag
+in der neuen Dienstgruppe. Bereits erfasste Tage bleiben unveraendert.
 
 WENN ETWAS NICHT STIMMT
 -----------------------

@@ -69,8 +69,10 @@ Verst. ND     = verstNachtVonVerst[Verst.TD]  EingabeSchicht!W47:X51
       { "id": "dg_a1b2c3", "nr": 1, "name": "DG 1",
         "beamte": [
           { "id": "b_7f3a91", "name": "Holtschke", "amtsbez": "NIT",
-            "rolle": "beamter", "aktiv": true }   // Nummer NICHT gespeichert –
-        ] }                                        // sie ergibt sich fortlaufend
+            "rolle": "beamter", "aktiv": true,     // Nummer NICHT gespeichert –
+            "aktivVon": "2026-09-01",              // sie ergibt sich fortlaufend
+            "aktivBis": "2026-08-31" }             // Gültigkeit: für Versetzungen
+        ] }
     ],
     "listen": { "abwesenheit": [], "einteilung": [], "einsatzzug": [], "bestand": [] },
     "abstVorlagen": [
@@ -96,12 +98,18 @@ Verst. ND     = verstNachtVonVerst[Verst.TD]  EingabeSchicht!W47:X51
     "verstVonTag":        { "1":2, "2":4, "4":5, "5":3, "3":1 },
     "verstNachtVonVerst": { "1":4, "2":5, "4":3, "5":1, "3":2 }
   },
+  "abgeschlossen": {                        // Monatsabschluss – sperrt die Tage
+    "2026-08": { "ts": 1787839594433, "by": "Schäfer", "tage": 31 }
+  },
   "tage": {
     "2026-08-08": {
       "TD": {
         "datum": "2026-08-08", "schicht": "TD", "dgNr": 5, "einsatzzug": "",
         "einteilungen": {
-          "b_7f3a91": { "abwesenheit": "Krank", "einteilung": "", "bemerkung": "05:30 Krankmeldung" }
+          "b_7f3a91": { "abwesenheit": "Krank", "einteilung": "", "bemerkung": "05:30 Krankmeldung",
+                        "von": "05:30", "bis": "",
+                        "folge": [ { "von": "12:00", "bis": "", "abwesenheit": "Terminal 3",
+                                     "einteilung": "", "bemerkung": "" } ] }
         },
         "ergaenzung": { "dgNr": 3, "eintraege": [ { "name": "Fink", "abwesenheit": "Terminal 3",
                                                     "einteilung": "", "bemerkung": "" } ] },
@@ -122,6 +130,14 @@ Zwei Entscheidungen sind wichtig:
 
 * **Beamte werden über `id` referenziert, nicht über den Namen.** Eine Namensänderung
   („Haas, A." → „Haas-Meier, A.") verändert damit keine historischen Tage.
+* **Eine Versetzung erzeugt einen zweiten Eintrag, kein Umhängen.** Der bisherige
+  Eintrag bekommt `aktivBis`, in der Zieldienstgruppe entsteht ein neuer mit
+  `aktivVon` und eigener `id`. Bereits erfasste Tage zeigen weiter auf die alte
+  `id` und bleiben damit unverändert richtig — genau das wäre beim Verschieben
+  eines Eintrags verlorengegangen.
+* **Die Wachstärke rechnet mit dem Hauptstatus einer Zeile.** Folgeeinträge und
+  Zeiträume dokumentieren den Verlauf, verändern die Zählung aber nicht; sonst
+  wäre nicht mehr nachvollziehbar, welche Zahl im Kopf steht.
 * **Farben und Wachstärke liegen in den Stammdaten, nicht in den Einstellungen.**
   Sie sind eine Festlegung der Dienststelle und gelten deshalb für alle
   Arbeitsplätze; die Einstellungen enthalten nur, was den einzelnen Rechner
@@ -147,6 +163,23 @@ zieht `Store.migrieren()` ältere Stände still nach:
 
 Die Migration schreibt keine Ops. Jeder Arbeitsplatz kommt für sich zum selben
 Ergebnis, es entsteht also kein Abgleichsverkehr und kein Konflikt.
+
+## 3b. Monatsabschluss
+
+*Auswertung → Monat abschließen* legt zwei Dateien in `<Ordner>/archiv/<Monat>/`:
+
+| Datei | Inhalt |
+|---|---|
+| `wachkladde-2026-08.json` | Stammdaten, Rotation und alle Tage des Monats — vollständig wieder einlesbar |
+| `wachkladde-2026-08.html` | eigenständige, druckfertige Fassung ohne Bedienelemente; öffnet sich in jedem Browser, auch in zehn Jahren |
+
+Anschließend wird der Ordner verdichtet und der Monat in `abgeschlossen` vermerkt.
+`Store.apply()` verweigert danach jede Änderung an Tagen dieses Monats — die
+Sperre sitzt also im Datenzugriff, nicht nur in der Oberfläche. Admin und DGL
+können über das Hinweisband oder die Auswertung wieder entsperren; das Archiv
+bleibt dabei unberührt.
+
+Ist kein Ordner verbunden, werden beide Dateien stattdessen heruntergeladen.
 
 ## 4. Persistenz und Synchronisation
 

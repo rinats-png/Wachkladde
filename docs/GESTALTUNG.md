@@ -131,6 +131,30 @@ und einem. Nachgemessen für alle 62 Schichten eines vollen Monats — keine lä
 Für Ausnahmefälle gibt es zusätzlich „kompakt drucken". Zum Vergleich: die
 Excel-Vorlage druckte auf 49 % skaliert.
 
+## Die Auswertung
+
+Die Kladde hat jetzt Daten, die sich auswerten lassen — das war das stärkste
+Argument gegen das Tabellenblatt, und es wäre schade, es liegen zu lassen.
+
+**Vier Kennzahlen als Kacheln**, nicht als Diagramm: Krankenstand, unterschrittene
+Wachstärken, Terminal-3-Einsätze, Abstellungen. Vier Zahlen sind vier Zahlen; ein
+Balkendiagramm mit vier Balken wäre Dekoration. Nur die Wachstärke-Kachel wird
+farbig, und nur dann, wenn etwas zu sehen ist.
+
+**Die Monatsübersicht ist ein Kalenderraster**: eine Zeile je Beamter, eine Spalte
+je Tag, nach Dienstgruppen gruppiert. Gefärbt wird ausschließlich das Abweichende —
+regulärer Dienst bleibt neutral beige, dienstfreie Tage bleiben leer. Dadurch tritt
+zweierlei hervor, ohne dass man etwas lesen muss: der Dienstrhythmus als Muster und
+die Ausfälle als Farbe. Die Farben sind dieselben wie in der Kladde, also muss
+niemand eine zweite Codierung lernen; eine Legende mit Häufigkeiten steht darunter,
+jede Zelle trägt einen Tooltip mit Tag, Schicht, Grund und Bemerkung.
+
+Ein Vorbehalt, offen gesagt: bei vielen verschiedenen Abwesenheitsgründen zeigt das
+Raster mehr Farbklassen, als eine Grafik eigentlich tragen sollte. Das ist hier
+vertretbar, weil die Zuordnung aus der täglichen Arbeit bereits bekannt ist und
+Legende und Tooltip jede Zelle eindeutig auflösen — aber wer viele Gründe pflegt,
+sollte die selten benutzten grau lassen.
+
 ## Bewegung
 
 Zurückhaltend und einmalig: Schichtkarten fahren beim Tageswechsel gestaffelt ein,

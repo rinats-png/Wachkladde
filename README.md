@@ -90,7 +90,21 @@ Dann in der Anwendung *Einstellungen → Daten → JSON importieren*.
   Tag- und Nachtdienst und **für jeden Wochentag einzeln**. Erreicht = grün,
   unterschritten = rot. Welche Abwesenheitsgründe die Stärke reduzieren und
   welche als Terminal-3-Besetzung zählen, ist frei einstellbar.
-- **Tastatur**: ← → wechselt den Tag, `t` springt auf heute.
+- **Tastatur**: ← → wechselt den Tag, `t` springt auf heute, `/` öffnet die Suche,
+  Strg+Z macht rückgängig, Strg+Y wiederholt.
+- **Auswertung**: Monatsübersicht als Kalenderraster (eine Zeile je Beamter, eine
+  Spalte je Tag), Krankenstand, unterschrittene Wachstärken, Terminal-3-Einsätze
+  und Abstellungsaufkommen — auch ausdruckbar.
+- **Monatsabschluss**: legt den Monat als JSON und als eigenständige, druckfertige
+  HTML im Archiv des Netzordners ab, verdichtet den Ordner und sperrt die Tage
+  gegen Änderungen. Admin und DGL können wieder entsperren.
+- **Zeiträume je Zeile**: optionale Uhrzeit von–bis, dazu Folgeeinträge für einen
+  Statuswechsel im Dienst („bis 12:00 Wache, danach BSOD").
+- **Versetzung**: ein Beamter kann zum Stichtag in eine andere Dienstgruppe
+  wechseln; bereits erfasste Tage bleiben unverändert.
+- **Suche** über alle erfassten Tage nach Namen, mit Sprung zum Tag.
+- **Warnband**, wenn der Netzordner nicht verbunden oder nicht erreichbar ist —
+  samt Zahl der noch nicht übertragenen Änderungen.
 
 ## Sicherheitshinweis
 

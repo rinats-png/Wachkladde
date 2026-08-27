@@ -209,8 +209,24 @@ main{padding:18px;max-width:1680px;margin:0 auto}
 .liste .c-nr{width:34px;text-align:right;font-family:var(--f-mono);font-size:11px;color:var(--txt-3)}
 .liste .c-name{min-width:0;white-space:nowrap}
 .liste .c-ist{width:34px;text-align:center;font-family:var(--f-mono);font-size:12px;color:var(--txt-3)}
-.liste .c-stat{width:180px} .liste .c-eint{width:112px}
-.liste .c-bem{width:26%}
+.liste .c-stat{width:172px} .liste .c-zeit{width:96px} .liste .c-eint{width:106px}
+.liste .c-bem{width:22%}
+.zeitspanne{display:flex;align-items:center;gap:2px}
+.zeitspanne i{font-style:normal;color:var(--txt-3);font-size:10px}
+.zt{width:40px;height:24px;text-align:center;border-radius:5px;font-family:var(--f-mono);
+  font-size:11px;color:var(--txt-2);border:1px solid transparent;transition:.15s;padding:0}
+.zt::placeholder{color:transparent}
+.zt:hover{background:var(--bg-3);border-color:var(--line)}
+.zt:focus{background:var(--bg-2);border-color:var(--line-2);color:var(--txt)}
+.zt:hover::placeholder,.zt:focus::placeholder{color:var(--txt-3)}
+tr.folgezeile .c-name{padding-left:14px}
+tr.folgezeile .fpfeil{color:var(--txt-3);margin-right:4px;font-size:11px}
+tr.folgezeile td{border-bottom-style:dashed}
+.fneu,.fweg{width:18px;height:18px;border-radius:4px;font-size:12px;line-height:1;
+  color:var(--txt-3);opacity:0;transition:.15s;vertical-align:middle}
+tr:hover .fneu,tr:hover .fweg{opacity:1}
+.fneu:hover{background:var(--bg-3);color:var(--td)}
+.fweg:hover{background:var(--bg-3);color:var(--rot)}
 
 .nam{font-weight:600;font-size:13.5px;letter-spacing:-.005em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -346,7 +362,7 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
   border:1px solid transparent;font-size:14px;font-weight:600;width:160px}
 .dgkopf input:hover,.dgkopf input:focus{background:var(--bg-3);border-color:var(--line)}
 .dgkopf .zahl{margin-left:auto;font-size:11px;color:var(--txt-3);font-family:var(--f-mono)}
-.mann{display:grid;grid-template-columns:46px minmax(0,1fr) 66px 104px 84px;gap:8px;
+.mann{display:grid;grid-template-columns:46px minmax(0,1fr) 66px 104px auto;gap:8px;
   align-items:center;padding:3px 0;
   border-bottom:1px solid color-mix(in srgb,var(--line) 45%,transparent)}
 .mann:last-of-type{border-bottom:0}
@@ -356,7 +372,11 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
   border:1px solid transparent;background:transparent;transition:.15s;min-width:0}
 .mann input:hover,.mann select:hover,.mann input:focus,.mann select:focus{
   background:var(--bg-3);border-color:var(--line)}
-.mann .tools{display:flex;gap:3px;opacity:.35;transition:opacity .15s}
+.mann.ausserhalb{opacity:.5}
+.mann.ausserhalb .kenn{color:var(--txt-3)}
+.mann .gueltig{font-size:9.5px;color:var(--td);background:var(--td-w);border-radius:4px;
+  padding:2px 6px;white-space:nowrap;align-self:center;margin-right:2px}
+.mann .tools{display:flex;gap:3px;align-items:center;opacity:.45;transition:opacity .15s}
 .mann:hover .tools{opacity:1}
 .mann .tools button{width:24px;height:24px;border-radius:5px;color:var(--txt-3);font-size:12px}
 .mann .tools button:hover{background:var(--bg-3);color:var(--txt)}
@@ -440,6 +460,82 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
 .haken.an{color:var(--txt)}
 .haken input{width:14px;height:14px;accent-color:var(--td);cursor:pointer}
 
+/* ── Auswertung ───────────────────────────────────────────────────── */
+.kacheln-stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px;
+  margin-top:14px}
+.statkachel{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-m);
+  padding:13px 15px 14px}
+.sk-label{font-size:11.5px;color:var(--txt-2);margin-bottom:5px}
+.sk-wert{font-size:30px;line-height:1;font-weight:600;letter-spacing:-.01em;color:var(--txt)}
+.sk-zusatz{font-size:11px;color:var(--txt-3);margin-top:6px}
+.statkachel.warn{border-color:color-mix(in srgb,var(--rot) 40%,transparent);background:var(--rot-w)}
+.statkachel.warn .sk-wert{color:var(--rot)}
+.statkachel.gut{border-color:color-mix(in srgb,var(--gruen) 34%,transparent);background:var(--gruen-w)}
+.statkachel.gut .sk-wert{color:var(--gruen)}
+
+.kalender{overflow-x:auto;padding-bottom:4px}
+.kal-kopf,.kal-zeile{display:grid;
+  grid-template-columns:154px repeat(var(--tage),minmax(15px,1fr));gap:2px;align-items:center}
+.kal-kopf{position:sticky;top:0;padding-bottom:4px}
+.kal-kopf i{font-style:normal;font-size:9px;text-align:center;color:var(--txt-3);
+  font-family:var(--f-mono)}
+.kal-kopf i.we{color:var(--rot)}
+.kal-gruppe{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-3);
+  margin:10px 0 3px}
+.kal-zeile{padding:1px 0}
+.kal-zeile:hover .kal-name{color:var(--txt)}
+.kal-name{font-size:12px;color:var(--txt-2);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;padding-right:8px}
+.kz{display:block;height:15px;border-radius:3px;border:1px solid transparent}
+.kz.frei{background:transparent;border-color:var(--line)}
+.kz.frei.we{background:var(--bg-3)}
+.kz.dienst{background:var(--bg-3);border-color:var(--line-2)}
+.kz.ab{border-width:1px}
+.legende{display:flex;flex-wrap:wrap;gap:6px 15px;margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--line)}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--txt-2)}
+.lg .kz{width:13px;height:13px}
+.lg b{color:var(--txt);font-weight:600}
+.rot-tab td.schlecht{color:var(--rot);font-weight:600}
+
+/* ── Warnband, Suche, Kurzmeldung ─────────────────────────────────── */
+.warnung[hidden]{display:none}     /* display:flex schlägt sonst das hidden-Attribut */
+.warnung{margin:0;padding:11px 18px;font-size:13px;line-height:1.5;
+  background:var(--rot-w);color:var(--rot);border-bottom:1px solid
+  color-mix(in srgb,var(--rot) 30%,transparent);display:flex;align-items:center;gap:12px;
+  flex-wrap:wrap}
+.warnung b{font-weight:700}
+.warnung.ruhig{background:var(--bg-3);color:var(--txt-2);border-bottom-color:var(--line)}
+.warnung .knopf{border-color:currentColor;color:inherit;background:transparent}
+
+.suche{position:relative}
+.suche input{width:170px;height:var(--tap);padding:0 11px;border-radius:var(--r-s);
+  background:var(--bg-1);border:1px solid var(--line);font-size:12.5px;transition:.18s var(--ease)}
+.suche input:focus{width:250px;border-color:var(--line-2);background:var(--bg-2)}
+.treffer[hidden]{display:none}
+.treffer{position:absolute;right:0;top:calc(100% + 6px);width:420px;max-height:420px;
+  overflow:auto;z-index:80;background:var(--bg-1);border:1px solid var(--line-2);
+  border-radius:var(--r-m);box-shadow:0 14px 44px -14px rgba(60,50,30,.42);padding:5px}
+.tkopf{padding:6px 9px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--txt-3)}
+.tzeile{display:grid;grid-template-columns:52px 26px 1fr 1fr;gap:8px;align-items:center;
+  width:100%;text-align:left;padding:5px 9px;border-radius:6px;font-size:12.5px;
+  color:var(--txt-2);transition:background .12s}
+.tzeile:hover{background:var(--bg-3);color:var(--txt)}
+.tdat{font-size:11px;color:var(--txt-3)}
+.tsch{font-size:9.5px;letter-spacing:.1em;color:var(--txt-3)}
+.tnam{font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.twas{font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.melder{position:fixed;left:50%;bottom:26px;translate:-50% 12px;z-index:95;
+  background:var(--txt);color:var(--bg);padding:9px 18px;border-radius:99px;font-size:12.5px;
+  box-shadow:0 10px 30px -10px rgba(0,0,0,.5);opacity:0;pointer-events:none;
+  transition:opacity .22s var(--ease), translate .22s var(--ease)}
+.melder.an{opacity:1;translate:-50% 0}
+
+.knopf:disabled{opacity:.3;cursor:default}
+.knopf:disabled:hover{background:var(--bg-1);color:var(--txt-2);border-color:var(--line)}
+
 .unterteil{display:block}
 .nur-druck{display:none}
 .dw{display:none}
@@ -457,8 +553,17 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
   body{font-size:7.8pt;line-height:1.18;color:#000;
     -webkit-print-color-adjust:exact;print-color-adjust:exact}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .kopf,.reiter,.nicht-drucken,#ansicht-stamm,#ansicht-setup,.hinweise,
-  .meter .balken,.tupfer,.palette{display:none!important}
+  .kopf,.reiter,.nicht-drucken,#ansicht-stamm,#ansicht-setup,
+  .hinweise,.warnung,.melder,.treffer,.meter .balken,.tupfer,.palette{display:none!important}
+  [hidden]{display:none!important}
+  /* Monatsübersicht quer, damit alle Tage nebeneinander passen */
+  #ansicht-auswertung .karte{border:.5pt solid #000;border-radius:0;box-shadow:none;
+    padding:3mm;margin-bottom:3mm;break-inside:avoid}
+  #ansicht-auswertung .kalender{overflow:visible}
+  #ansicht-auswertung .kal-name{font-size:6.6pt}
+  #ansicht-auswertung .kz{height:2.6mm}
+  #ansicht-auswertung .sk-wert{font-size:18pt}
+  #ansicht-auswertung .statkachel{border:.4pt solid #000;border-radius:0}
   .nur-druck{display:block} span.nur-druck{display:inline}
   main{padding:0;max-width:none}
 
@@ -497,13 +602,17 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
 
   /* Werte als Fließtext – ein Eingabefeld kann nicht umbrechen */
   .liste input,.liste select,.kachel input,.bestand input,.uebergabe .u input,
-  .notiz{display:none}
+  .notiz,.zeitspanne{display:none}      /* der Trenner „–" gehört zum Eingabefeld */
   .dw{display:block;white-space:normal;overflow-wrap:anywhere;line-height:1.15}
   .liste td .dw{color:#000}
   .tb-lehr td .dw{min-height:3.6mm}      /* nur die Lehrgangszeilen bleiben beschreibbar */
   .liste tr.trenner .dw{min-height:0;display:inline}
   .c-stat .dw{font-weight:600;color:var(--ton,#000)}       /* Grund in seiner Farbe */
-  .c-eint .dw{font-family:var(--f-mono)}
+  .c-eint .dw,.c-zeit .dw{font-family:var(--f-mono)}
+  .c-zeit .dw{font-size:6.9pt;color:#333}
+  tr.folgezeile td{border-bottom-style:dashed}
+  tr.folgezeile .fpfeil{color:#666}
+  .fneu,.fweg{display:none!important}
   .plak::after{display:none}
 
   /* Unterer Teil zweispaltig – so passt ein voller Tag auf ein Blatt */
@@ -557,6 +666,12 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
   <nav class="tagleiste" id="tagleiste" aria-label="Dienstdatum"></nav>
 
   <div class="rechts">
+    <div class="suche">
+      <input id="suchfeld" placeholder="Beamten suchen …" autocomplete="off">
+      <div class="treffer" id="treffer" hidden></div>
+    </div>
+    <button class="knopf nur-symbol" id="btnUndo" title="Rückgängig (Strg+Z)">↶</button>
+    <button class="knopf nur-symbol" id="btnRedo" title="Wiederholen (Strg+Y)">↷</button>
     <span class="puls" id="syncStatus">lokal</span>
     <div class="wer" id="wer" title="weitere Arbeitsplätze im Ordner"></div>
     <button class="knopf stark" id="btnPrint">Drucken</button>
@@ -565,14 +680,32 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
 
 <nav class="reiter" role="tablist">
   <button role="tab" aria-selected="true"  data-ansicht="kladde">Kladde</button>
+  <button role="tab" aria-selected="false" data-ansicht="auswertung">Auswertung</button>
   <button role="tab" aria-selected="false" data-ansicht="stamm">Dienstgruppen</button>
   <button role="tab" aria-selected="false" data-ansicht="setup">Einstellungen</button>
 </nav>
+
+<div class="warnung" id="warnung" hidden></div>
 
 <main>
   <section id="ansicht-kladde">
     <div class="hinweise" id="hinweise"></div>
     <div class="schichten" id="schichten"></div>
+  </section>
+
+  <section id="ansicht-auswertung" hidden>
+    <div class="karte" id="ausKopf"></div>
+    <div class="karte">
+      <h2 id="ausTitel">Monatsübersicht</h2>
+      <p class="unter">Eine Zeile je Beamter, eine Spalte je Tag. Gefärbt wird nur, was von der
+        Norm abweicht — der reguläre Dienst bleibt neutral, dienstfreie Tage bleiben leer.</p>
+      <div id="ausKalender"></div>
+      <div class="legende" id="ausLegende"></div>
+    </div>
+    <div class="karte">
+      <h2>Unterschrittene Wachstärke</h2>
+      <div id="ausUnter"></div>
+    </div>
   </section>
 
   <section id="ansicht-stamm" hidden>
@@ -814,7 +947,7 @@ function seedState(){
       farben:{...FARBEN_VORGABE},
       wachstaerke:structuredClone(WACHSTAERKE_VORGABE)},
     rotation:structuredClone(DEFAULT_ROTATION),
-    tage:{}, _cursor:0
+    tage:{}, abgeschlossen:{}, _cursor:0
   };
 }
 
@@ -834,6 +967,7 @@ const Store = {
      jeder Arbeitsplatz kommt für sich zum selben Ergebnis.               */
   migrieren(){
     const st=this.state, sd=st.stammdaten;
+    st.abgeschlossen = st.abgeschlossen || {};
     if(!sd) return;
     sd.farben      = {...FARBEN_VORGABE, ...(sd.farben||{})};
     sd.wachstaerke = {...structuredClone(WACHSTAERKE_VORGABE), ...(sd.wachstaerke||{})};
@@ -887,14 +1021,52 @@ const Store = {
     let o=this.state; for(const k of ks){ if(o[k]==null||typeof o[k]!=='object') o[k]={}; o=o[k]; }
     o[last]=val;
   },
-  /* Lokale Änderung: schreiben + Op protokollieren (für Sync/LWW) */
-  apply(path,val,silent){
+  /* Ist der Tag, den dieser Pfad betrifft, durch einen Monatsabschluss gesperrt? */
+  gesperrt(path){
+    const t=String(path).split('.');
+    if(t[0]!=='tage') return false;
+    return !!(this.state.abgeschlossen||{})[(t[1]||'').slice(0,7)];
+  },
+
+  /* Lokale Änderung: schreiben + Op protokollieren (für Sync/LWW) + Undo merken */
+  undoStapel:[], redoStapel:[],
+  apply(path,val,silent,ohneUndo){
+    if(this.gesperrt(path)) return false;
+    if(!silent && !ohneUndo){
+      const alt=this.get(path);
+      /* Ein Feld, das den Fokus ohne Änderung verlässt, gehört nicht in den Stapel –
+         sonst klickt man „rückgängig" und es passiert scheinbar nichts.
+         Achtung: wurde dasselbe Objekt an Ort und Stelle geändert und wieder
+         hereingereicht, ist der Vergleich wertlos – dann immer schreiben.       */
+      const gleicheReferenz = (alt===val && val && typeof val==='object');
+      if(!gleicheReferenz && JSON.stringify(alt)===JSON.stringify(val)) return true;
+      this.undoStapel.push({path, alt: (alt && typeof alt==='object') ? structuredClone(alt) : alt});
+      if(this.undoStapel.length>80) this.undoStapel.shift();
+      this.redoStapel.length=0;
+    }
     this.setRaw(path,val);
     if(!silent){
       const op={id:uid('op'),path,val,ts:Date.now(),by:this.state.settings.user||'unbekannt'};
       this.pending.push(op); Meta.stamp(path,op);
     }
     this.save();
+    return true;
+  },
+  /* Rückgängig und Wiederholen laufen als reguläre Änderungen – sie werden also
+     mitsynchronisiert und sind für die anderen Arbeitsplätze nachvollziehbar. */
+  zurueck(){
+    const e=this.undoStapel.pop(); if(!e) return null;
+    const jetzt=this.get(e.path);
+    this.redoStapel.push({path:e.path, alt:(jetzt&&typeof jetzt==='object')?structuredClone(jetzt):jetzt});
+    this.apply(e.path, e.alt, false, true);
+    return e.path;
+  },
+  vor(){
+    const e=this.redoStapel.pop(); if(!e) return null;
+    const jetzt=this.get(e.path);
+    this.undoStapel.push({path:e.path, alt:(jetzt&&typeof jetzt==='object')?structuredClone(jetzt):jetzt});
+    this.apply(e.path, e.alt, false, true);
+    return e.path;
   }
 };
 /* Zeitstempel je Feld – Basis für Last-Write-Wins beim Zusammenführen */
@@ -957,8 +1129,8 @@ const IDB = {
 };
 
 const Folder = {
-  root:null, dDaten:null, dOps:null, dPres:null,
-  timer:null, beatTimer:null, laeuft:false, praesenz:[],
+  root:null, dDaten:null, dOps:null, dPres:null, dArchiv:null,
+  timer:null, beatTimer:null, laeuft:false, praesenz:[], fehler:false, letzterErfolg:0,
   get verfuegbar(){ return typeof window.showDirectoryPicker==='function' },
   get on(){ return Store.state.settings.syncMode==='folder' && !!this.root },
 
@@ -985,6 +1157,7 @@ const Folder = {
     this.dDaten=await h.getDirectoryHandle('daten',{create:true});
     this.dOps  =await this.dDaten.getDirectoryHandle('ops',{create:true});
     this.dPres =await this.dDaten.getDirectoryHandle('presence',{create:true});
+    this.dArchiv=await h.getDirectoryHandle('archiv',{create:true});
     Store.apply('settings.syncMode','folder',true);
     Store.apply('settings.ordnerName',h.name,true);
     await this.erstAbgleich();
@@ -1126,15 +1299,36 @@ const Folder = {
     try{
       const raus=await this.push();
       const rein=await this.pull();
+      this.fehler=false; this.letzterErfolg=Date.now();
       if(rein||raus) UI.render();
       Merge.status('Ordner · '+new Date().toLocaleTimeString('de-DE'),'gut');
     }catch(e){
+      if(!this.fehler){ this.fehler=true; UI.renderWarnung(); }
+      this.fehler=true;
       Merge.status('Ordner nicht erreichbar','fehl');
     }finally{
       this.laeuft=false;
       if(this._nochmal){ this._nochmal=false; await this.tick(); }
     }
   },
+  /* Monatsabschluss: den Monat als JSON und als druckfertige HTML ins Archiv
+     legen. Liegt kein Ordner an, werden beide Dateien heruntergeladen.        */
+  async archivieren(monat, json, html){
+    const namen=[[`wachkladde-${monat}.json`, json],[`wachkladde-${monat}.html`, html]];
+    if(this.on && this.dArchiv){
+      const d=await this.dArchiv.getDirectoryHandle(monat,{create:true});
+      for(const [n,inhalt] of namen) await this.schreiben(d,n,inhalt);
+      return 'archiv/'+monat+'/';
+    }
+    for(const [n,inhalt] of namen){
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob([inhalt],
+        {type:n.endsWith('.json')?'application/json':'text/html'}));
+      a.download=n; a.click();
+    }
+    return 'Download-Ordner';
+  },
+
   /* Aufräumen: alles in einen frischen Snapshot falten, eigene Op-Datei leeren */
   async aufraeumen(){
     await this.push(); await this.pull();
@@ -1203,9 +1397,20 @@ const Logik = {
     return schicht==='TD' ? v : (R.verstNachtVonVerst[v] ?? v);
   },
   dgByNr(nr){ return Store.state.stammdaten.dienstgruppen.find(d=>d.nr===nr) },
-  /* fortlaufende Nummerierung: aktive Beamte 1..n, Reihenfolge = Listenreihenfolge */
-  nummeriert(dg){ let n=0; return (dg?.beamte||[]).filter(b=>b.aktiv)
+  /* Gilt der Beamte an diesem Tag zur Dienstgruppe?  Eine Versetzung wird über
+     aktivVon / aktivBis abgebildet: der alte Eintrag endet, der neue beginnt.   */
+  gilt(b, datum){
+    if(!b.aktiv) return false;
+    if(!datum) return true;
+    if(b.aktivVon && datum <  b.aktivVon) return false;
+    if(b.aktivBis && datum >  b.aktivBis) return false;
+    return true;
+  },
+  /* fortlaufende Nummerierung: gültige Beamte 1..n, Reihenfolge = Listenreihenfolge */
+  nummeriert(dg, datum){ let n=0; return (dg?.beamte||[]).filter(b=>this.gilt(b,datum))
       .map(b=>({...b, nr:++n, kennung:dg.nr+'-'+n})) },
+  /* Monatsabschluss */
+  abgeschlossen(datum){ return (Store.state.abgeschlossen||{})[String(datum).slice(0,7)]||null },
   schicht(datum,schicht){
     const t=Store.state.tage[datum];
     if(t && t[schicht]) return t[schicht];
@@ -1237,6 +1442,62 @@ const Logik = {
     const minR = holen('regulaer'), minT = holen('terminal');
     return {regulaer, terminal, minR, minT,
             okR: !minR || regulaer>=minR, okT: !minT || terminal>=minT};
+  },
+
+  /* Kennzahlen und Belegung eines Monats. Ausgewertet wird, was in den Tagen
+     tatsächlich steht – nicht der Dienstplan.                                  */
+  auswertung(monat){
+    const W   = Store.state.stammdaten.wachstaerke || WACHSTAERKE_VORGABE;
+    const red = new Set(W.reduziert||[]);
+    const t3  = new Set(W.terminalGruende||[]);
+    const tageImMonat = new Date(+monat.slice(0,4), +monat.slice(5,7), 0).getDate();
+    const zeilen=[], unterschritten=[], gruende={};
+    let personentage=0, krank=0, terminal=0, abstellungen=0, dienstschichten=0;
+
+    for(const dg of Store.state.stammdaten.dienstgruppen){
+      for(const b of dg.beamte){
+        if(!b.aktiv) continue;
+        const felder=[];
+        let hatDienst=false;
+        for(let d=1; d<=tageImMonat; d++){
+          const datum=`${monat}-${String(d).padStart(2,'0')}`;
+          if(!this.gilt(b,datum)){ felder.push(null); continue; }
+          const tag=Store.state.tage[datum];
+          let zelle=null;
+          for(const sch of ['TD','ND']){
+            const s=tag?.[sch];
+            if(!s || s.dgNr!==dg.nr) continue;
+            const e=(s.einteilungen||{})[b.id]||{};
+            zelle={sch, grund:e.abwesenheit||'', einteilung:e.einteilung||'',
+                   bemerkung:e.bemerkung||''};
+            hatDienst=true; personentage++;
+            if(e.abwesenheit){ gruende[e.abwesenheit]=(gruende[e.abwesenheit]||0)+1; }
+            if(e.abwesenheit==='Krank') krank++;
+            if(t3.has(e.abwesenheit)) terminal++;
+          }
+          felder.push(zelle);
+        }
+        if(hatDienst) zeilen.push({dg, b, felder});
+      }
+    }
+
+    for(let d=1; d<=tageImMonat; d++){
+      const datum=`${monat}-${String(d).padStart(2,'0')}`;
+      const tag=Store.state.tage[datum]; if(!tag) continue;
+      for(const sch of ['TD','ND']){
+        const s=tag[sch]; if(!s) continue;
+        dienstschichten++;
+        abstellungen += (s.abstellungen||[]).filter(a=>{
+          const f=a.felder||[]; return f.some(k=>((a.werte||{})[k]||'').trim()); }).length;
+        const dg=this.dgByNr(s.dgNr);
+        const w=this.wachstaerke(s, this.nummeriert(dg,datum));
+        if(!w.okR || !w.okT) unterschritten.push({datum, sch, w});
+      }
+    }
+    return {monat, tageImMonat, zeilen, unterschritten, gruende,
+            kennzahlen:{personentage, krank, terminal, abstellungen, dienstschichten,
+              krankQuote: personentage ? krank/personentage : 0,
+              unterQuote: dienstschichten ? unterschritten.length/dienstschichten : 0}};
   },
 
   darfBearbeiten(beamtId){
@@ -1318,10 +1579,16 @@ const UI = {
     $$('.reiter button').forEach(b=>b.onclick=()=>{
       this.ansicht=b.dataset.ansicht;
       $$('.reiter button').forEach(x=>x.setAttribute('aria-selected', x===b));
-      ['kladde','stamm','setup'].forEach(v=>$('#ansicht-'+v).hidden = v!==this.ansicht);
+      ['kladde','auswertung','stamm','setup'].forEach(v=>$('#ansicht-'+v).hidden = v!==this.ansicht);
       this.render();
     });
     $('#btnPrint').onclick =()=>window.print();
+    $('#btnUndo').onclick  =()=>this.zurueck();
+    $('#btnRedo').onclick  =()=>this.vor();
+    $('#suchfeld').oninput =e=>this.suchen(e.target.value);
+    $('#suchfeld').onkeydown=e=>{ if(e.key==='Escape'){ e.target.value=''; this.suchen(''); } };
+    document.addEventListener('click',e=>{
+      if(!e.target.closest('.suche')) $('#treffer').hidden=true; });
     $('#btnSyncNow').onclick=()=>{ Sync.tick(); Folder.tick(); };
     $('#btnFolder').onclick=()=>this.ordnerVerbinden(false);
     $('#btnFolderNew').onclick=()=>this.ordnerVerbinden(true);
@@ -1357,6 +1624,12 @@ const UI = {
       };
     });
     document.addEventListener('keydown',e=>{
+      if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='z' && !e.shiftKey){
+        e.preventDefault(); this.zurueck(); return; }
+      if((e.ctrlKey||e.metaKey) && (e.key.toLowerCase()==='y' ||
+         (e.key.toLowerCase()==='z' && e.shiftKey))){ e.preventDefault(); this.vor(); return; }
+      if(e.key==='/' && !e.target.matches('input,select,textarea')){
+        e.preventDefault(); $('#suchfeld').focus(); return; }
       if(e.target.matches('input,select,textarea')) return;
       if(e.key==='ArrowLeft')  this.tagWechsel(-1);
       if(e.key==='ArrowRight') this.tagWechsel(1);
@@ -1370,14 +1643,116 @@ const UI = {
     Object.entries(c).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
   },
   tagSetzen(d){ Store.apply('settings.datum',d,true); this.render(); },
+
+  zurueck(){
+    const pfad=Store.zurueck();
+    if(!pfad) return this.melden('Nichts mehr rückgängig zu machen.');
+    this.springeZu(pfad); this.render();
+    this.melden('Rückgängig: '+this.feldName(pfad));
+  },
+  vor(){
+    const pfad=Store.vor();
+    if(!pfad) return this.melden('Nichts zu wiederholen.');
+    this.springeZu(pfad); this.render();
+    this.melden('Wiederholt: '+this.feldName(pfad));
+  },
+  /* Wenn die Änderung einen anderen Tag betrifft, dorthin wechseln – sonst
+     sieht der Benutzer nicht, was rückgängig gemacht wurde.                */
+  springeZu(pfad){
+    const t=String(pfad).split('.');
+    if(t[0]==='tage' && t[1] && t[1]!==Store.state.settings.datum){
+      Store.apply('settings.datum',t[1],true);
+      this.ansicht='kladde';
+      $$('.reiter button').forEach(x=>x.setAttribute('aria-selected', x.dataset.ansicht==='kladde'));
+      ['kladde','stamm','setup','auswertung'].forEach(v=>{
+        const el=$('#ansicht-'+v); if(el) el.hidden = v!=='kladde'; });
+    }
+  },
+  melden(text){
+    let el=$('#melder');
+    if(!el){ el=document.createElement('div'); el.id='melder'; el.className='melder';
+      document.body.appendChild(el); }
+    el.textContent=text; el.classList.add('an');
+    clearTimeout(this._melderT);
+    this._melderT=setTimeout(()=>el.classList.remove('an'),2600);
+  },
+
+  /* Namenssuche über alle erfassten Tage */
+  suchen(text){
+    const box=$('#treffer'), q=text.trim().toLowerCase();
+    if(q.length<2){ box.hidden=true; return; }
+    const treffer=[];
+    for(const [datum,tag] of Object.entries(Store.state.tage).sort()){
+      for(const sch of ['TD','ND']){
+        const s=tag[sch]; if(!s) continue;
+        const dg=Logik.dgByNr(s.dgNr);
+        for(const b of Logik.nummeriert(dg,datum)){
+          if(!b.name.toLowerCase().includes(q)) continue;
+          const e=s.einteilungen[b.id]||{};
+          treffer.push({datum,sch,name:b.name,
+            was:e.abwesenheit||e.einteilung||'im Dienst', ton:ton(e.abwesenheit||e.einteilung)});
+        }
+        for(const e of (s.ergaenzung?.eintraege||[]))
+          if((e.name||'').toLowerCase().includes(q))
+            treffer.push({datum,sch,name:e.name,
+              was:(e.abwesenheit||e.einteilung||'Ergänzungsdienst')+' · Ergänzung',
+              ton:ton(e.abwesenheit||e.einteilung)});
+      }
+    }
+    box.hidden=false;
+    box.innerHTML = treffer.length
+      ? `<div class="tkopf">${treffer.length} Einträge</div>` + treffer.slice(0,60).map(t=>
+          `<button class="tzeile" data-datum="${t.datum}">
+             <span class="tdat mono">${deDate(t.datum).slice(0,6)}</span>
+             <span class="tsch">${t.sch}</span>
+             <span class="tnam">${esc(t.name)}</span>
+             <span class="twas"${t.ton?` style="color:${t.ton}"`:''}>${esc(t.was)}</span>
+           </button>`).join('') +
+        (treffer.length>60?'<div class="tkopf">… weitere nicht angezeigt</div>':'')
+      : '<div class="tkopf">Kein Eintrag gefunden.</div>';
+    $$('.tzeile',box).forEach(b=>b.onclick=()=>{
+      this.tagSetzen(b.dataset.datum); box.hidden=true; });
+  },
+
+  /* Deutlicher Hinweis, wenn der gemeinsame Ordner nicht erreichbar ist */
+  renderWarnung(){
+    const el=$('#warnung'), s=Store.state.settings;
+    const offen=Store.pending.length;
+    const abg=Logik.abgeschlossen(s.datum);
+    let inhalt='';
+    if(s.syncMode==='folder' && !Folder.on)
+      inhalt=`<b>Der gemeinsame Ordner ist nicht verbunden.</b>
+        Ihre Eingaben werden nur auf diesem Rechner gespeichert${
+        offen?` — <b>${offen}</b> Änderungen sind noch nicht übertragen`:''}.
+        <button class="knopf klein" id="wVerbinden">Ordner verbinden</button>`;
+    else if(s.syncMode==='folder' && Folder.fehler)
+      inhalt=`<b>Der Ordner ist gerade nicht erreichbar.</b>
+        Zuletzt erfolgreich ${Folder.letzterErfolg
+          ? new Date(Folder.letzterErfolg).toLocaleTimeString('de-DE') : 'nie'}.
+        ${offen?`<b>${offen}</b> Änderungen warten auf die Übertragung.`:''}
+        Die Kladde läuft weiter und gleicht ab, sobald die Freigabe wieder da ist.`;
+    else if(abg)
+      inhalt=`<b>${deDate(s.datum).slice(3)} ist abgeschlossen.</b>
+        Der Monat wurde am ${deDate(String(abg.ts).length>4?iso(new Date(abg.ts)):'')} von
+        ${esc(abg.by||'?')} archiviert und ist gegen Änderungen gesperrt.
+        ${['admin','dgl'].includes(s.rolle)
+          ? '<button class="knopf klein" id="wEntsperren">entsperren</button>':''}`;
+    el.hidden=!inhalt; el.className='warnung'+(abg&&!inhalt.includes('Ordner')?' ruhig':'');
+    el.innerHTML=inhalt;
+    const v=$('#wVerbinden'); if(v) v.onclick=()=>this.ordnerVerbinden(false);
+    const en=$('#wEntsperren'); if(en) en.onclick=()=>this.entsperren(s.datum.slice(0,7));
+  },
   tagWechsel(n){ const t=new Date(Store.state.settings.datum+'T12:00');
     t.setDate(t.getDate()+n); this.tagSetzen(iso(t)); },
 
   render(){
     if(this.ansicht==='kladde'){ this.renderTagleiste(); this.renderKladde(); }
+    if(this.ansicht==='auswertung') this.renderAuswertung();
     if(this.ansicht==='stamm')  this.renderStamm();
     if(this.ansicht==='setup')  this.renderSetup();
-    this.renderHinweise(); this.renderPresence();
+    this.renderHinweise(); this.renderPresence(); this.renderWarnung();
+    $('#btnUndo').disabled=!Store.undoStapel.length;
+    $('#btnRedo').disabled=!Store.redoStapel.length;
     if(BC) BC.postMessage('changed');
   },
 
@@ -1412,7 +1787,7 @@ const UI = {
   schichtHtml(datum,sch){
     const s   = Logik.schicht(datum,sch);
     const dg  = Logik.dgByNr(s.dgNr);
-    const man = Logik.nummeriert(dg);
+    const man = Logik.nummeriert(dg, datum);
     const ist = Logik.istReihe(man,s);
     const L   = Store.state.stammdaten.listen;
     const da  = ist.length?ist[ist.length-1]:0;
@@ -1428,18 +1803,43 @@ const UI = {
         <select data-f="${feld}">${opt(arr,wert||'')}</select></span>${dw(wert)}`;
     };
 
+    const zeit=(o,pfad)=>`<span class="zeitspanne">
+      <input class="zt" data-f="${pfad}von" maxlength="5" inputmode="numeric"
+        placeholder="––:––" value="${esc(o.von||'')}" title="Beginn">
+      <i>–</i>
+      <input class="zt" data-f="${pfad}bis" maxlength="5" inputmode="numeric"
+        placeholder="––:––" value="${esc(o.bis||'')}" title="Ende"></span>
+      ${dw([o.von,o.bis].filter(Boolean).join('–'))}`;
+
     const zeilen = man.map((b,i)=>{
       const e=s.einteilungen[b.id]||{}, t=ton(e.abwesenheit);
+      const folge=(e.folge||[]).map((f,j)=>{
+        const tf=ton(f.abwesenheit);
+        return `<tr class="folgezeile${f.abwesenheit?' fehlt':''}" data-b="${b.id}" data-folge="${j}"
+                    ${tf?`style="--ton:${tf}"`:''}>
+          <td class="c-nr"></td>
+          <td class="c-name"><span class="fpfeil">↳</span>
+            <span class="nam" style="font-weight:400">${esc(b.name)}</span>
+            <button class="fweg nicht-drucken" title="Folgeeintrag entfernen">✕</button></td>
+          <td class="c-ist"></td>
+          <td class="c-stat">${plakette(L.abwesenheit,f.abwesenheit,'folge.'+j+'.abwesenheit')}</td>
+          <td class="c-zeit">${zeit(f,'folge.'+j+'.')}</td>
+          <td class="c-eint">${plakette(L.einteilung,f.einteilung,'folge.'+j+'.einteilung','posten')}</td>
+          <td class="c-bem"><input class="bem" data-f="folge.${j}.bemerkung" placeholder="Bemerkung"
+              value="${esc(f.bemerkung||'')}">${dw(f.bemerkung)}</td></tr>`;
+      }).join('');
       return `<tr class="${e.abwesenheit?'fehlt':''}" data-b="${b.id}"
                   ${t?`style="--ton:${t}"`:''}>
         <td class="c-nr">${b.nr}</td>
         <td class="c-name"><span class="nam">${esc(b.name)}</span>
-            <span class="abz">&nbsp;${esc(b.amtsbez)}</span></td>
+            <span class="abz">&nbsp;${esc(b.amtsbez)}</span>
+            <button class="fneu nicht-drucken" title="Statuswechsel im Dienst erfassen">+</button></td>
         <td class="c-ist">${e.abwesenheit?'—':ist[i]}</td>
         <td class="c-stat">${plakette(L.abwesenheit,e.abwesenheit,'abwesenheit')}</td>
+        <td class="c-zeit">${zeit(e,'')}</td>
         <td class="c-eint">${plakette(L.einteilung,e.einteilung,'einteilung','posten')}</td>
         <td class="c-bem"><input class="bem" data-f="bemerkung" placeholder="Bemerkung"
-            value="${esc(e.bemerkung||'')}">${dw(e.bemerkung)}</td></tr>`;
+            value="${esc(e.bemerkung||'')}">${dw(e.bemerkung)}</td></tr>${folge}`;
     }).join('');
 
     const erg = s.ergaenzung.eintraege.map((e,i)=>{
@@ -1450,6 +1850,7 @@ const UI = {
             value="${esc(e.name||'')}" style="font-weight:600">${dw(e.name)}</td>
         <td class="c-ist"></td>
         <td class="c-stat">${plakette(L.abwesenheit,e.abwesenheit,'abwesenheit')}</td>
+        <td class="c-zeit">${zeit(e,'')}</td>
         <td class="c-eint">${plakette(L.einteilung,e.einteilung,'einteilung','posten')}</td>
         <td class="c-bem"><input class="bem" data-f="bemerkung" placeholder="Bemerkung"
             value="${esc(e.bemerkung||'')}">${dw(e.bemerkung)}</td></tr>`;
@@ -1515,10 +1916,11 @@ const UI = {
       <div class="s-koerper">
         <table class="liste">
           <thead><tr><th class="c-nr">#</th><th>Name</th><th class="c-ist">Ist</th>
-            <th>Abwesenheit</th><th>Einteilung</th><th>Bemerkung</th></tr></thead>
+            <th>Abwesenheit</th><th class="c-zeit">Zeit</th><th>Einteilung</th>
+            <th>Bemerkung</th></tr></thead>
           <tbody class="tb-haupt">${zeilen}</tbody>
           <tbody class="tb-erg">
-            <tr class="trenner"><td colspan="6"><div class="zeile" style="margin:0">
+            <tr class="trenner"><td colspan="7"><div class="zeile" style="margin:0">
               Ergänzungsdienst · DG
               <input class="dgfeld ergdg nicht-drucken" type="number" min="1" max="9"
                 value="${s.ergaenzung.dgNr||''}"><span class="dw">${esc(s.ergaenzung.dgNr||'')}</span>
@@ -1565,17 +1967,30 @@ const UI = {
     const k=$(`.schicht[data-s="${sch}"]`); if(!k) return;
     const basis='tage.'+datum+'.'+sch;
     const setz=(p,v)=>Store.apply(basis+'.'+p,v);
-    if(Store.state.settings.rolle==='leser')
-      $$('input,select,textarea',k).forEach(e=>e.disabled=true);
+    if(Store.state.settings.rolle==='leser' || Logik.abgeschlossen(datum))
+      $$('input,select,textarea,button',k).forEach(e=>e.disabled=true);
 
     $$('[data-f2]',k).forEach(el=>el.onchange=()=>setz(el.dataset.f2, el.value));
 
-    $$('.tb-haupt tr',k).forEach(tr=>$$('[data-f]',tr).forEach(el=>el.onchange=()=>{
+    $$('.tb-haupt tr[data-b]',k).forEach(tr=>{
       const id=tr.dataset.b;
-      if(!Logik.darfBearbeiten(id)){ alert('Für diese Zeile fehlt die Berechtigung.'); this.render(); return; }
-      setz(`einteilungen.${id}.${el.dataset.f}`, el.value);
-      this.render();
-    }));
+      $$('[data-f]',tr).forEach(el=>el.onchange=()=>{
+        if(!Logik.darfBearbeiten(id)){ alert('Für diese Zeile fehlt die Berechtigung.'); this.render(); return; }
+        setz(`einteilungen.${id}.${el.dataset.f}`, el.value);
+        this.render();
+      });
+      const fn=$('.fneu',tr); if(fn) fn.onclick=()=>{
+        const e=Logik.schicht(datum,sch).einteilungen[id]||{};
+        const l=(e.folge||[]).slice();
+        l.push({von:'',bis:'',abwesenheit:'',einteilung:'',bemerkung:''});
+        setz(`einteilungen.${id}.folge`, l); this.render();
+      };
+      const fw=$('.fweg',tr); if(fw) fw.onclick=()=>{
+        const e=Logik.schicht(datum,sch).einteilungen[id]||{};
+        const l=(e.folge||[]).slice(); l.splice(+tr.dataset.folge,1);
+        setz(`einteilungen.${id}.folge`, l); this.render();
+      };
+    });
     $$('.tb-erg tr[data-erg]',k).forEach(tr=>$$('[data-f]',tr).forEach(el=>el.onchange=()=>{
       setz(`ergaenzung.eintraege.${tr.dataset.erg}.${el.dataset.f}`, el.value);
       if(el.dataset.f==='abwesenheit') this.render();
@@ -1636,29 +2051,195 @@ const UI = {
       : '<span class="merk">Zurzeit arbeitet niemand sonst im Ordner.</span>';
   },
 
+  /* ── Auswertung ──────────────────────────────────────────────────── */
+  renderAuswertung(){
+    const monat=Store.state.settings.datum.slice(0,7);
+    const a=Logik.auswertung(monat);
+    const k=a.kennzahlen;
+    const monatsName=new Date(monat+'-01T12:00')
+      .toLocaleDateString('de-DE',{month:'long',year:'numeric'});
+
+    const kachel=(label,wert,zusatz,art)=>`<div class="statkachel${art?' '+art:''}">
+      <div class="sk-label">${label}</div><div class="sk-wert">${wert}</div>
+      <div class="sk-zusatz">${zusatz}</div></div>`;
+    $('#ausKopf').innerHTML=`
+      <div class="zeile" style="justify-content:space-between;align-items:center">
+        <h2 style="margin:0">Auswertung ${monatsName}</h2>
+        <span class="nicht-drucken zeile" style="margin:0">
+          <button class="knopf klein" id="ausVor">‹ Vormonat</button>
+          <button class="knopf klein" id="ausNach">Folgemonat ›</button>
+          ${Store.state.abgeschlossen[monat]
+            ? `<span class="puls">abgeschlossen am ${
+                new Date(Store.state.abgeschlossen[monat].ts).toLocaleDateString('de-DE')}</span>
+               <button class="knopf klein" id="ausEntsperren">entsperren</button>`
+            : `<button class="knopf klein stark" id="ausAbschluss">Monat abschließen</button>`}
+        </span>
+      </div>
+      <div class="kacheln-stat">
+        ${kachel('Krankenstand', (k.krankQuote*100).toFixed(1).replace('.',',')+' %',
+                 `${k.krank} von ${k.personentage} Diensttagen`)}
+        ${kachel('Wachstärke unterschritten', k.unterQuote>0
+                 ? a.unterschritten.length : '0',
+                 `von ${k.dienstschichten} Schichten`, a.unterschritten.length?'warn':'gut')}
+        ${kachel('Einsätze Terminal 3', k.terminal, 'Diensttage im Monat')}
+        ${kachel('Abstellungen / BSOD', k.abstellungen, 'ausgefüllte Blöcke')}
+      </div>`;
+    const w=$('#ausVor'), n=$('#ausNach');
+    const schieben=m=>{ const d=new Date(monat+'-15T12:00'); d.setMonth(d.getMonth()+m);
+      this.tagSetzen(iso(d)); };
+    if(w) w.onclick=()=>schieben(-1);
+    if(n) n.onclick=()=>schieben(1);
+    const ab=$('#ausAbschluss');   if(ab) ab.onclick=()=>this.abschliessen(monat);
+    const en=$('#ausEntsperren'); if(en) en.onclick=()=>this.entsperren(monat);
+
+    /* Kalenderraster – eine Zeile je Beamter, eine Spalte je Tag */
+    $('#ausTitel').textContent='Monatsübersicht '+monatsName;
+    const tage=[...Array(a.tageImMonat)].map((_,i)=>i+1);
+    const wtag=d=>new Date(`${monat}-${String(d).padStart(2,'0')}T12:00`).getDay();
+    let letzteDg=null;
+    $('#ausKalender').innerHTML = a.zeilen.length ? `
+      <div class="kalender" style="--tage:${a.tageImMonat}">
+        <div class="kal-kopf"><span></span>${tage.map(d=>{
+          const wd=wtag(d);
+          return `<i class="${wd===0||wd===6?'we':''}">${d}</i>`;}).join('')}</div>
+        ${a.zeilen.map(z=>{
+          const neu=z.dg.id!==letzteDg; letzteDg=z.dg.id;
+          return (neu?`<div class="kal-gruppe">${esc(z.dg.name)}</div>`:'')+
+          `<div class="kal-zeile"><span class="kal-name">${esc(z.b.name)}</span>${
+            z.felder.map((f,i)=>{
+              const d=i+1, wd=wtag(d);
+              if(!f) return `<i class="kz frei ${wd===0||wd===6?'we':''}"></i>`;
+              const farbe=ton(f.grund);
+              const titel=`${WD[wd].slice(0,2)} ${String(d).padStart(2,'0')}.${monat.slice(5)}. · `+
+                `${f.sch} · ${f.grund||f.einteilung||'im Dienst'}`+
+                (f.bemerkung?' · '+f.bemerkung:'');
+              return `<i class="kz ${f.grund?'ab':'dienst'}" title="${esc(titel)}"
+                ${farbe?`style="background:${farbe};border-color:${farbe}"`:''}></i>`;
+            }).join('')}</div>`;}).join('')}
+      </div>` : '<p class="merk">Für diesen Monat sind keine Tage erfasst.</p>';
+
+    const vorkommend=Object.entries(a.gruende).sort((x,y)=>y[1]-x[1]);
+    $('#ausLegende').innerHTML = `
+      <span class="lg"><i class="kz dienst"></i> im Dienst</span>
+      <span class="lg"><i class="kz frei"></i> kein Dienst</span>
+      ${vorkommend.map(([g,n])=>`<span class="lg"><i class="kz"
+        style="background:${ton(g)||'var(--grau)'};border-color:${ton(g)||'var(--grau)'}"></i>
+        ${esc(g)} <b>${n}</b></span>`).join('')}`;
+
+    $('#ausUnter').innerHTML = a.unterschritten.length ? `
+      <table class="rot-tab"><thead><tr><th>Tag</th><th>Schicht</th><th>Wache</th>
+        <th>Terminal 3</th></tr></thead><tbody>
+        ${a.unterschritten.map(u=>`<tr><td>${WD[new Date(u.datum+'T12:00').getDay()].slice(0,2)}
+          ${deDate(u.datum)}</td><td>${u.sch}</td>
+          <td class="${u.w.okR?'':'schlecht'}">${u.w.regulaer} / ${u.w.minR}</td>
+          <td class="${u.w.okT?'':'schlecht'}">${u.w.terminal} / ${u.w.minT}</td></tr>`).join('')}
+      </tbody></table>` :
+      '<p class="merk">In diesem Monat wurde die geforderte Wachstärke an keinem Tag unterschritten.</p>';
+  },
+
+  /* ── Monatsabschluss ─────────────────────────────────────────────── */
+  async abschliessen(monat){
+    const tage=Object.keys(Store.state.tage).filter(d=>d.startsWith(monat)).sort();
+    if(!tage.length) return alert('Für diesen Monat ist noch nichts erfasst.');
+    if(Store.state.abgeschlossen[monat]) return alert('Dieser Monat ist bereits abgeschlossen.');
+    if(!confirm(`${tage.length} Tage aus ${monat} archivieren und gegen Änderungen sperren?\n\n`+
+                `Die Dateien werden abgelegt, die Tage bleiben lesbar. `+
+                `Ein Admin kann den Monat wieder entsperren.`)) return;
+    try{
+      this.melden('Monat wird archiviert …');
+      const json=JSON.stringify(this.monatsAuszug(monat),null,1);
+      const html=this.monatsHtml(monat);
+      const wo=await Folder.archivieren(monat,json,html);
+      Store.apply('abgeschlossen.'+monat,
+        {ts:Date.now(), by:Store.state.settings.user||'unbekannt', tage:tage.length});
+      if(Folder.on) await Folder.aufraeumen();
+      this.render();
+      alert(`${monat} ist abgeschlossen.\n\nAbgelegt unter: ${wo}\n`+
+            `${tage.length} Tage sind jetzt gegen Änderungen gesperrt.`);
+    }catch(e){ alert('Der Monatsabschluss ist fehlgeschlagen:\n'+e.message); }
+  },
+  entsperren(monat){
+    if(!['admin','dgl'].includes(Store.state.settings.rolle))
+      return alert('Nur Admin oder DGL können einen abgeschlossenen Monat entsperren.');
+    if(!confirm(`${monat} wieder zur Bearbeitung freigeben?\n`+
+                `Das Archiv bleibt erhalten und wird nicht überschrieben.`)) return;
+    const a={...Store.state.abgeschlossen}; delete a[monat];
+    Store.apply('abgeschlossen', a); this.render();
+    this.melden(monat+' ist wieder bearbeitbar.');
+  },
+  monatsAuszug(monat){
+    const tage=Object.fromEntries(Object.entries(Store.state.tage)
+      .filter(([d])=>d.startsWith(monat)).sort());
+    return {schemaVersion:Store.state.schemaVersion, archiv:{monat,
+        erstellt:new Date().toISOString(), von:Store.state.settings.user||'unbekannt'},
+      meta:Store.state.meta, stammdaten:Store.state.stammdaten,
+      rotation:Store.state.rotation, tage};
+  },
+  /* Druckfertige Ablage: die Seite selbst, auf den Monat eingestellt und ohne
+     Bedienelemente – so bleibt der Ausdruck auch in zehn Jahren möglich.     */
+  monatsHtml(monat){
+    const stand=this.monatsAuszug(monat);
+    /* Steuerelemente entfernen – im Archiv tragen die Druckspiegel (.dw) die
+       Werte. Das macht die Datei statisch und rund fünfzigmal kleiner.       */
+    const statisch = h => h
+      .replace(/<select[\s\S]*?<\/select>/g,'')
+      .replace(/<textarea[\s\S]*?<\/textarea>/g,'')
+      .replace(/<button[\s\S]*?<\/button>/g,'')
+      .replace(/<input\b[^>]*>/g,'');
+    const seiten=Object.keys(stand.tage).sort().map(d=>
+      ['TD','ND'].map(sch=>statisch(this.schichtHtml(d,sch))).join('')).join('');
+    /* Die Druckregeln zusätzlich am Bildschirm gelten lassen – ein Archiv soll
+       aussehen wie der Ausdruck, den es ersetzt.                             */
+    const css=document.querySelector('style').textContent;
+    const i=css.indexOf('@media print{');
+    const druck = i<0 ? '' : css.slice(i+13, css.lastIndexOf('}'));
+    return `<!doctype html><html lang="de"><head><meta charset="utf-8">
+<title>Wachkladde ${monat} — ${esc(Store.state.meta.revier)}</title>
+<style>${css}</style>
+<style>${druck}
+body{background:#fff;padding:6mm}
+.schicht{page-break-after:always;margin-bottom:8mm}
+</style></head>
+<body><main><div class="schichten">${seiten}</div></main>
+<script type="application/json" id="daten">${JSON.stringify(stand)}<\/script>
+</body></html>`;
+  },
+
   /* ── Dienstgruppen ───────────────────────────────────────────────── */
   renderStamm(){
     const darf=['admin','dgl'].includes(Store.state.settings.rolle);
+    const stichtag=Store.state.settings.datum;
     $('#dgListe').innerHTML = Store.state.stammdaten.dienstgruppen.map(dg=>{
-      const man=Logik.nummeriert(dg);
+      const man=Logik.nummeriert(dg, stichtag);
+      const kennung=Object.fromEntries(man.map(b=>[b.id,b.kennung]));
+      const alle=dg.beamte.filter(b=>b.aktiv);
       const inaktiv=dg.beamte.filter(b=>!b.aktiv).length;
+      const spaeter=alle.length-man.length;
       return `<div class="dgkarte" data-dg="${dg.id}">
         <div class="dgkopf">
           <div class="num">${dg.nr}</div>
           <input class="dgname" value="${esc(dg.name)}">
-          <span class="zahl">${man.length} aktiv${inaktiv?` · ${inaktiv} inaktiv`:''}</span>
+          <span class="zahl">${man.length} am ${deDate(stichtag)}${
+            spaeter?` · ${spaeter} außerhalb`:''}${inaktiv?` · ${inaktiv} inaktiv`:''}</span>
         </div>
-        ${man.map(b=>`<div class="mann" data-b="${b.id}">
-          <span class="kenn">${b.kennung}</span>
-          <input data-f="name" value="${esc(b.name)}">
-          <input data-f="amtsbez" value="${esc(b.amtsbez)}">
-          <select data-f="rolle">${[['beamter','Beamter'],['praktikant','Praktikant'],
-            ['dgl','DGL']].map(([r,lab])=>
-            `<option value="${r}"${r===b.rolle?' selected':''}>${lab}</option>`).join('')}</select>
-          <span class="tools"><button class="hoch" title="nach oben">↑</button>
-            <button class="runter" title="nach unten">↓</button>
-            <button class="weg" title="deaktivieren">✕</button></span>
-        </div>`).join('')}
+        ${alle.map(b=>{
+          const gilt=!!kennung[b.id];
+          const zeitraum=[b.aktivVon?'ab '+deDate(b.aktivVon):'',
+                          b.aktivBis?'bis '+deDate(b.aktivBis):''].filter(Boolean).join(' ');
+          return `<div class="mann${gilt?'':' ausserhalb'}" data-b="${b.id}">
+            <span class="kenn">${gilt?kennung[b.id]:'—'}</span>
+            <input data-f="name" value="${esc(b.name)}">
+            <input data-f="amtsbez" value="${esc(b.amtsbez)}">
+            <select data-f="rolle">${[['beamter','Beamter'],['praktikant','Praktikant'],
+              ['dgl','DGL']].map(([r,lab])=>
+              `<option value="${r}"${r===b.rolle?' selected':''}>${lab}</option>`).join('')}</select>
+            <span class="tools">
+              ${zeitraum?`<span class="gueltig" title="Gültigkeit">${esc(zeitraum)}</span>`:''}
+              <button class="hoch" title="nach oben">↑</button>
+              <button class="runter" title="nach unten">↓</button>
+              <button class="versetzen" title="in eine andere Dienstgruppe versetzen">⇄</button>
+              <button class="weg" title="deaktivieren">✕</button></span>
+          </div>`;}).join('')}
         <div class="zeile" style="margin-top:10px">
           <input class="neuName" placeholder="Name des neuen Beamten"
             style="height:30px;padding:0 10px;border-radius:6px;background:var(--bg-3);
@@ -1692,6 +2273,7 @@ const UI = {
           dg.beamte.splice(i+1,0,dg.beamte.splice(i,1)[0]); sichern(); } };
         $('.weg',z).onclick   =()=>{ if(confirm(b.name+' deaktivieren? Vergangene Tage bleiben unverändert.')){
           b.aktiv=false; sichern(); } };
+        $('.versetzen',z).onclick=()=>this.versetzen(dg,b);
       });
     });
 
@@ -1766,6 +2348,28 @@ const UI = {
     $('#stats').textContent=`${tage} erfasste Tage · ${bea} aktive Beamte · `+
       `${Store.pending.length} noch nicht abgeglichene Änderungen · `+
       `${(JSON.stringify(Store.state).length/1024).toFixed(1)} KB auf diesem Rechner`;
+  },
+
+  /* Versetzung: der bisherige Eintrag endet am Vortag, in der Zieldienstgruppe
+     beginnt ein neuer. Bereits erfasste Tage bleiben dadurch unverändert – sie
+     verweisen weiter auf den alten Eintrag.                                     */
+  versetzen(dg,b){
+    const dgs=Store.state.stammdaten.dienstgruppen;
+    const ziele=dgs.filter(d=>d.id!==dg.id).map(d=>`${d.nr} = ${d.name}`).join(', ');
+    const nr=prompt(`${b.name} versetzen nach welcher Dienstgruppe?\n${ziele}`);
+    if(nr===null) return;
+    const ziel=dgs.find(d=>d.nr===+nr);
+    if(!ziel) return alert('Diese Dienstgruppe gibt es nicht.');
+    const ab=prompt('Versetzung gültig ab (JJJJ-MM-TT):', Store.state.settings.datum);
+    if(!ab || !/^\d{4}-\d{2}-\d{2}$/.test(ab)) return alert('Bitte ein Datum wie 2026-09-01 angeben.');
+    const vortag=new Date(ab+'T12:00'); vortag.setDate(vortag.getDate()-1);
+    b.aktivBis = iso(vortag);
+    ziel.beamte.push({id:uid('b'), name:b.name, amtsbez:b.amtsbez, rolle:b.rolle,
+                      aktiv:true, aktivVon:ab, herkunft:b.id});
+    Store.apply('stammdaten.dienstgruppen', dgs);
+    this.render();
+    alert(`${b.name} steht bis ${deDate(b.aktivBis)} in ${dg.name} und ab ${deDate(ab)} in ${ziel.name}.\n`+
+          `Bereits erfasste Tage bleiben unverändert.`);
   },
 
   /* ── Mindestwachstärke ─────────────────────────────────────────────── */
