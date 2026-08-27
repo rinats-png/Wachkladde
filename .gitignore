@@ -1,3 +1,6 @@
 server/data/
 *.xlsm
-wachkladde.json
+/wachkladde.json
+netzordner/daten/ops/*.jsonl
+netzordner/daten/presence/*.json
+netzordner/daten/snapshot.json

@@ -1,0 +1,60 @@
+WACHKLADDE – Kurzanleitung
+==========================
+
+Dieser Ordner enthält alles. Er wird auf das Netzlaufwerk gelegt, in eine
+Freigabe, auf die genau der vorgesehene Personenkreis Zugriff hat.
+
+    \\<Server>\<Freigabe>\Wachkladde\
+        Wachkladde.html      <-- diese Datei öffnen
+        ANLEITUNG.txt        <-- dieser Text
+        daten\               <-- legt die Anwendung selbst an und pflegt sie
+
+
+EINMALIG JE ARBEITSPLATZ (dauert eine halbe Minute)
+---------------------------------------------------
+1. Im Explorer in diesen Ordner wechseln.
+2. Doppelklick auf  Wachkladde.html
+   (Falls sich ein anderer Browser öffnet: Rechtsklick -> Öffnen mit -> Edge.
+    Chrome oder Edge sind erforderlich.)
+3. Oben auf  Einstellungen  klicken.
+4. Ihren Namen eintragen und die Rolle wählen.
+5. Auf  "Ordner verbinden"  klicken.
+6. Im Auswahlfenster GENAU DIESEN Ordner markieren und bestätigen.
+7. Die Rückfrage des Browsers ("Änderungen speichern?") mit
+   "Bearbeiten zulassen" bestätigen.
+
+Fertig. Ab jetzt arbeiten alle Arbeitsplätze, die denselben Ordner
+verbunden haben, gemeinsam an derselben Kladde.
+
+
+TÄGLICHER BETRIEB
+-----------------
+* Wachkladde.html öffnen – der Ordner wird automatisch wieder verbunden.
+  Fragt der Browser nach der Berechtigung, einmal bestätigen.
+* Oben rechts steht der Stand: "Ordner · 14:32:07" bedeutet, dass gerade
+  abgeglichen wurde. "x weitere online" zeigt, wer sonst noch arbeitet.
+* Änderungen werden alle paar Sekunden von selbst übertragen. Es gibt
+  keinen Speichern-Knopf.
+* Zwei Personen können gleichzeitig arbeiten. Bearbeiten beide zufällig
+  dasselbe Feld, gilt der zuletzt eingetragene Wert; beide bekommen dazu
+  einen Hinweis oben in der Kladde eingeblendet.
+* Drucken: Knopf "Drucken / PDF" oben rechts. Eine Seite je Schicht.
+  Für sehr volle Tage vorher "kompakt drucken" ankreuzen.
+
+
+WENN ETWAS NICHT STIMMT
+-----------------------
+"Ordner nicht verbunden"
+    Einstellungen -> "Ordner verbinden" erneut anklicken.
+
+"von diesem Browser nicht unterstützt"
+    Es läuft Firefox oder ein alter Browser. Mit Edge oder Chrome öffnen.
+
+Der Ordner wird mit der Zeit langsam
+    Einstellungen -> "Ordner aufräumen". Fasst den bisherigen Verlauf
+    zusammen. Darf jederzeit gemacht werden, auch wenn andere arbeiten.
+
+Sicherung
+    Einstellungen -> "JSON exportieren" legt eine vollständige Kopie ab.
+    Zusätzlich sichert das normale Laufwerks-Backup den Ordner daten\ mit;
+    darin steht der komplette Änderungsverlauf mit Namen und Uhrzeit.

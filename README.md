@@ -8,20 +8,33 @@ Farbanpassung und verwaltbaren Dienstgruppen.
 
 | Datei | Zweck |
 |---|---|
-| `wachkladde.html` | die komplette Anwendung – eine Datei, keine Abhängigkeiten, offline lauffähig |
+| `netzordner/` | **fertiger Ordner zum Kopieren auf das Netzlaufwerk** – enthält die Anwendung, eine Kurzanleitung und die Datenablage |
+| `wachkladde.html` | Quelldatei der Anwendung (identisch mit `netzordner/Wachkladde.html`) |
 | `server/server.js` | optionaler Sync-Server (Node.js, ohne npm-Pakete, ~110 Zeilen) |
 | `tools/import_xlsm.py` | Migration: liest die vorhandene `.xlsm` und erzeugt `wachkladde.json` |
+| `docs/NETZORDNER.md` | wie der gemeinsame Ordner funktioniert, mit Grenzen |
 | `docs/MIGRATION.md` | Schritt-für-Schritt-Umstellung und Datenschema |
 
 ## Schnellstart
 
-**Variante A – nur ein Rechner (0 Minuten Einrichtung)**
+**Variante A – gemeinsamer Ordner im Netz (empfohlen, kein Server)**
+
+1. Den Ordner `netzordner/` auf das Netzlaufwerk kopieren, z. B. nach
+   `\\<Server>\<Freigabe>\Wachkladde\`.
+2. An jedem Arbeitsplatz `Wachkladde.html` mit **Edge oder Chrome** öffnen.
+3. *Einstellungen → Ordner verbinden* → genau diesen Ordner auswählen → Schreibzugriff erlauben.
+
+Ab dann arbeiten alle gemeinsam. Es läuft kein Dienst, es wird nichts installiert,
+und wer keinen Zugriff auf die Freigabe hat, sieht nichts. Details in
+`netzordner/ANLEITUNG.txt`, Technik in `docs/NETZORDNER.md`.
+
+**Variante B – nur ein Rechner (0 Minuten Einrichtung)**
 
 1. `wachkladde.html` auf den Rechner kopieren, doppelklicken.
 2. Alles wird im Browser gespeichert (localStorage) und überlebt Neustarts.
 3. Weitergabe/Backup über *Einstellungen → Daten → JSON exportieren*.
 
-**Variante B – mehrere Arbeitsplätze (ca. 15 Minuten)**
+**Variante C – eigener Sync-Server (wenn ein Dienst laufen darf)**
 
 ```bash
 node server/server.js --port 8080          # auf einem Rechner der Wache
@@ -39,6 +52,8 @@ python3 tools/import_xlsm.py Wachkladde_08_August_2026.xlsm > wachkladde.json
 ```
 Dann in der Anwendung *Einstellungen → Daten → JSON importieren*.
 
+`tools/paket_bauen.sh` aktualisiert `netzordner/` nach einer Änderung an `wachkladde.html`.
+
 ## Funktionsumfang
 
 - **Tagesansicht** mit Tagdienst und Nachtdienst nebeneinander, Datumsnavigation.
@@ -52,11 +67,17 @@ Dann in der Anwendung *Einstellungen → Daten → JSON importieren*.
 - **Stammdaten**: Beamte je Dienstgruppe anlegen, umsortieren, deaktivieren –
   die Nummerierung ist immer fortlaufend und wird automatisch neu vergeben.
 - **Rollen**: Admin, DGL, Beamter (nur eigene Zeile), Leser.
+- **Gemeinsamer Ordner**: mehrere Arbeitsplätze gleichzeitig ohne Server;
+  Anwesenheitsanzeige, feldgenaue Zusammenführung, sichtbare Konflikthinweise.
 - **Farben** frei konfigurierbar, drei Voreinstellungen.
 - **Druck**: A4 hochkant, eine Seite je Schicht, optional „kompakt".
 
 ## Sicherheitshinweis
 
-Der mitgelieferte Server hat keine Authentifizierung. Er ist für ein geschlossenes
-Dienstnetz gedacht. Für den Produktivbetrieb siehe `docs/MIGRATION.md`,
-Abschnitt „Absicherung".
+Im Ordner-Betrieb ist die Zugriffskontrolle die Freigabe selbst: wer keine
+NTFS-Berechtigung auf den Ordner hat, kommt an nichts heran. Die Rollen in der
+Anwendung sind eine Bedienhilfe, keine Zugriffskontrolle – wer den Ordner
+schreiben darf, kann alles ändern. Das ist bei der heutigen `.xlsm` genauso.
+
+Der mitgelieferte Server (Variante C) hat keine Authentifizierung und ist für ein
+geschlossenes Dienstnetz gedacht; siehe `docs/MIGRATION.md`, Abschnitt „Absicherung".

@@ -18,7 +18,20 @@ dahinter liegt.
 * **Dagegen:** Zusammenführen ist Handarbeit; genau das Problem der heutigen `.xlsm`.
 * **Geeignet für:** Übergangsphase.
 
-## C – Der mitgelieferte Node-Sync-Server ← **Empfehlung**
+## C1 – Gemeinsamer Netzwerkordner, ohne Server ← **Empfehlung**
+
+* **Aufwand:** Ordner auf die Freigabe kopieren, je Arbeitsplatz einmal
+  „Ordner verbinden" klicken. Keine Installation, kein Dienst, keine Datenbank.
+* **Dafür:** echter Mehrbenutzerbetrieb; Zugriffskontrolle ist die vorhandene
+  Freigabeberechtigung; das Laufwerks-Backup sichert alles mit; vollständiges
+  Änderungsprotokoll mit Namen und Uhrzeit; funktioniert offline weiter und
+  gleicht später ab.
+* **Dagegen:** setzt Chrome oder Edge voraus; Abgleich im Sekundentakt statt
+  sofort; wer den Ordner schreiben darf, darf alles ändern.
+* **Geeignet für:** genau diesen Fall – eine Freigabe, ein fester Personenkreis.
+* Technik und Grenzen: `docs/NETZORDNER.md`.
+
+## C2 – Der mitgelieferte Node-Sync-Server
 
 * **Aufwand:** ~15 Minuten. `node server/server.js`, ein freier Port, fertig.
   Keine npm-Pakete, keine Datenbank, eine Datei als Speicher.
@@ -57,9 +70,12 @@ dahinter liegt.
 
 ## Empfehlung
 
-**A für den Pilotbetrieb, C für den Regelbetrieb.** Der Wechsel von A nach C ist
-ein Häkchen in den Einstellungen – das Datenformat ist identisch, die lokal
-angefallenen Änderungen werden beim ersten Sync hochgeschoben. Wenn später eine
-formale Benutzerverwaltung gefordert wird, ersetzt E den Server, ohne dass die
-Oberfläche angefasst werden muss: auszutauschen ist allein das Objekt `Sync`
-in `wachkladde.html` (rund 40 Zeilen).
+**C1 – der gemeinsame Netzwerkordner.** Er löst genau das gestellte Problem: einen
+Ordner ablegen, Zugriff über die vorhandene Freigabe steuern, alle arbeiten
+gleichzeitig darin. Kein Dienst, den jemand am Laufen halten muss, kein Ticket bei
+der IT, kein zusätzliches System im Netz.
+
+C2 (eigener Server) wird erst interessant, wenn Arbeitsplätze außerhalb der
+Freigabe dazukommen, wenn Firefox unterstützt werden muss oder wenn eine
+Anmeldung formal gefordert ist. Der Wechsel ist eine Umstellung in den
+Einstellungen – das Datenformat ist in allen Varianten dasselbe.
