@@ -74,9 +74,16 @@ SUCHEN, KORRIGIEREN, AUSWERTEN
   auf das  +  hinter dem Namen klicken - darunter erscheint eine zweite
   Zeile mit eigener Uhrzeit und eigenem Status. Die Spalte ZEIT nimmt
   Beginn und Ende auf.
-* Reiter AUSWERTUNG: Monatsuebersicht mit einer Zeile je Beamter, dazu
-  Krankenstand, unterschrittene Wachstaerken und Abstellungsaufkommen.
-  Laesst sich ebenfalls drucken.
+* Reiter AUSWERTUNG, oben: Beamten und Grund waehlen (Vorgabe: Krank).
+  Dann steht dort, wie oft im laufenden Monat, in den letzten 3 und 6
+  Monaten, im laufenden Jahr und im Vorjahr. Klick auf eine Zahl zeigt die
+  einzelnen Tage mit Wochentag; Klick auf einen Tag springt in die Kladde.
+  Darunter die Monatsuebersicht mit einer Zeile je Beamter sowie
+  unterschrittene Wachstaerken und Abstellungsaufkommen. Auch druckbar.
+* Terminal 3: Wer oben in der Liste "Terminal 3" als Abwesenheit bekommt,
+  erscheint unten im Block "Wache Terminal 3" von selbst unter "noch offen".
+  Mit den Pfeilen am Namen auf L-Wache, Wache oder Streife schieben.
+  Nimmt man den Grund zurueck, verschwindet der Name wieder.
 
 MONATSABSCHLUSS
 ---------------

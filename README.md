@@ -92,14 +92,21 @@ Dann in der Anwendung *Einstellungen → Daten → JSON importieren*.
   welche als Terminal-3-Besetzung zählen, ist frei einstellbar.
 - **Tastatur**: ← → wechselt den Tag, `t` springt auf heute, `/` öffnet die Suche,
   Strg+Z macht rückgängig, Strg+Y wiederholt.
-- **Auswertung**: Monatsübersicht als Kalenderraster (eine Zeile je Beamter, eine
-  Spalte je Tag), Krankenstand, unterschrittene Wachstärken, Terminal-3-Einsätze
-  und Abstellungsaufkommen — auch ausdruckbar.
+- **Auswertung**: Fehlzeiten je Beamter — einen Namen und einen Grund wählen und
+  ablesen, wie oft im laufenden Monat, in den letzten 3 und 6 Monaten, im laufenden
+  Jahr und im Vorjahr. Ein Klick auf eine Zahl listet die einzelnen Tage mit
+  Wochentag auf. Dazu Monatsübersicht als Kalenderraster, unterschrittene
+  Wachstärken, Terminal-3-Einsätze und Abstellungsaufkommen — auch ausdruckbar.
 - **Monatsabschluss**: legt den Monat als JSON und als eigenständige, druckfertige
   HTML im Archiv des Netzordners ab, verdichtet den Ordner und sperrt die Tage
   gegen Änderungen. Admin und DGL können wieder entsperren.
 - **Zeiträume je Zeile**: optionale Uhrzeit von–bis, dazu Folgeeinträge für einen
   Statuswechsel im Dienst („bis 12:00 Wache, danach BSOD").
+- **Terminal 3 füllt sich selbst**: wer als Abwesenheit einen Terminal-3-Grund
+  bekommt, erscheint automatisch im Block „Wache Terminal 3" unter *noch offen*.
+  Von dort lassen sich die Namen mit ↑ ↓ auf L-Wache, Wache und Streife verteilen.
+  Nimmt man den Grund zurück, verschwindet der Name wieder — von Hand gesetzte
+  Namen bleiben unberührt.
 - **Versetzung**: ein Beamter kann zum Stichtag in eine andere Dienstgruppe
   wechseln; bereits erfasste Tage bleiben unverändert.
 - **Suche** über alle erfassten Tage nach Namen, mit Sprung zum Tag.

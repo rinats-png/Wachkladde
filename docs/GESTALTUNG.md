@@ -98,6 +98,14 @@ Feldnamen; die Grundfarbe je Blockart steht in den Einstellungen, einzelne Blöc
 lassen sich davon abweichend färben — etwa um eine Lage über mehrere Tage
 wiederzuerkennen.
 
+Dieser eine Block führt statt freier Textfelder **Namensplätze**: L-Wache, Wache und
+Streife nehmen Namen als Plaketten auf. Wer oben in der Dienstliste einen
+Terminal-3-Grund bekommt, erscheint hier automatisch unter *noch offen* und wird mit
+↑ ↓ auf seinen Platz geschoben. Das ist der eine Ort, an dem dieselbe Information
+zweimal gebraucht wird — oben als Status, unten als Besetzung —, und genau deshalb
+soll sie nur einmal eingetragen werden. Automatisch gesetzte Namen merkt sich der
+Block: fällt der Grund weg, verschwinden sie wieder; von Hand eingetragene bleiben.
+
 **Fehlende Beamte** dimmen ab, bekommen eine farbige Kante links und einen sanften
 Farbverlauf über die Zeile. Anwesende bleiben kräftig. Der Blick landet zuerst auf dem,
 was da ist.
@@ -136,9 +144,22 @@ Excel-Vorlage druckte auf 49 % skaliert.
 Die Kladde hat jetzt Daten, die sich auswerten lassen — das war das stärkste
 Argument gegen das Tabellenblatt, und es wäre schade, es liegen zu lassen.
 
-**Vier Kennzahlen als Kacheln**, nicht als Diagramm: Krankenstand, unterschrittene
-Wachstärken, Terminal-3-Einsätze, Abstellungen. Vier Zahlen sind vier Zahlen; ein
-Balkendiagramm mit vier Balken wäre Dekoration. Nur die Wachstärke-Kachel wird
+**Fehlzeiten fragt man über eine Person, nicht über eine Quote.** Ein Krankenstand
+von „4,3 %" beantwortet keine Frage, die auf einer Wache gestellt wird. Gefragt wird:
+*Wie oft war Ibel krank?* Also: Namen wählen, Grund wählen — und fünf Zahlen
+nebeneinander für laufenden Monat, letzte 3 Monate, letzte 6 Monate, laufendes Jahr
+und Vorjahr. Jede Zahl trägt ihren Zeitraum als Kürzel unter sich, damit „letzte 3
+Monate" nicht ausgelegt werden muss. Ein Klick auf eine Zahl klappt die einzelnen
+Tage auf, mit Wochentag, Schicht und Bemerkung; ein Klick auf einen Tag springt in
+die Kladde. Zahlen ohne Treffer sind nicht anklickbar und bleiben grau — es gibt
+nichts aufzuklappen.
+
+Gesucht wird über den **Namen**, nicht über die interne Kennung: nach einer
+Versetzung gibt es zwei Einträge für dieselbe Person, und beide sollen zählen.
+
+**Drei weitere Kennzahlen als Kacheln**, nicht als Diagramm: unterschrittene
+Wachstärken, Terminal-3-Einsätze, Abstellungen. Drei Zahlen sind drei Zahlen; ein
+Balkendiagramm mit drei Balken wäre Dekoration. Nur die Wachstärke-Kachel wird
 farbig, und nur dann, wenn etwas zu sehen ist.
 
 **Die Monatsübersicht ist ein Kalenderraster**: eine Zeile je Beamter, eine Spalte

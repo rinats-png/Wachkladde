@@ -298,6 +298,22 @@ tr.fehlt td:first-child{box-shadow:inset 2px 0 0 var(--ton,var(--grau))}
 .feldzeile input:hover{background:var(--bg-3)}
 .feldzeile input:focus{background:var(--bg-3);border-color:var(--line-2)}
 
+.feldzeile.posten{align-items:start}
+.feldzeile.posten label{padding-top:4px}
+.namen{display:flex;flex-wrap:wrap;gap:4px;min-height:23px;align-items:center}
+.namechip{display:inline-flex;align-items:center;gap:2px;padding:2px 4px 2px 8px;
+  border-radius:99px;font-size:11.5px;font-weight:600;
+  background:color-mix(in srgb,var(--akz,var(--grau)) 13%,transparent);
+  color:var(--akz,var(--txt-2));
+  border:1px solid color-mix(in srgb,var(--akz,var(--grau)) 30%,transparent)}
+.nc-tools{display:inline-flex;gap:1px;opacity:0;transition:opacity .15s}
+.namechip:hover .nc-tools{opacity:1}
+.nc-tools button{width:15px;height:15px;border-radius:4px;font-size:10px;line-height:1;
+  color:inherit}
+.nc-tools button:hover:not(:disabled){background:color-mix(in srgb,var(--akz) 22%,transparent)}
+.nc-tools button:disabled{opacity:.25;cursor:default}
+.leerplatz{color:var(--txt-3);font-size:11.5px}
+
 .notiz{
   width:100%;min-height:78px;padding:11px 12px;border-radius:var(--r-m);resize:vertical;
   background:var(--bg-2);border:1px solid var(--line);font-size:12.5px;line-height:1.55;
@@ -459,6 +475,38 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
 .haken:hover{background:var(--bg-3)}
 .haken.an{color:var(--txt)}
 .haken input{width:14px;height:14px;accent-color:var(--td);cursor:pointer}
+
+/* ── Fehlzeiten je Beamter ────────────────────────────────────────── */
+.fenster{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;
+  margin:16px 0 4px}
+.fkachel{display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+  padding:12px 14px 13px;border-radius:var(--r-m);border:1px solid var(--line);
+  background:var(--bg-2);text-align:left;transition:.16s var(--ease)}
+.fkachel:not(:disabled):hover{border-color:var(--line-2);transform:translateY(-1px)}
+.fkachel:disabled{opacity:.55;cursor:default}
+.fk-titel{font-size:11.5px;color:var(--txt-2)}
+.fk-wert{font-size:32px;line-height:1.05;font-weight:600;color:var(--txt);
+  letter-spacing:-.02em}
+.fkachel:not(:disabled) .fk-wert{color:var(--rot)}
+.fk-raum{font-size:10.5px;color:var(--txt-3);font-family:var(--f-mono)}
+.fkachel.offen{border-color:var(--txt);background:var(--bg-3)}
+
+.fliste{margin-top:14px;border:1px solid var(--line);border-radius:var(--r-m);
+  background:var(--bg-2);overflow:hidden}
+.fl-kopf{display:flex;justify-content:space-between;padding:8px 13px;font-size:11.5px;
+  color:var(--txt-2);background:var(--bg-3);border-bottom:1px solid var(--line)}
+.fl-kopf span{color:var(--txt-3)}
+.fl-zeile{display:grid;grid-template-columns:96px 96px 108px 1fr;gap:10px;width:100%;
+  text-align:left;padding:5px 13px;font-size:12.5px;color:var(--txt-2);
+  border-bottom:1px solid color-mix(in srgb,var(--line) 50%,transparent)}
+.fl-zeile:last-child{border-bottom:0}
+.fl-zeile:hover{background:var(--bg-3);color:var(--txt)}
+.fl-wt{font-weight:600;color:var(--txt)}
+.fl-wt.we{color:var(--rot)}
+.fl-datum{font-size:12px}
+.fl-sch{font-size:11px;color:var(--txt-3)}
+.fl-bem{font-size:11.5px;color:var(--txt-3);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
 
 /* ── Auswertung ───────────────────────────────────────────────────── */
 .kacheln-stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px;
@@ -629,6 +677,11 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
   .feldzeile{grid-template-columns:52px 1fr;gap:0 1.5mm;padding:0}
   .feldzeile label{color:#333;font-size:6.6pt}
   .feldzeile .dw{border-bottom:.25pt solid #bbb;min-height:2.9mm}
+  .namen{gap:0;min-height:0;display:block}
+  .namechip{background:none!important;border:0!important;padding:0;font-weight:400;
+    color:#000!important;font-size:7.4pt}
+  .namechip:not(:last-child)::after{content:", "}
+  .feldzeile.posten .namen{border-bottom:.25pt solid #bbb;min-height:2.9mm}
   span.notizwert{display:block;border:.4pt solid #000;padding:1.2mm 1.6mm;min-height:12mm;
     white-space:pre-wrap;overflow-wrap:anywhere;font-size:7.6pt}
   .bestand{border:.4pt solid #666;border-radius:0;background:#fff}
@@ -694,6 +747,7 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
   </section>
 
   <section id="ansicht-auswertung" hidden>
+    <div class="karte" id="ausPerson"></div>
     <div class="karte" id="ausKopf"></div>
     <div class="karte">
       <h2 id="ausTitel">Monatsübersicht</h2>
@@ -924,7 +978,8 @@ function emptySchicht(datum,schicht,dgNr){
 }
 const ABST_VORLAGEN = [
   {titel:'Wache Terminal 3', farbe:'#c2410c',
-   felder:['Anlass','Beamte','L- Wache','Wache','Streife']},
+   felder:['Anlass','Beamte','L- Wache','Wache','Streife'],
+   posten:['L- Wache','Wache','Streife']},   /* Namensplätze statt freier Felder */
   {titel:'Abstellung / BSOD', farbe:'#b45309',
    felder:['Anlass','Bea.','Name','MOZ','Dienstanz.','bes. FEM']}
 ];
@@ -999,11 +1054,24 @@ const Store = {
     (sd.abstVorlagen||[]).forEach((v,i)=>{
       if(i===0 && /Wachbesetzung/.test(v.titel||'')) v.titel='Wache Terminal 3';
       if(!v.farbe) v.farbe = ABST_VORLAGEN[Math.min(i,1)].farbe;
+      if(v.titel==='Wache Terminal 3' && !v.posten)
+        v.posten=(v.felder||[]).filter(f=>!['Anlass','Beamte'].includes(f));
     });
     for(const tag of Object.values(st.tage||{}))
       for(const sch of Object.values(tag||{}))
         (sch.abstellungen||[]).forEach(a=>{
           if(a.titel && /Wachbesetzung/.test(a.titel)) a.titel='Wache Terminal 3';
+          /* Freitext der Namensplätze in eine echte Liste überführen */
+          const v=Logik.abstVorlage(a, sd.abstVorlagen);
+          if(v?.posten && !a.posten){
+            a.posten={_offen:[]};
+            for(const pos of v.posten){
+              a.posten[pos]=String((a.werte||{})[pos]||'')
+                .split(/[\/,|]/).map(x=>x.trim()).filter(Boolean);
+              if(a.werte) delete a.werte[pos];      /* der Freitext ist jetzt Liste */
+            }
+            a.auto=[];
+          }
         });
   },
   save(){ clearTimeout(this._t); this._t=setTimeout(()=>{
@@ -1409,6 +1477,54 @@ const Logik = {
   /* fortlaufende Nummerierung: gültige Beamte 1..n, Reihenfolge = Listenreihenfolge */
   nummeriert(dg, datum){ let n=0; return (dg?.beamte||[]).filter(b=>this.gilt(b,datum))
       .map(b=>({...b, nr:++n, kennung:dg.nr+'-'+n})) },
+  /* Zu welcher Vorlage gehört ein Abstellungsblock? */
+  abstVorlage(a, vorlagen){
+    const V = vorlagen || Store.state.stammdaten.abstVorlagen || ABST_VORLAGEN;
+    if(a.titel) return V.find(x=>x.titel===a.titel) || null;
+    return V[a.vorlage] ?? null;
+  },
+  /* Wer heute mit einem Terminal-3-Grund geführt ist, gehört in den
+     Terminal-3-Block. Automatisch Eingetragene werden vermerkt, damit sie
+     wieder verschwinden, wenn der Grund entfällt – von Hand gesetzte Namen
+     bleiben unangetastet.                                                    */
+  t3Abgleich(datum, sch){
+    const s=this.schicht(datum,sch);
+    const W=Store.state.stammdaten.wachstaerke||WACHSTAERKE_VORGABE;
+    const t3=new Set(W.terminalGruende||[]);
+    const idx=(s.abstellungen||[]).findIndex(a=>this.abstVorlage(a)?.posten?.length);
+    if(idx<0) return false;
+    const a=structuredClone(s.abstellungen[idx]);
+    const vorl=this.abstVorlage(a);
+    a.posten = a.posten || Object.fromEntries([...vorl.posten,'_offen'].map(k=>[k,[]]));
+    for(const k of [...vorl.posten,'_offen']) a.posten[k]=a.posten[k]||[];
+    a.auto = a.auto || [];
+
+    const dg=this.dgByNr(s.dgNr);
+    const soll=[];
+    for(const b of this.nummeriert(dg,datum))
+      if(t3.has((s.einteilungen[b.id]||{}).abwesenheit)) soll.push(b.name);
+    for(const e of (s.ergaenzung?.eintraege||[]))
+      if(e.name && t3.has(e.abwesenheit)) soll.push(e.name);
+
+    const sollSet=new Set(soll);
+    let geaendert=false;
+    /* nicht mehr zugeteilte automatische Einträge entfernen */
+    for(const k of Object.keys(a.posten)){
+      const vor=a.posten[k].length;
+      a.posten[k]=a.posten[k].filter(n=>!(a.auto.includes(n) && !sollSet.has(n)));
+      if(a.posten[k].length!==vor) geaendert=true;
+    }
+    /* neue aufnehmen, sofern sie nirgends schon stehen */
+    const vorhanden=new Set(Object.values(a.posten).flat());
+    for(const n of soll) if(!vorhanden.has(n)){ a.posten._offen.push(n); vorhanden.add(n);
+      geaendert=true; }
+    const neuAuto=[...new Set(soll)];
+    if(JSON.stringify(neuAuto)!==JSON.stringify(a.auto)){ a.auto=neuAuto; geaendert=true; }
+    if(!geaendert) return false;
+    Store.apply(`tage.${datum}.${sch}.abstellungen.${idx}`, a);
+    return true;
+  },
+
   /* Monatsabschluss */
   abgeschlossen(datum){ return (Store.state.abgeschlossen||{})[String(datum).slice(0,7)]||null },
   schicht(datum,schicht){
@@ -1498,6 +1614,63 @@ const Logik = {
             kennzahlen:{personentage, krank, terminal, abstellungen, dienstschichten,
               krankQuote: personentage ? krank/personentage : 0,
               unterQuote: dienstschichten ? unterschritten.length/dienstschichten : 0}};
+  },
+
+  /* Alle Tage, an denen ein Beamter mit einem bestimmten Grund geführt ist.
+     Gesucht wird über den Namen, nicht über die id – nach einer Versetzung
+     gibt es zwei Einträge für dieselbe Person, und beide sollen zählen.     */
+  fehltage(name, grund, vonDatum, bisDatum){
+    const treffer=[];
+    for(const [datum,tag] of Object.entries(Store.state.tage)){
+      if(datum<vonDatum || datum>bisDatum) continue;
+      for(const sch of ['TD','ND']){
+        const s=tag[sch]; if(!s) continue;
+        const dg=this.dgByNr(s.dgNr);
+        for(const b of this.nummeriert(dg,datum)){
+          if(b.name!==name) continue;
+          const e=(s.einteilungen||{})[b.id]||{};
+          if(e.abwesenheit===grund)
+            treffer.push({datum, sch, bemerkung:e.bemerkung||''});
+        }
+        for(const e of (s.ergaenzung?.eintraege||[]))
+          if(e.name===name && e.abwesenheit===grund)
+            treffer.push({datum, sch, bemerkung:e.bemerkung||'', erg:true});
+      }
+    }
+    return treffer.sort((a,b)=>a.datum<b.datum?-1:1);
+  },
+  /* Die fünf Zeitfenster, bezogen auf einen Stichtag. */
+  zeitfenster(stichtag){
+    const d=new Date(stichtag+'T12:00'), j=d.getFullYear(), m=d.getMonth();
+    const ersterVon=(jahr,monat)=>`${jahr}-${String(monat+1).padStart(2,'0')}-01`;
+    const letzterVon=(jahr,monat)=>iso(new Date(jahr,monat+1,0,12));
+    const spanne=(zurueck)=>{
+      const a=new Date(j,m-zurueck+1,1,12);
+      return {von:ersterVon(a.getFullYear(),a.getMonth()), bis:letzterVon(j,m)};
+    };
+    const MON=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    const kurz=x=>{ const d=new Date(x+'T12:00');
+      return MON[d.getMonth()]+' '+String(d.getFullYear()).slice(2); };
+    const f=[];
+    const mon=spanne(1);
+    f.push({id:'monat', titel:'Laufender Monat', ...mon, zeitraum:kurz(mon.von)});
+    const d3=spanne(3);
+    f.push({id:'m3', titel:'Letzte 3 Monate', ...d3, zeitraum:`${kurz(d3.von)} – ${kurz(d3.bis)}`});
+    const d6=spanne(6);
+    f.push({id:'m6', titel:'Letzte 6 Monate', ...d6, zeitraum:`${kurz(d6.von)} – ${kurz(d6.bis)}`});
+    f.push({id:'jahr', titel:'Laufendes Jahr', von:`${j}-01-01`, bis:`${j}-12-31`, zeitraum:String(j)});
+    f.push({id:'vorjahr', titel:'Vorjahr', von:`${j-1}-01-01`, bis:`${j-1}-12-31`,
+            zeitraum:String(j-1)});
+    return f;
+  },
+  /* Alle Namen, die überhaupt in Dienstgruppen geführt werden – einmal je Name. */
+  alleNamen(){
+    const m=new Map();
+    for(const dg of Store.state.stammdaten.dienstgruppen)
+      for(const b of dg.beamte)
+        if(b.aktiv && !m.has(b.name)) m.set(b.name, dg);
+    return [...m.entries()].map(([name,dg])=>({name,dg}))
+      .sort((a,b)=> a.dg.nr-b.dg.nr || a.name.localeCompare(b.name,'de'));
   },
 
   darfBearbeiten(beamtId){
@@ -1858,19 +2031,39 @@ const UI = {
 
     const VOR=Store.state.stammdaten.abstVorlagen||ABST_VORLAGEN;
     const abst = s.abstellungen.map((a,i)=>{
-      const v=(a.felder&&a.felder.length) ? {titel:a.titel||'Abstellung',felder:a.felder}
-                                          : (VOR[a.vorlage] || VOR[VOR.length-1]);
-      const leer=!v.felder.some(f=>((a.werte||{})[f]||'').trim());
-      /* Grundfarbe kommt aus der gleichnamigen Vorlage, der Block darf abweichen */
-      const f=a.farbe || v.farbe || (VOR.find(x=>x.titel===v.titel)||{}).farbe || '';
+      /* Ein Block aus dem Excel-Import bringt eigene Feldnamen mit, erbt aber alles
+         Weitere (Farbe, Namensplätze) von der gleichnamigen Vorlage.            */
+      const vorl = Logik.abstVorlage(a) || VOR[VOR.length-1];
+      const v = {titel:  a.titel || vorl.titel,
+                 felder: (a.felder&&a.felder.length) ? a.felder : vorl.felder,
+                 posten: vorl.posten || []};
+      const f = a.farbe || vorl.farbe || '';
+      const leer = !v.felder.some(x=>((a.werte||{})[x]||'').trim())
+                && !Object.values(a.posten||{}).flat().length;
       return `<div class="kachel${leer?' leer':''}" data-abst="${i}"
                    ${f?`style="--akz:${f}"`:''}>
         <div class="kt"><button class="tupfer nicht-drucken" data-farbwahl="abst:${i}"
             style="background:${f||'transparent'}" title="Farbe dieses Blocks wählen"></button>
           <span>${esc(v.titel)}</span></div>
-        ${v.felder.map(f=>`<div class="feldzeile"><label>${esc(f)}</label>
+        ${v.felder.filter(f=>!(v.posten||[]).includes(f)).map(f=>
+          `<div class="feldzeile"><label>${esc(f)}</label>
           <span><input data-fk="${esc(f)}" value="${esc((a.werte||{})[f]||'')}"
             >${dw((a.werte||{})[f])}</span></div>`).join('')}
+        ${(v.posten||[]).length ? (()=>{
+          const P=a.posten||{}, plaetze=[...v.posten,'_offen'];
+          return plaetze.map((pos,pi)=>{
+            const namen=P[pos]||[];
+            if(pos==='_offen' && !namen.length) return '';
+            return `<div class="feldzeile posten"><label>${
+              pos==='_offen'?'noch offen':esc(pos)}</label>
+              <span class="namen">${namen.map(n=>`<span class="namechip" data-pos="${esc(pos)}"
+                data-name="${esc(n)}">${esc(n)}<span class="nc-tools nicht-drucken">
+                  <button class="nc-hoch" title="eine Position nach oben"${
+                    pi===0?' disabled':''}>↑</button>
+                  <button class="nc-runter" title="eine Position nach unten"${
+                    pi===plaetze.length-1?' disabled':''}>↓</button></span></span>`).join('')
+                || '<span class="leerplatz">—</span>'}</span></div>`;
+          }).join(''); })() : ''}
       </div>`;
     }).join('');
 
@@ -1977,6 +2170,7 @@ const UI = {
       $$('[data-f]',tr).forEach(el=>el.onchange=()=>{
         if(!Logik.darfBearbeiten(id)){ alert('Für diese Zeile fehlt die Berechtigung.'); this.render(); return; }
         setz(`einteilungen.${id}.${el.dataset.f}`, el.value);
+        if(/abwesenheit$/.test(el.dataset.f)) Logik.t3Abgleich(datum,sch);
         this.render();
       });
       const fn=$('.fneu',tr); if(fn) fn.onclick=()=>{
@@ -1993,7 +2187,8 @@ const UI = {
     });
     $$('.tb-erg tr[data-erg]',k).forEach(tr=>$$('[data-f]',tr).forEach(el=>el.onchange=()=>{
       setz(`ergaenzung.eintraege.${tr.dataset.erg}.${el.dataset.f}`, el.value);
-      if(el.dataset.f==='abwesenheit') this.render();
+      if(el.dataset.f==='abwesenheit'){ Logik.t3Abgleich(datum,sch); this.render(); }
+      if(el.dataset.f==='name') Logik.t3Abgleich(datum,sch);
     }));
     $$('.tb-lehr tr',k).forEach(tr=>$$('[data-f]',tr).forEach(el=>el.onchange=()=>
       setz(`lehrgaenge.${tr.dataset.lehr}.${el.dataset.f}`, el.value)));
@@ -2017,6 +2212,25 @@ const UI = {
         setz(`abstellungen.${i}.farbe`, wert); this.render();
       });
       e.stopPropagation();
+    });
+    $$('.namechip',k).forEach(chip=>{
+      const i=+chip.closest('[data-abst]').dataset.abst;
+      const schieben=richtung=>{
+        const s2=Logik.schicht(datum,sch);
+        const a=structuredClone(s2.abstellungen[i]);
+        const v=Logik.abstVorlage(a); if(!v?.posten?.length) return;
+        const plaetze=[...v.posten,'_offen'];
+        const von=chip.dataset.pos, name=chip.dataset.name;
+        const ziel=plaetze[plaetze.indexOf(von)+richtung];
+        if(!ziel) return;
+        a.posten=a.posten||{};
+        a.posten[von]=(a.posten[von]||[]).filter(n=>n!==name);
+        a.posten[ziel]=[...(a.posten[ziel]||[]), name];
+        setz('abstellungen.'+i, a); this.render();
+      };
+      const h=$('.nc-hoch',chip), r=$('.nc-runter',chip);
+      if(h) h.onclick=e=>{ e.stopPropagation(); schieben(-1); };
+      if(r) r.onclick=e=>{ e.stopPropagation(); schieben(1); };
     });
     const an=$('.abstNeu',k); if(an) an.onclick=()=>{
       const l=Logik.schicht(datum,sch).abstellungen.slice();
@@ -2051,8 +2265,66 @@ const UI = {
       : '<span class="merk">Zurzeit arbeitet niemand sonst im Ordner.</span>';
   },
 
+  /* ── Fehlzeiten eines Beamten ────────────────────────────────────── */
+  renderPerson(){
+    const st = Store.state.settings;
+    const namen = Logik.alleNamen();
+    const gruende = (Store.state.stammdaten.listen.abwesenheit||[]).filter(Boolean);
+    const gewaehlt = st.ausName || (namen[0]?.name || '');
+    const grund    = st.ausGrund || 'Krank';
+    const stichtag = st.datum;
+    const fenster  = Logik.zeitfenster(stichtag);
+    const daten    = fenster.map(f=>({...f, treffer:Logik.fehltage(gewaehlt,grund,f.von,f.bis)}));
+    const offen    = st.ausFenster || '';
+
+    $('#ausPerson').innerHTML = `
+      <div class="zeile" style="align-items:flex-end;gap:14px">
+        <label class="feld"><span>Beamter</span>
+          <select id="pName">${namen.map(n=>
+            `<option${n.name===gewaehlt?' selected':''}>${esc(n.name)}</option>`).join('')}</select></label>
+        <label class="feld"><span>Grund</span>
+          <select id="pGrund">${gruende.map(g=>
+            `<option${g===grund?' selected':''}>${esc(g)}</option>`).join('')}</select></label>
+        <span class="merk" style="padding-bottom:9px">Stichtag ${deDate(stichtag)}
+          — die Zeiträume rechnen von diesem Tag zurück.</span>
+      </div>
+
+      <div class="fenster">
+        ${daten.map(f=>`<button class="fkachel${f.id===offen?' offen':''}" data-f="${f.id}"
+            ${f.treffer.length?'':'disabled'}>
+          <span class="fk-titel">${f.titel}</span>
+          <span class="fk-wert">${f.treffer.length}</span>
+          <span class="fk-raum">${f.zeitraum}</span>
+        </button>`).join('')}
+      </div>
+
+      ${offen ? (()=>{
+        const f=daten.find(x=>x.id===offen);
+        return `<div class="fliste">
+          <div class="fl-kopf">${esc(gewaehlt)} · ${esc(grund)} · ${f.titel}
+            <span>${f.treffer.length} ${f.treffer.length===1?'Tag':'Tage'}</span></div>
+          ${f.treffer.map(t=>{
+            const wd=new Date(t.datum+'T12:00').getDay();
+            return `<button class="fl-zeile" data-datum="${t.datum}">
+              <span class="fl-wt${wd===0||wd===6?' we':''}">${WD[wd]}</span>
+              <span class="fl-datum mono">${deDate(t.datum)}</span>
+              <span class="fl-sch">${t.sch}${t.erg?' · Ergänzung':''}</span>
+              <span class="fl-bem">${esc(t.bemerkung)}</span></button>`;}).join('')}
+        </div>`; })() : '<p class="merk">Auf eine Zahl klicken, um die einzelnen Tage zu sehen.</p>'}`;
+
+    $('#pName').onchange =e=>{ Store.apply('settings.ausName',e.target.value,true);
+      Store.apply('settings.ausFenster','',true); this.render(); };
+    $('#pGrund').onchange=e=>{ Store.apply('settings.ausGrund',e.target.value,true);
+      Store.apply('settings.ausFenster','',true); this.render(); };
+    $$('#ausPerson .fkachel').forEach(b=>b.onclick=()=>{
+      Store.apply('settings.ausFenster', b.dataset.f===offen?'':b.dataset.f, true);
+      this.render(); });
+    $$('#ausPerson .fl-zeile').forEach(b=>b.onclick=()=>this.tagSetzen(b.dataset.datum));
+  },
+
   /* ── Auswertung ──────────────────────────────────────────────────── */
   renderAuswertung(){
+    this.renderPerson();
     const monat=Store.state.settings.datum.slice(0,7);
     const a=Logik.auswertung(monat);
     const k=a.kennzahlen;
@@ -2076,13 +2348,12 @@ const UI = {
         </span>
       </div>
       <div class="kacheln-stat">
-        ${kachel('Krankenstand', (k.krankQuote*100).toFixed(1).replace('.',',')+' %',
-                 `${k.krank} von ${k.personentage} Diensttagen`)}
         ${kachel('Wachstärke unterschritten', k.unterQuote>0
                  ? a.unterschritten.length : '0',
                  `von ${k.dienstschichten} Schichten`, a.unterschritten.length?'warn':'gut')}
         ${kachel('Einsätze Terminal 3', k.terminal, 'Diensttage im Monat')}
         ${kachel('Abstellungen / BSOD', k.abstellungen, 'ausgefüllte Blöcke')}
+        ${kachel('Diensttage erfasst', k.personentage, `in ${k.dienstschichten} Schichten`)}
       </div>`;
     const w=$('#ausVor'), n=$('#ausNach');
     const schieben=m=>{ const d=new Date(monat+'-15T12:00'); d.setMonth(d.getMonth()+m);
