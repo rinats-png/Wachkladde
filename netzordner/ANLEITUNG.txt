@@ -10,21 +10,37 @@ Freigabe, auf die genau der vorgesehene Personenkreis Zugriff hat.
         daten\               <-- legt die Anwendung selbst an und pflegt sie
 
 
-EINMALIG JE ARBEITSPLATZ (dauert eine halbe Minute)
----------------------------------------------------
-1. Im Explorer in diesen Ordner wechseln.
-2. Doppelklick auf  Wachkladde.html
-   (Falls sich ein anderer Browser öffnet: Rechtsklick -> Öffnen mit -> Edge.
-    Chrome oder Edge sind erforderlich.)
-3. Oben auf  Einstellungen  klicken.
-4. Ihren Namen eintragen und die Rolle wählen.
-5. Auf  "Ordner verbinden"  klicken.
-6. Im Auswahlfenster GENAU DIESEN Ordner markieren und bestätigen.
-7. Die Rückfrage des Browsers ("Änderungen speichern?") mit
-   "Bearbeiten zulassen" bestätigen.
+WICHTIG: NICHT PER DOPPELKLICK OEFFNEN
+--------------------------------------
+Ein Doppelklick auf Wachkladde.html oeffnet die Seite als "file://".
+Browser erlauben in diesem Fall keinen Zugriff auf Ordner - gemeinsames
+Arbeiten ist so nicht moeglich. Stattdessen:
 
-Fertig. Ab jetzt arbeiten alle Arbeitsplätze, die denselben Ordner
-verbunden haben, gemeinsam an derselben Kladde.
+EINRICHTUNG (einmal fuer die ganze Wache)
+-----------------------------------------
+1. Auf EINEM Rechner, der durchlaeuft (z.B. dem Wachrechner), im
+   Unterordner  server\  auf  "Wachkladde-Server starten.cmd"  doppelklicken.
+   Es wird nichts installiert. Das Fenster bleibt offen.
+   Beim ersten Mal nennt das Fenster die Adresse, z.B.
+       http://WACHE-PC01:8080/
+2. Alle anderen Arbeitsplaetze oeffnen diese Adresse im Browser und
+   setzen ein Lesezeichen. Mehr ist an den Arbeitsplaetzen nicht zu tun.
+
+Sollte der Start mit einer Meldung zum Port abbrechen, muss die IT einmalig
+freigeben (steht auch im Fenster):
+    netsh http add urlacl url=http://+:8080/ user=DOMAENE\Dienstkonto
+    netsh advfirewall firewall add rule name="Wachkladde" dir=in action=allow
+          protocol=TCP localport=8080
+
+WER DARF SCHREIBEN
+------------------
+Jeder ist mit seiner eigenen Windows-Kennung angemeldet; die Kladde erkennt
+das von selbst, es gibt kein zusaetzliches Passwort.
+In  server\rechte.json  steht, wer schreiben darf - entweder ueber eine
+AD-Gruppe (der Planerbereich pflegt die Mitglieder) oder als Namensliste.
+Alle uebrigen sehen die Kladde vollstaendig, koennen aber nichts aendern;
+bei ihnen steht oben "Nur Leserechte".
+Einzelheiten in docs\BETRIEB.md.
 
 
 TÄGLICHER BETRIEB

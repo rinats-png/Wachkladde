@@ -17,22 +17,30 @@ Einträge statt gleichförmiger Zellen, Ampel für die Mindestwachstärke. Nur d
 | `wachkladde.html` | Quelldatei der Anwendung (identisch mit `netzordner/Wachkladde.html`) |
 | `server/server.js` | optionaler Sync-Server (Node.js, ohne npm-Pakete, ~110 Zeilen) |
 | `tools/import_xlsm.py` | Migration: liest die vorhandene `.xlsm` und erzeugt `wachkladde.json` |
+| `docs/BETRIEB.md` | **Betrieb im Dienstnetz: Bereitstellung und Schreibrechte** |
+| `server/wachkladde-server.ps1` | Windows-Server ohne Installation, mit Rechteprüfung |
 | `docs/NETZORDNER.md` | wie der gemeinsame Ordner funktioniert, mit Grenzen |
 | `docs/GESTALTUNG.md` | die gestalterischen Entscheidungen und warum |
 | `docs/MIGRATION.md` | Schritt-für-Schritt-Umstellung und Datenschema |
 
 ## Schnellstart
 
-**Variante A – gemeinsamer Ordner im Netz (empfohlen, kein Server)**
+**Variante A – ein Rechner stellt sie bereit (empfohlen)**
 
-1. Den Ordner `netzordner/` auf das Netzlaufwerk kopieren, z. B. nach
-   `\\<Server>\<Freigabe>\Wachkladde\`.
-2. An jedem Arbeitsplatz `Wachkladde.html` mit **Edge oder Chrome** öffnen.
-3. *Einstellungen → Ordner verbinden* → genau diesen Ordner auswählen → Schreibzugriff erlauben.
+1. Ordner auf das Netzlaufwerk kopieren.
+2. Auf einem Rechner der Wache **`server/Wachkladde-Server starten.cmd`** doppelklicken —
+   es wird **nichts installiert**, das Skript nutzt den in Windows eingebauten
+   `HttpListener`.
+3. Alle anderen Arbeitsplätze öffnen `http://<Rechnername>:8080/` — ein Lesezeichen
+   genügt.
 
-Ab dann arbeiten alle gemeinsam. Es läuft kein Dienst, es wird nichts installiert,
-und wer keinen Zugriff auf die Freigabe hat, sieht nichts. Details in
-`netzordner/ANLEITUNG.txt`, Technik in `docs/NETZORDNER.md`.
+Läuft in **jedem** Browser, auch Firefox. Wer schreiben darf, steht in
+`server/rechte.json`; die Prüfung sitzt auf dem Server und ist damit verbindlich.
+Alles Weitere in **`docs/BETRIEB.md`**.
+
+> **Wichtig:** Ein Doppelklick auf `Wachkladde.html` (also `file://`) kann **keinen
+> Ordner verbinden** — Browser sperren den Ordnerzugriff für diesen Ursprung. Die
+> Ordner-Variante funktioniert nur, wenn die Seite über `http://` ausgeliefert wird.
 
 **Variante B – nur ein Rechner (0 Minuten Einrichtung)**
 
@@ -115,10 +123,12 @@ Dann in der Anwendung *Einstellungen → Daten → JSON importieren*.
 
 ## Sicherheitshinweis
 
-Im Ordner-Betrieb ist die Zugriffskontrolle die Freigabe selbst: wer keine
-NTFS-Berechtigung auf den Ordner hat, kommt an nichts heran. Die Rollen in der
-Anwendung sind eine Bedienhilfe, keine Zugriffskontrolle – wer den Ordner
-schreiben darf, kann alles ändern. Das ist bei der heutigen `.xlsm` genauso.
+Beim Serverbetrieb entscheidet `server/rechte.json`, wer schreiben darf; geprüft
+wird auf dem Server, also verbindlich. Den Benutzer meldet Windows automatisch
+(integrierte Anmeldung).
 
-Der mitgelieferte Server (Variante C) hat keine Authentifizierung und ist für ein
-geschlossenes Dienstnetz gedacht; siehe `docs/MIGRATION.md`, Abschnitt „Absicherung".
+Die Rollen in der Anwendung (DGL / Beamter / Leser) sind demgegenüber eine
+**Bedienhilfe** — sie verhindern Vertipper, keinen Zugriff.
+
+Im Ordner-Betrieb ist die Zugriffskontrolle die Freigabe selbst: die Anwendung
+prüft beim Verbinden, ob sie schreiben darf, und schaltet sonst in den Lesebetrieb.

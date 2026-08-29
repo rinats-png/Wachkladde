@@ -4,3 +4,4 @@ server/data/
 netzordner/daten/ops/*.jsonl
 netzordner/daten/presence/*.json
 netzordner/daten/snapshot.json
+netzordner/server/data/

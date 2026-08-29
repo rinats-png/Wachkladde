@@ -1,0 +1,21 @@
+{
+  "_hinweis": "Wer darf in der Kladde schreiben? Alle anderen bekommen die Leseansicht.",
+  "_wege": [
+    "gruppe    – eine AD-Gruppe; der Planerbereich pflegt die Mitglieder (empfohlen)",
+    "schreiben – einzelne Anmeldekennungen, wenn keine Gruppe eingerichtet werden soll",
+    "offen     – true schaltet die Prüfung ab: jeder darf schreiben"
+  ],
+
+  "offen": false,
+  "gruppe": "",
+  "schreiben": ["schaefer", "holtschke", "wagner", "fink", "kaaden"],
+
+  "_zuordnung": "Anmeldekennung -> Name, wie er in der Kladde steht. Damit trägt die Anwendung Änderungen unter dem richtigen Namen ein.",
+  "zuordnung": {
+    "schaefer": "Schäfer",
+    "holtschke": "Holtschke",
+    "wagner": "Wagner",
+    "fink": "Fink",
+    "kaaden": "Kaaden"
+  }
+}

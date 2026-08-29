@@ -556,6 +556,19 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
 .warnung.ruhig{background:var(--bg-3);color:var(--txt-2);border-bottom-color:var(--line)}
 .warnung .knopf{border-color:currentColor;color:inherit;background:transparent}
 
+.selbsttest{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+.selbsttest summary{font-size:12px;color:var(--txt-2);cursor:pointer;user-select:none}
+.selbsttest summary:hover{color:var(--txt)}
+.selbsttest[open] summary{margin-bottom:10px;color:var(--txt)}
+.pz{display:grid;grid-template-columns:20px 1fr;gap:9px;align-items:start;padding:6px 0;
+  font-size:12.5px;border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+.pz:last-child{border-bottom:0}
+.pz-zeichen{width:18px;height:18px;border-radius:99px;display:grid;place-items:center;
+  font-size:11px;font-weight:700}
+.pz.ja .pz-zeichen{background:var(--gruen-w);color:var(--gruen)}
+.pz.nein .pz-zeichen{background:var(--rot-w);color:var(--rot)}
+.pz .merk{display:block;margin-top:2px}
+
 .suche{position:relative}
 .suche input{width:170px;height:var(--tap);padding:0 11px;border-radius:var(--r-s);
   background:var(--bg-1);border:1px solid var(--line);font-size:12.5px;transition:.18s var(--ease)}
@@ -798,6 +811,8 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
         <span class="puls" id="folderInfo">nicht verbunden</span>
       </div>
       <div class="online" id="onlineListe"></div>
+      <details class="selbsttest"><summary>Selbsttest — warum geht es nicht?</summary>
+        <div id="pruefliste"></div></details>
     </div>
 
     <div class="karte">
@@ -805,7 +820,7 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
       <div class="zeile">
         <label class="feld"><span>Name</span><input id="cfgUser" placeholder="Nachname"></label>
         <label class="feld"><span>Rolle</span>
-          <select id="cfgRole">
+          <select id="cfgRole" title="Wird vom Server verwaltet, sobald dort Rechte hinterlegt sind">
             <option value="dgl">DGL — Vollzugriff auf die Schicht</option>
             <option value="beamter">Beamter — nur die eigene Zeile</option>
             <option value="leser">Leser — nur ansehen</option>
@@ -814,8 +829,10 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
         <label class="feld"><span>Abgleich alle</span>
           <input id="cfgSyncInt" type="number" min="3" max="120" style="min-width:70px"></label>
       </div>
-      <p class="merk">Die Rollen sind eine Bedienhilfe, keine Zugriffskontrolle: wer den Ordner
-        beschreiben darf, kann alles ändern. Die eigentliche Kontrolle ist die Freigabe­berechtigung.</p>
+      <p class="merk" id="serverRechte"></p>
+      <p class="merk">Ohne Server sind die Rollen nur eine Bedienhilfe: wer den Ordner
+        beschreiben darf, kann alles ändern. Verbindlich wird die Trennung erst durch
+        die Prüfung auf dem Server — siehe <code>docs/BETRIEB.md</code>.</p>
     </div>
 
     <div class="karte">
@@ -1200,6 +1217,64 @@ const Folder = {
   root:null, dDaten:null, dOps:null, dPres:null, dArchiv:null,
   timer:null, beatTimer:null, laeuft:false, praesenz:[], fehler:false, letzterErfolg:0,
   get verfuegbar(){ return typeof window.showDirectoryPicker==='function' },
+  nurLesen:false,
+
+  /* Warum geht es nicht? Der Browser wirft überall dieselbe Meldung – die
+     Unterscheidung muss die Anwendung treffen.                              */
+  umgebung(url, ua){
+    const u=decodeURIComponent(url||location.href);
+    const chromium=/Chrome|Edg/.test(ua||navigator.userAgent);
+    const imArchiv=/\.zip[\/!\\]/i.test(u);
+    const tempOrdner=/[\/\\](Temp|Temp\d*_)[\/\\]|Temporary Internet|INetCache|AppData[\/\\]Local[\/\\]Temp/i.test(u);
+    return {
+      chromium, imArchiv, tempOrdner,
+      api: typeof window.showDirectoryPicker==='function',
+      sicher: window.isSecureContext,
+      schema: (url? (u.split(':')[0]) : location.protocol.replace(':','')),
+      ok: chromium && !imArchiv && !tempOrdner && typeof window.showDirectoryPicker==='function'
+    };
+  },
+  /* Klartext statt Browsermeldung. */
+  diagnose(fehler, url, ua){
+    const e=this.umgebung(url, ua);
+    if(e.imArchiv || e.tempOrdner) return {
+      titel:'Die Datei läuft aus einem ZIP-Archiv',
+      text:'Browser dürfen aus einem Archiv oder dem Temp-Ordner heraus nicht auf Ordner '+
+           'zugreifen. Entpacken Sie den Ordner zuerst auf das Netzlaufwerk und öffnen '+
+           'Sie Wachkladde.html von dort.'};
+    if(!e.chromium) return {
+      titel:'Dieser Browser kann keine Ordner öffnen',
+      text:'Bitte die Datei mit Microsoft Edge oder Google Chrome öffnen. '+
+           'Rechtsklick → Öffnen mit → Edge.'};
+    if(!e.api) return {
+      titel:'Der Ordnerzugriff ist im Browser abgeschaltet',
+      text:'Vermutlich per Gruppenrichtlinie. Ihre IT kann das unter den Edge-Richtlinien '+
+           'DefaultFileSystemReadGuardSetting und DefaultFileSystemWriteGuardSetting '+
+           'für diesen Speicherort freigeben. Bis dahin läuft die Kladde auf diesem '+
+           'Rechner allein weiter, oder Sie nutzen die Server-Betriebsart.'};
+    const n=fehler?.name||'';
+    if(n==='AbortError') return {titel:'Auswahl abgebrochen', text:'Es wurde kein Ordner gewählt.'};
+    if(n==='SecurityError'||n==='NotAllowedError') return {
+      titel:'Der Ordnerzugriff wurde verweigert',
+      text:'Das kann drei Gründe haben: die Seite wurde nicht durch einen Klick geöffnet, '+
+           'der Zugriff wurde im Browser dauerhaft blockiert (Schloss-Symbol in der '+
+           'Adressleiste → Berechtigungen zurücksetzen), oder eine Gruppenrichtlinie '+
+           'verbietet ihn (siehe DefaultFileSystemWriteGuardSetting).'};
+    return {titel:'Der Ordner konnte nicht verbunden werden', text:String(fehler?.message||fehler||'')};
+  },
+
+  /* Darf dieser Arbeitsplatz im Ordner schreiben? Die Freigabe entscheidet –
+     nicht die Anwendung. Also wird es ausprobiert statt vermutet.           */
+  async schreibprobe(){
+    try{
+      const fh=await this.dDaten.getFileHandle('.schreibtest',{create:true});
+      const w=await fh.createWritable();
+      await w.write(String(Date.now())); await w.close();
+      this.nurLesen=false;
+      try{ await this.dDaten.removeEntry('.schreibtest'); }catch(e){}  /* nicht liegen lassen */
+    }catch(e){ this.nurLesen=true; }
+    return !this.nurLesen;
+  },
   get on(){ return Store.state.settings.syncMode==='folder' && !!this.root },
 
   clientId(){
@@ -1210,7 +1285,8 @@ const Folder = {
 
   /* Verbinden: gespeicherten Ordner wiederverwenden, sonst Auswahldialog */
   async verbinden(neuWaehlen){
-    if(!this.verfuegbar) throw new Error('Dieser Browser kann keine Ordner öffnen – bitte Chrome oder Edge verwenden.');
+    const e=this.umgebung();
+    if(!e.ok && !e.api){ const d=this.diagnose(); const f=new Error(d.text); f.diagnose=d; throw f; }
     let h = neuWaehlen ? null : await IDB.get('ordner');
     if(h){
       let p=await h.queryPermission({mode:'readwrite'});
@@ -1218,7 +1294,9 @@ const Folder = {
       if(p!=='granted') h=null;
     }
     if(!h){
-      h=await window.showDirectoryPicker({mode:'readwrite', id:'wachkladde'});
+      try{ h=await window.showDirectoryPicker({mode:'readwrite', id:'wachkladde'}); }
+      catch(fehler){ const d=this.diagnose(fehler);
+        const f=new Error(d.text); f.name=fehler.name; f.diagnose=d; throw f; }
       await IDB.set('ordner',h);
     }
     this.root=h;
@@ -1228,6 +1306,7 @@ const Folder = {
     this.dArchiv=await h.getDirectoryHandle('archiv',{create:true});
     Store.apply('settings.syncMode','folder',true);
     Store.apply('settings.ordnerName',h.name,true);
+    await this.schreibprobe();
     await this.erstAbgleich();
     await this.start();
     return h.name;
@@ -1247,6 +1326,9 @@ const Folder = {
   /* Erster Abgleich nach dem Verbinden */
   async erstAbgleich(){
     const roh=await this.lesen(this.dDaten,'snapshot.json');
+    if(!roh && this.nurLesen){
+      Merge.status('Ordner leer, keine Schreibrechte','fehl'); return;
+    }
     if(!roh){
       /* Ordner ist leer -> mit dem lokalen Stand einrichten */
       await this.snapshotSchreiben();
@@ -1264,6 +1346,7 @@ const Folder = {
   },
 
   async snapshotSchreiben(){
+    if(this.nurLesen) return;
     const stand={...(Store.state._stand||{})};
     for(const [c,n] of Object.entries(this._gelesen||{})) stand[c]=n;
     const eigen=(await this.lesen(this.dOps,this.clientId()+'.jsonl'))||'';
@@ -1277,7 +1360,7 @@ const Folder = {
 
   /* Eigene offene Änderungen an die eigene Datei anhängen */
   async push(){
-    if(!Store.pending.length) return 0;
+    if(this.nurLesen || !Store.pending.length) return 0;
     const datei=this.clientId()+'.jsonl';
     const alt=(await this.lesen(this.dOps,datei))||'';
     const neu=Store.pending.map(o=>JSON.stringify(o)).join('\n')+'\n';
@@ -1335,6 +1418,7 @@ const Folder = {
 
   /* Anwesenheit: wer arbeitet gerade an welchem Tag/welcher Schicht */
   async herzschlag(){
+    if(this.nurLesen){ this.praesenz=[]; return; }
     try{
       await this.schreiben(this.dPres,this.clientId()+'.json', JSON.stringify({
         name:Store.state.settings.user||this.clientId(), t:Date.now(),
@@ -1382,6 +1466,8 @@ const Folder = {
   /* Monatsabschluss: den Monat als JSON und als druckfertige HTML ins Archiv
      legen. Liegt kein Ordner an, werden beide Dateien heruntergeladen.        */
   async archivieren(monat, json, html){
+    if(this.on && this.nurLesen)
+      throw new Error('Dieser Arbeitsplatz hat keine Schreibrechte im Ordner.');
     const namen=[[`wachkladde-${monat}.json`, json],[`wachkladde-${monat}.html`, html]];
     if(this.on && this.dArchiv){
       const d=await this.dArchiv.getDirectoryHandle(monat,{create:true});
@@ -1409,11 +1495,37 @@ const Folder = {
 
 /* ---------- 3b. Server-Betrieb (unverändert, für Variante mit Node-Server) ---------- */
 const Sync = {
-  timer:null,
+  timer:null, nurLesen:false, serverName:null, kennung:null, rechteAktiv:false,
   get conflicts(){ return Merge.conflicts },
+
+  /* Der Server sagt, wer man ist und ob man schreiben darf. Das ist die einzige
+     Stelle, an der eine Rechteprüfung wirklich trägt – im Browser ist sie nur
+     eine Bedienhilfe.                                                        */
+  async wer(){
+    if(!this.on) return;
+    try{
+      const r=await fetch(Store.state.settings.syncUrl.replace(/\/$/,'')+'/api/wer',
+        {credentials:'include'});
+      if(!r.ok) throw 0;
+      const d=await r.json();
+      this.serverName=d.name||null; this.kennung=d.kennung||null;
+      this.rechteAktiv=!!d.rechteAktiv;
+      this.nurLesen=d.darfSchreiben===false;
+      /* Verwaltet der Server die Rechte, kommen Name und Rolle von dort – niemand
+         soll sich selbst zum DGL machen können.                               */
+      if(this.rechteAktiv){
+        if(this.serverName) Store.apply('settings.user', this.serverName, true);
+        if(this.nurLesen && Store.state.settings.rolle!=='leser')
+          Store.apply('settings.rolle','leser',true);
+      }else if(this.serverName && !Store.state.settings.user){
+        Store.apply('settings.user', this.serverName, true);
+      }
+    }catch(e){ /* älterer Server ohne diesen Endpunkt: offener Betrieb */ }
+  },
   get on(){ return Store.state.settings.syncMode==='rest' && !!Store.state.settings.syncUrl },
   start(){
     clearInterval(this.timer); Folder.start();
+    if(this.on) this.wer().then(()=>UI.render());
     if(this.on) this.timer=setInterval(()=>this.tick(), (Store.state.settings.syncInt||10)*1000);
     if(!this.on && !Folder.on) Merge.status(Store.state.settings.syncMode==='folder'
       ? 'Ordner nicht verbunden' : 'lokal');
@@ -1423,14 +1535,17 @@ const Sync = {
     if(!this.on) return;
     const base=Store.state.settings.syncUrl.replace(/\/$/,'');
     try{
-      if(Store.pending.length){
+      if(Store.pending.length && !this.nurLesen){
         const send=Store.pending.slice();
-        const r=await fetch(base+'/api/ops',{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({ops:send})});
+        const r=await fetch(base+'/api/ops',{method:'POST',credentials:'include',
+          headers:{'Content-Type':'application/json'}, body:JSON.stringify({ops:send})});
+        if(r.status===403){ this.nurLesen=true; UI.render();
+          throw new Error('keine Schreibberechtigung'); }
         if(!r.ok) throw new Error('HTTP '+r.status);
         Store.pending=Store.pending.filter(o=>!send.includes(o));
       }
-      const r2=await fetch(base+'/api/ops?since='+(Store.state._cursor||0));
+      const r2=await fetch(base+'/api/ops?since='+(Store.state._cursor||0),
+        {credentials:'include'});
       if(!r2.ok) throw new Error('HTTP '+r2.status);
       const {cursor,ops}=await r2.json();
       const n=Merge.applyOps(ops.filter(o=>o.by!==(Store.state.settings.user||'unbekannt')));
@@ -1815,6 +1930,10 @@ const UI = {
     Object.keys(FARB_LABELS).forEach(k=>document.documentElement.style.removeProperty(k));
     Object.entries(c).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
   },
+  /* Nur lesen: entweder fehlen die Rechte im Ordner oder der Server verweigert
+     das Schreiben. Beides ist dieselbe Lage für den Benutzer.               */
+  nurLesen(){ return Folder.nurLesen || Sync.nurLesen; },
+
   tagSetzen(d){ Store.apply('settings.datum',d,true); this.render(); },
 
   zurueck(){
@@ -1893,7 +2012,12 @@ const UI = {
     const offen=Store.pending.length;
     const abg=Logik.abgeschlossen(s.datum);
     let inhalt='';
-    if(s.syncMode==='folder' && !Folder.on)
+    if(this.nurLesen())
+      inhalt=`<b>Nur Leserechte${Sync.serverName?' für '+esc(Sync.serverName):''}.</b>
+        Sie sehen alle Eintragungen, können aber nichts ändern.
+        ${Sync.nurLesen ? 'Der Server hat diesen Benutzer nicht als schreibberechtigt hinterlegt.'
+                        : 'Im gemeinsamen Ordner fehlen die Schreibrechte.'}`;
+    else if(s.syncMode==='folder' && !Folder.on)
       inhalt=`<b>Der gemeinsame Ordner ist nicht verbunden.</b>
         Ihre Eingaben werden nur auf diesem Rechner gespeichert${
         offen?` — <b>${offen}</b> Änderungen sind noch nicht übertragen`:''}.
@@ -1910,7 +2034,8 @@ const UI = {
         ${esc(abg.by||'?')} archiviert und ist gegen Änderungen gesperrt.
         ${['admin','dgl'].includes(s.rolle)
           ? '<button class="knopf klein" id="wEntsperren">entsperren</button>':''}`;
-    el.hidden=!inhalt; el.className='warnung'+(abg&&!inhalt.includes('Ordner')?' ruhig':'');
+    el.hidden=!inhalt;
+    el.className='warnung'+((abg||Folder.nurLesen)&&!inhalt.includes('nicht verbunden')?' ruhig':'');
     el.innerHTML=inhalt;
     const v=$('#wVerbinden'); if(v) v.onclick=()=>this.ordnerVerbinden(false);
     const en=$('#wEntsperren'); if(en) en.onclick=()=>this.entsperren(s.datum.slice(0,7));
@@ -2160,7 +2285,7 @@ const UI = {
     const k=$(`.schicht[data-s="${sch}"]`); if(!k) return;
     const basis='tage.'+datum+'.'+sch;
     const setz=(p,v)=>Store.apply(basis+'.'+p,v);
-    if(Store.state.settings.rolle==='leser' || Logik.abgeschlossen(datum))
+    if(Store.state.settings.rolle==='leser' || Logik.abgeschlossen(datum) || UI.nurLesen())
       $$('input,select,textarea,button',k).forEach(e=>e.disabled=true);
 
     $$('[data-f2]',k).forEach(el=>el.onchange=()=>setz(el.dataset.f2, el.value));
@@ -2592,6 +2717,15 @@ body{background:#fff;padding:6mm}
   renderSetup(){
     const s=Store.state.settings;
     $('#cfgUser').value=s.user; $('#cfgRole').value=s.rolle;
+    const vomServer = Sync.rechteAktiv;
+    $('#cfgUser').disabled = vomServer;
+    $('#cfgRole').disabled = vomServer;
+    $('#serverRechte').innerHTML = vomServer
+      ? `<b>Angemeldet als ${esc(Sync.kennung||'?')}</b> — in der Kladde
+         „${esc(Sync.serverName||'?')}". Schreibrecht: <b>${Sync.nurLesen?'nein':'ja'}</b>.
+         Name und Rolle verwaltet der Server (<code>server/rechte.json</code>);
+         hier sind sie deshalb gesperrt.`
+      : '';
     $('#cfgSyncMode').value=s.syncMode; $('#cfgSyncUrl').value=s.syncUrl;
     $('#cfgSyncInt').value=s.syncInt;
     $('#cbKompakt').checked=!!s.kompakt;
@@ -2611,8 +2745,32 @@ body{background:#fff;padding:6mm}
 
     const fi=$('#folderInfo');
     if(!Folder.verfuegbar){ fi.textContent='Browser ohne Ordnerzugriff'; fi.className='puls fehl'; }
+    else if(Folder.on && Folder.nurLesen){
+      fi.textContent='verbunden, nur lesend: '+(s.ordnerName||'?'); fi.className='puls'; }
     else if(Folder.on){ fi.textContent='verbunden: '+(s.ordnerName||'?'); fi.className='puls gut'; }
     else { fi.textContent='nicht verbunden'; fi.className='puls'; }
+
+    const u=Folder.umgebung();
+    const zeile=(gut,titel,text)=>`<div class="pz ${gut?'ja':'nein'}">
+      <span class="pz-zeichen">${gut?'✓':'✕'}</span>
+      <span><b>${titel}</b>${text?`<br><span class="merk">${text}</span>`:''}</span></div>`;
+    $('#pruefliste').innerHTML=
+      zeile(u.chromium,'Browser', u.chromium
+        ? navigator.userAgent.match(/Edg\/[\d.]+|Chrome\/[\d.]+/)?.[0] || 'Chromium'
+        : 'Edge oder Chrome erforderlich — die Datei mit Rechtsklick → Öffnen mit → Edge starten') +
+      zeile(!u.imArchiv && !u.tempOrdner,'Speicherort', u.imArchiv||u.tempOrdner
+        ? 'Die Datei läuft aus einem ZIP-Archiv oder dem Temp-Ordner. Zuerst auf das '+
+          'Netzlaufwerk entpacken und von dort öffnen.'
+        : decodeURIComponent(location.pathname.split('/').slice(0,-1).join('/')) || location.protocol) +
+      zeile(u.api,'Ordnerzugriff im Browser', u.api ? 'verfügbar'
+        : 'abgeschaltet — Gruppenrichtlinien DefaultFileSystemReadGuardSetting und '+
+          'DefaultFileSystemWriteGuardSetting prüfen lassen') +
+      zeile(!!Folder.root,'Ordner verbunden', Folder.root
+        ? (s.ordnerName||'') : 'noch nicht verbunden') +
+      (Folder.root ? zeile(!Folder.nurLesen,'Schreibrechte im Ordner', Folder.nurLesen
+        ? 'nur Leserechte — das steuert die Freigabeberechtigung (NTFS) des Ordners, '+
+          'nicht die Anwendung'
+        : 'vorhanden') : '');
 
     const tage=Object.keys(Store.state.tage).length;
     const bea=Store.state.stammdaten.dienstgruppen.reduce((n,d)=>n+d.beamte.filter(b=>b.aktiv).length,0);
@@ -2747,9 +2905,19 @@ body{background:#fff;padding:6mm}
     try{
       const name=await Folder.verbinden(neu);
       $('#cfgSyncMode').value='folder'; this.render();
-      alert('Ordner „'+name+'" verbunden.\n\nAlle Arbeitsplätze, die denselben Ordner verbinden, '+
-            'arbeiten ab jetzt gemeinsam an dieser Kladde.');
-    }catch(e){ if(e.name!=='AbortError') alert('Ordner nicht verbunden:\n'+e.message); }
+      alert(Folder.nurLesen
+        ? `Ordner „${name}" verbunden — nur lesend.\n\n`+
+          `Dieser Arbeitsplatz darf im Ordner nicht schreiben. Sie sehen alle Eintragungen, `+
+          `können aber nichts ändern. Das steuert die Freigabeberechtigung des Ordners.`
+        : `Ordner „${name}" verbunden.\n\n`+
+          `Alle Arbeitsplätze, die denselben Ordner verbinden, arbeiten ab jetzt gemeinsam `+
+          `an dieser Kladde.`);
+    }catch(e){
+      if(e.name==='AbortError') return;
+      const d=e.diagnose||Folder.diagnose(e);
+      alert(d.titel+'\n\n'+d.text);
+      this.render();
+    }
   },
   exportieren(){
     const b=new Blob([JSON.stringify(Store.state,null,2)],{type:'application/json'});
