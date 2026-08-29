@@ -476,6 +476,32 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
 .haken.an{color:var(--txt)}
 .haken input{width:14px;height:14px;accent-color:var(--td);cursor:pointer}
 
+/* ── Zugriffsschutz ───────────────────────────────────────────────── */
+.knopf.schloss{font-size:12px;padding:0 12px}
+.knopf.schloss.offen{border-color:color-mix(in srgb,var(--gruen) 40%,transparent);
+  color:var(--gruen);background:var(--gruen-w)}
+.knopf.schloss:not(.offen){border-color:color-mix(in srgb,var(--td) 45%,transparent);
+  color:var(--td);background:var(--td-w)}
+.knopf.schloss[hidden]{display:none}
+
+.modal{position:fixed;inset:0;z-index:120;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--txt) 34%,transparent);backdrop-filter:blur(3px);
+  animation:einblenden .16s var(--ease)}
+@keyframes einblenden{from{opacity:0}to{opacity:1}}
+.mfeld{width:min(400px,92vw);background:var(--bg-1);border:1px solid var(--line-2);
+  border-radius:var(--r-l);padding:22px 24px;box-shadow:0 24px 60px -18px rgba(50,40,20,.5);
+  animation:hoch .22s var(--ease)}
+@keyframes hoch{from{transform:translateY(10px)}to{transform:none}}
+.mfeld h3{font-family:var(--f-display);font-variation-settings:'wght' 600,'wdth' 87;
+  font-size:15px;letter-spacing:.11em;text-transform:uppercase;margin-bottom:6px}
+.mfeld .merk{margin-bottom:14px}
+.mfeld input[type=password]{width:100%;height:38px;padding:0 12px;border-radius:var(--r-s);
+  background:var(--bg-2);border:1px solid var(--line);font-size:15px;letter-spacing:.08em}
+.mfeld input[type=password]:focus{border-color:var(--line-2);background:var(--bg-3)}
+.mfehler{margin-top:8px;font-size:12px;color:var(--rot)}
+.mfehler[hidden]{display:none}
+.mknoepfe{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+
 /* ── Fehlzeiten je Beamter ────────────────────────────────────────── */
 .fenster{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;
   margin:16px 0 4px}
@@ -614,7 +640,7 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
   body{font-size:7.8pt;line-height:1.18;color:#000;
     -webkit-print-color-adjust:exact;print-color-adjust:exact}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .kopf,.reiter,.nicht-drucken,#ansicht-stamm,#ansicht-setup,
+  .kopf,.reiter,.nicht-drucken,#ansicht-stamm,#ansicht-setup,.modal,
   .hinweise,.warnung,.melder,.treffer,.meter .balken,.tupfer,.palette{display:none!important}
   [hidden]{display:none!important}
   /* Monatsübersicht quer, damit alle Tage nebeneinander passen */
@@ -736,6 +762,7 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
       <input id="suchfeld" placeholder="Beamten suchen …" autocomplete="off">
       <div class="treffer" id="treffer" hidden></div>
     </div>
+    <button class="knopf schloss" id="btnSchloss" hidden></button>
     <button class="knopf nur-symbol" id="btnUndo" title="Rückgängig (Strg+Z)">↶</button>
     <button class="knopf nur-symbol" id="btnRedo" title="Wiederholen (Strg+Y)">↷</button>
     <span class="puls" id="syncStatus">lokal</span>
@@ -781,6 +808,7 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
       <p class="unter">Die Nummer eines Beamten wird nicht gespeichert, sondern aus seiner Position
         errechnet. Hinzufügen, Verschieben und Deaktivieren halten die Nummerierung darum
         immer lückenlos.</p>
+      <p class="merk" id="stammGesperrt" hidden style="margin-bottom:12px"></p>
       <div id="dgListe"></div>
       <button class="knopf" id="btnDgNeu">Dienstgruppe anlegen</button>
     </div>
@@ -833,6 +861,19 @@ code{font-family:var(--f-mono);font-size:11.5px;background:var(--bg-3);padding:1
       <p class="merk">Ohne Server sind die Rollen nur eine Bedienhilfe: wer den Ordner
         beschreiben darf, kann alles ändern. Verbindlich wird die Trennung erst durch
         die Prüfung auf dem Server — siehe <code>docs/BETRIEB.md</code>.</p>
+    </div>
+
+    <div class="karte" id="karteSchutz">
+      <h2>Zugriffsschutz</h2>
+      <p class="unter">Ein gemeinsames Passwort für den Schreibmodus — wer es kennt (DGL und
+        V-DGL), kann eintragen; alle anderen sehen die Leseansicht. Optional ein zweites
+        Passwort für die Verwaltung (Dienstgruppen, Wachstärke, Farben, Monatsabschluss).</p>
+      <div id="schutzBereich"></div>
+      <p class="merk" style="margin-top:12px"><b>Was das leistet — und was nicht.</b>
+        Es schützt zuverlässig davor, dass jemand versehentlich oder aus Neugier etwas
+        verstellt. Es ist <b>keine</b> Zugriffskontrolle: das Passwort steckt in der Datei,
+        und wer sie bearbeiten kann, kommt daran vorbei. Verbindlich wird die Trennung erst
+        durch die Prüfung auf dem Server — siehe <code>docs/BETRIEB.md</code>.</p>
     </div>
 
     <div class="karte">
@@ -1016,7 +1057,7 @@ function seedState(){
       colors:{}, kompakt:false, datum:iso(new Date())},
     stammdaten:{dienstgruppen:dgs, listen:structuredClone(DEFAULT_LISTEN),
       abstVorlagen:structuredClone(ABST_VORLAGEN),
-      farben:{...FARBEN_VORGABE},
+      farben:{...FARBEN_VORGABE}, schutz:{aktiv:false},
       wachstaerke:structuredClone(WACHSTAERKE_VORGABE)},
     rotation:structuredClone(DEFAULT_ROTATION),
     tage:{}, abgeschlossen:{}, _cursor:0
@@ -1042,6 +1083,7 @@ const Store = {
     st.abgeschlossen = st.abgeschlossen || {};
     if(!sd) return;
     sd.farben      = {...FARBEN_VORGABE, ...(sd.farben||{})};
+    sd.schutz      = sd.schutz || {aktiv:false};
     sd.wachstaerke = {...structuredClone(WACHSTAERKE_VORGABE), ...(sd.wachstaerke||{})};
     /* Frühere Fassung kannte je Schicht nur eine Zahl – die gilt dann für alle Tage. */
     for(const k of ['regulaer','terminal']){
@@ -1802,6 +1844,74 @@ function nameOf(id){
   } return '';
 }
 
+/* ---------- 4b. Zugriffsschutz ----------------------------------------
+   Ein gemeinsames Passwort für den Schreibmodus, optional ein zweites für
+   die Verwaltung. Das ist ein Schutz gegen versehentliches Ändern und
+   gegen unbedarftes Herumprobieren — keine Zugriffskontrolle: wer die
+   Datei bearbeiten kann, kommt daran vorbei. Verbindlich wird die Trennung
+   erst durch die Prüfung auf dem Server (docs/BETRIEB.md).
+   ------------------------------------------------------------------- */
+const Schutz = {
+  stufe:'verwaltung',            /* solange kein Passwort gesetzt ist: alles offen */
+  timer:null,
+  get konfig(){ return Store.state.stammdaten?.schutz || {} },
+  get aktiv(){ return !!this.konfig.aktiv },
+
+  async hash(pw, salt){
+    const roh=new TextEncoder().encode(salt+'\u0000'+pw);
+    const d=await crypto.subtle.digest('SHA-256', roh);
+    return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('');
+  },
+  salzen(){ return [...crypto.getRandomValues(new Uint8Array(12))]
+    .map(x=>x.toString(16).padStart(2,'0')).join(''); },
+
+  laden(){
+    if(!this.aktiv){ this.stufe='verwaltung'; return; }
+    const s=sessionStorage.getItem('wachkladde.stufe');
+    this.stufe = (s==='schreiben'||s==='verwaltung') ? s : 'lesen';
+    this.anstupsen();
+  },
+  setzen(stufe){
+    this.stufe=stufe;
+    try{ sessionStorage.setItem('wachkladde.stufe',stufe); }catch(e){}
+    this.anstupsen();
+  },
+  sperren(){ this.setzen('lesen'); },
+
+  /* Nach Untätigkeit von selbst sperren – auf einem Wachrechner läuft
+     ständig jemand vorbei.                                              */
+  anstupsen(){
+    clearTimeout(this.timer);
+    const min=+this.konfig.sperreNachMin||0;
+    if(!this.aktiv || this.stufe==='lesen' || !min) return;
+    this.timer=setTimeout(()=>{ this.sperren(); UI.render();
+      UI.melden('Automatisch gesperrt — es wurde '+min+' Minuten nichts geändert.');
+    }, min*60000);
+  },
+
+  async pruefen(pw){
+    const k=this.konfig;
+    if(!k.salt) return null;
+    const h=await this.hash(pw, k.salt);
+    if(k.verwaltungHash && h===k.verwaltungHash) return 'verwaltung';
+    if(h===k.schreibHash) return k.verwaltungHash ? 'schreiben' : 'verwaltung';
+    return null;
+  },
+  async einrichten(schreibPw, verwaltungPw, sperreNachMin){
+    const salt=this.salzen();
+    const k={aktiv:true, salt, schreibHash: await this.hash(schreibPw,salt),
+      verwaltungHash: verwaltungPw ? await this.hash(verwaltungPw,salt) : '',
+      sperreNachMin: sperreNachMin??20};
+    Store.apply('stammdaten.schutz', k);
+    this.setzen('verwaltung');
+  },
+  aufheben(){ Store.apply('stammdaten.schutz', {aktiv:false});
+    this.stufe='verwaltung'; try{ sessionStorage.removeItem('wachkladde.stufe'); }catch(e){} },
+
+  darfSchreiben(){ return !this.aktiv || this.stufe!=='lesen' },
+  darfVerwalten(){ return !this.aktiv || this.stufe==='verwaltung' }
+};
+
 /* ---------- 5. Oberfläche ---------- */
 
 /* Jeder Listeneintrag kann eine eigene Signalfarbe tragen – der DGL sieht
@@ -1853,7 +1963,7 @@ const UI = {
   ansicht:'kladde',
 
   init(){
-    Store.load(); Meta.load();
+    Store.load(); Meta.load(); Schutz.laden();
     this.farben();
     document.body.classList.toggle('kompakt', !!Store.state.settings.kompakt);
     $('#revier').textContent = Store.state.meta.revier;
@@ -1871,6 +1981,10 @@ const UI = {
       this.render();
     });
     $('#btnPrint').onclick =()=>window.print();
+    $('#btnSchloss').onclick=()=>{
+      if(Schutz.stufe==='lesen') this.entsperrDialog();
+      else { Schutz.sperren(); this.render(); this.melden('Gesperrt — Leseansicht.'); }
+    };
     $('#btnUndo').onclick  =()=>this.zurueck();
     $('#btnRedo').onclick  =()=>this.vor();
     $('#suchfeld').oninput =e=>this.suchen(e.target.value);
@@ -1911,6 +2025,7 @@ const UI = {
         Sync.start(); this.render();
       };
     });
+    ['keydown','click'].forEach(ev=>document.addEventListener(ev,()=>Schutz.anstupsen(),true));
     document.addEventListener('keydown',e=>{
       if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='z' && !e.shiftKey){
         e.preventDefault(); this.zurueck(); return; }
@@ -1932,7 +2047,9 @@ const UI = {
   },
   /* Nur lesen: entweder fehlen die Rechte im Ordner oder der Server verweigert
      das Schreiben. Beides ist dieselbe Lage für den Benutzer.               */
-  nurLesen(){ return Folder.nurLesen || Sync.nurLesen; },
+  nurLesen(){ return Folder.nurLesen || Sync.nurLesen || !Schutz.darfSchreiben(); },
+  darfVerwalten(){ return !this.nurLesen() && Schutz.darfVerwalten()
+                   && !(Sync.rechteAktiv && Sync.nurLesen); },
 
   tagSetzen(d){ Store.apply('settings.datum',d,true); this.render(); },
 
@@ -2012,7 +2129,10 @@ const UI = {
     const offen=Store.pending.length;
     const abg=Logik.abgeschlossen(s.datum);
     let inhalt='';
-    if(this.nurLesen())
+    if(Schutz.aktiv && Schutz.stufe==='lesen' && !Sync.nurLesen && !Folder.nurLesen)
+      inhalt=`<b>Leseansicht.</b> Zum Eintragen oben rechts auf das Schloss klicken und das
+        Passwort eingeben. <button class="knopf klein" id="wFrei">Freischalten</button>`;
+    else if(this.nurLesen())
       inhalt=`<b>Nur Leserechte${Sync.serverName?' für '+esc(Sync.serverName):''}.</b>
         Sie sehen alle Eintragungen, können aber nichts ändern.
         ${Sync.nurLesen ? 'Der Server hat diesen Benutzer nicht als schreibberechtigt hinterlegt.'
@@ -2035,8 +2155,10 @@ const UI = {
         ${['admin','dgl'].includes(s.rolle)
           ? '<button class="knopf klein" id="wEntsperren">entsperren</button>':''}`;
     el.hidden=!inhalt;
-    el.className='warnung'+((abg||Folder.nurLesen)&&!inhalt.includes('nicht verbunden')?' ruhig':'');
+    el.className='warnung'+((abg||Folder.nurLesen||Schutz.aktiv)
+      && !inhalt.includes('nicht verbunden') ? ' ruhig' : '');
     el.innerHTML=inhalt;
+    const fr=$('#wFrei'); if(fr) fr.onclick=()=>this.entsperrDialog();
     const v=$('#wVerbinden'); if(v) v.onclick=()=>this.ordnerVerbinden(false);
     const en=$('#wEntsperren'); if(en) en.onclick=()=>this.entsperren(s.datum.slice(0,7));
   },
@@ -2048,6 +2170,15 @@ const UI = {
     if(this.ansicht==='auswertung') this.renderAuswertung();
     if(this.ansicht==='stamm')  this.renderStamm();
     if(this.ansicht==='setup')  this.renderSetup();
+    const sb=$('#btnSchloss');
+    sb.hidden = !Schutz.aktiv;
+    if(Schutz.aktiv){
+      const zu = Schutz.stufe==='lesen';
+      sb.className = 'knopf schloss'+(zu?'':' offen');
+      sb.textContent = zu ? '🔒 Leseansicht'
+        : (Schutz.stufe==='verwaltung' ? '🔓 Verwaltung' : '🔓 Schreibmodus');
+      sb.title = zu ? 'Zum Eintragen freischalten' : 'Wieder sperren';
+    }
     this.renderHinweise(); this.renderPresence(); this.renderWarnung();
     $('#btnUndo').disabled=!Store.undoStapel.length;
     $('#btnRedo').disabled=!Store.redoStapel.length;
@@ -2098,7 +2229,8 @@ const UI = {
     const plakette=(arr,wert,feld,klasse='')=>{
       const t=ton(wert);
       return `<span class="plak ${klasse}"${t?` data-ton style="--ton:${t}"`:''}>
-        <select data-f="${feld}">${opt(arr,wert||'')}</select></span>${dw(wert)}`;
+        <select data-f="${feld}"${wert?` title="${esc(wert)}"`:''}
+          >${opt(arr,wert||'')}</select></span>${dw(wert)}`;
     };
 
     const zeit=(o,pfad)=>`<span class="zeitspanne">
@@ -2390,6 +2522,98 @@ const UI = {
       : '<span class="merk">Zurzeit arbeitet niemand sonst im Ordner.</span>';
   },
 
+  /* ── Zugriffsschutz ──────────────────────────────────────────────── */
+  entsperrDialog(){
+    const d=document.createElement('div');
+    d.className='modal';
+    d.innerHTML=`<form class="mfeld">
+      <h3>Freischalten</h3>
+      <p class="merk">Passwort für den Schreibmodus eingeben. Ohne Passwort bleibt die
+        Kladde in der Leseansicht — sichtbar, aber nicht änderbar.</p>
+      <input type="password" id="mPw" autocomplete="off" placeholder="Passwort" autofocus>
+      <div class="mfehler" id="mFehler" hidden>Passwort stimmt nicht.</div>
+      <div class="mknoepfe">
+        <button type="button" class="knopf" id="mAbbruch">Abbrechen</button>
+        <button type="submit" class="knopf stark">Freischalten</button>
+      </div></form>`;
+    document.body.appendChild(d);
+    const weg=()=>d.remove();
+    $('#mAbbruch',d).onclick=weg;
+    d.onclick=e=>{ if(e.target===d) weg(); };
+    $('#mPw',d).focus();
+    $('form',d).onsubmit=async e=>{
+      e.preventDefault();
+      const stufe=await Schutz.pruefen($('#mPw',d).value);
+      if(!stufe){ $('#mFehler',d).hidden=false; $('#mPw',d).select(); return; }
+      Schutz.setzen(stufe); weg(); this.render();
+      this.melden(stufe==='verwaltung' ? 'Verwaltung freigeschaltet.' : 'Schreibmodus freigeschaltet.');
+    };
+  },
+
+  renderSchutz(){
+    const k=Schutz.konfig, box=$('#schutzBereich');
+    if(!Schutz.aktiv){
+      box.innerHTML=`
+        <div class="zeile">
+          <label class="feld"><span>Passwort Schreibmodus</span>
+            <input type="password" id="szSchreib" autocomplete="new-password"></label>
+          <label class="feld"><span>Passwort Verwaltung (freilassen = gleiches)</span>
+            <input type="password" id="szVerw" autocomplete="new-password"></label>
+          <label class="feld"><span>Sperren nach Minuten (0 = nie)</span>
+            <input type="number" id="szMin" min="0" max="240" value="20" style="min-width:80px"></label>
+          <button class="knopf stark" id="szAn">Schutz einschalten</button>
+        </div>`;
+      $('#szAn').onclick=async()=>{
+        const pw=$('#szSchreib').value.trim();
+        if(pw.length<3) return alert('Bitte ein Passwort mit mindestens 3 Zeichen vergeben.');
+        const v=$('#szVerw').value.trim();
+        if(v && v===pw) return alert('Die beiden Passwörter müssen sich unterscheiden.');
+        await Schutz.einrichten(pw, v, +$('#szMin').value||0);
+        this.render();
+        this.melden('Zugriffsschutz ist eingeschaltet.');
+      };
+      return;
+    }
+    if(!Schutz.darfVerwalten()){
+      box.innerHTML=`<p class="merk">Der Zugriffsschutz ist eingeschaltet.
+        Zum Ändern die Verwaltung freischalten (Schloss oben rechts).</p>`;
+      return;
+    }
+    box.innerHTML=`
+      <div class="zeile">
+        <span class="puls gut">eingeschaltet</span>
+        <span class="merk">${k.verwaltungHash
+          ? 'Zwei Passwörter: Schreibmodus und Verwaltung.'
+          : 'Ein Passwort für Schreibmodus und Verwaltung.'}
+          ${+k.sperreNachMin ? `Sperrt nach ${k.sperreNachMin} Minuten ohne Änderung von selbst.`
+                             : 'Sperrt nicht von selbst.'}</span>
+      </div>
+      <div class="zeile" style="margin-top:10px">
+        <label class="feld"><span>Neues Passwort Schreibmodus</span>
+          <input type="password" id="szSchreib" autocomplete="new-password"></label>
+        <label class="feld"><span>Neues Passwort Verwaltung</span>
+          <input type="password" id="szVerw" autocomplete="new-password"></label>
+        <label class="feld"><span>Sperren nach Minuten</span>
+          <input type="number" id="szMin" min="0" max="240" value="${+k.sperreNachMin||0}"
+            style="min-width:80px"></label>
+        <button class="knopf" id="szNeu">übernehmen</button>
+        <button class="knopf warn" id="szAus">Schutz ausschalten</button>
+      </div>`;
+    $('#szNeu').onclick=async()=>{
+      const pw=$('#szSchreib').value.trim();
+      if(pw && pw.length<3) return alert('Mindestens 3 Zeichen.');
+      const v=$('#szVerw').value.trim();
+      if(!pw && !v){ Store.apply('stammdaten.schutz',{...k, sperreNachMin:+$('#szMin').value||0});
+        Schutz.anstupsen(); this.render(); return this.melden('Sperrzeit geändert.'); }
+      await Schutz.einrichten(pw||'', v, +$('#szMin').value||0);
+      this.render(); this.melden('Passwort geändert.');
+    };
+    $('#szAus').onclick=()=>{
+      if(confirm('Zugriffsschutz ausschalten? Danach kann jeder alles ändern.')){
+        Schutz.aufheben(); this.render(); this.melden('Zugriffsschutz ist aus.'); }
+    };
+  },
+
   /* ── Fehlzeiten eines Beamten ────────────────────────────────────── */
   renderPerson(){
     const st = Store.state.settings;
@@ -2469,7 +2693,9 @@ const UI = {
             ? `<span class="puls">abgeschlossen am ${
                 new Date(Store.state.abgeschlossen[monat].ts).toLocaleDateString('de-DE')}</span>
                <button class="knopf klein" id="ausEntsperren">entsperren</button>`
-            : `<button class="knopf klein stark" id="ausAbschluss">Monat abschließen</button>`}
+            : (this.darfVerwalten()
+                ? `<button class="knopf klein stark" id="ausAbschluss">Monat abschließen</button>`
+                : `<span class="merk">Monatsabschluss: Verwaltung freischalten</span>`)}
         </span>
       </div>
       <div class="kacheln-stat">
@@ -2603,7 +2829,7 @@ body{background:#fff;padding:6mm}
 
   /* ── Dienstgruppen ───────────────────────────────────────────────── */
   renderStamm(){
-    const darf=['admin','dgl'].includes(Store.state.settings.rolle);
+    const darf=['admin','dgl'].includes(Store.state.settings.rolle) && this.darfVerwalten();
     const stichtag=Store.state.settings.datum;
     $('#dgListe').innerHTML = Store.state.stammdaten.dienstgruppen.map(dg=>{
       const man=Logik.nummeriert(dg, stichtag);
@@ -2647,6 +2873,14 @@ body{background:#fff;padding:6mm}
         </div></div>`;
     }).join('');
 
+    const hin=$('#stammGesperrt');
+    hin.hidden = darf;
+    if(!darf) hin.innerHTML = Schutz.aktiv && !Schutz.darfVerwalten()
+      ? 'Nur ansehen — zum Ändern die <b>Verwaltung</b> freischalten (Schloss oben rechts).'
+      : 'Nur ansehen — dafür fehlt die Berechtigung.';
+    /* Rotation und Auswahllisten hängen an derselben Freigabe */
+    setTimeout(()=>$$('#rotation input, #listen textarea, #btnDgNeu')
+      .forEach(e=>e.disabled=!darf),0);
     $$('#dgListe [data-dg]').forEach(box=>{
       const dg=Store.state.stammdaten.dienstgruppen.find(d=>d.id===box.dataset.dg);
       const sichern=()=>{ Store.apply('stammdaten.dienstgruppen',
@@ -2740,8 +2974,15 @@ body{background:#fff;padding:6mm}
       Store.apply('settings.colors',c,true); this.farben();
     });
 
+    this.renderSchutz();
     this.renderWachstaerke();
     this.renderFarbListen();
+    /* Verwaltungsbereiche nur mit der entsprechenden Freischaltung */
+    const verw=this.darfVerwalten();
+    ['#wsTabelle','#wsGruende','#farbListen'].forEach(sel=>
+      $$(sel+' input, '+sel+' select, '+sel+' button, '+sel+' textarea')
+        .forEach(e=>e.disabled=!verw));
+    $('#btnReset').disabled=!verw;
 
     const fi=$('#folderInfo');
     if(!Folder.verfuegbar){ fi.textContent='Browser ohne Ordnerzugriff'; fi.className='puls fehl'; }

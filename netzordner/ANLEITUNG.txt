@@ -32,8 +32,23 @@ freigeben (steht auch im Fenster):
     netsh advfirewall firewall add rule name="Wachkladde" dir=in action=allow
           protocol=TCP localport=8080
 
-WER DARF SCHREIBEN
-------------------
+ZUGRIFFSSCHUTZ MIT PASSWORT (ohne Server)
+-----------------------------------------
+Einstellungen -> Zugriffsschutz:
+  * ein Passwort fuer den Schreibmodus (kennen DGL und V-DGL),
+  * auf Wunsch ein zweites fuer die Verwaltung (Dienstgruppen,
+    Wachstaerke, Farben, Monatsabschluss),
+  * Selbstsperre nach einstellbarer Zeit ohne Aenderung.
+Oben rechts erscheint dann ein Schloss: anklicken, Passwort eingeben,
+eintragen. Beim Schliessen des Browsers ist wieder gesperrt.
+Das Passwort steht nicht im Klartext in der Datei.
+
+Wichtig: Das schuetzt vor versehentlichem Aendern, ist aber keine
+Zugriffskontrolle - wer die Datei bearbeiten kann, kommt daran vorbei.
+Verbindlich wird die Trennung erst ueber den Server (siehe unten).
+
+WER DARF SCHREIBEN (mit Server - verbindlich)
+---------------------------------------------
 Jeder ist mit seiner eigenen Windows-Kennung angemeldet; die Kladde erkennt
 das von selbst, es gibt kein zusaetzliches Passwort.
 In  server\rechte.json  steht, wer schreiben darf - entweder ueber eine

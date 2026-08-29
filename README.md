@@ -81,6 +81,10 @@ Dann in der Anwendung *Einstellungen → Daten → JSON importieren*.
 - **Stammdaten**: Beamte je Dienstgruppe anlegen, umsortieren, deaktivieren –
   die Nummerierung ist immer fortlaufend und wird automatisch neu vergeben.
 - **Rollen**: Admin, DGL, Beamter (nur eigene Zeile), Leser.
+- **Zugriffsschutz mit Passwort** (ohne Server): ein Passwort für den Schreibmodus,
+  optional ein zweites für die Verwaltung; Selbstsperre nach Untätigkeit. Das
+  Passwort liegt als Hash mit Salz vor, nicht im Klartext. Schützt vor
+  versehentlichem Ändern — die verbindliche Trennung leistet der Server.
 - **Gemeinsamer Ordner**: mehrere Arbeitsplätze gleichzeitig ohne Server;
   Anwesenheitsanzeige, feldgenaue Zusammenführung, sichtbare Konflikthinweise.
 - **Einteilungen** inklusive DGL, V-DGL, DGL-EZF und V-DGL-EZF.

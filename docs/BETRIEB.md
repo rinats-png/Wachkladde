@@ -144,11 +144,47 @@ Dieses Verzeichnis gehört ins normale Laufwerks-Backup. Zusätzlich legt der
 Monatsabschluss den fertigen Monat unter `archiv\<Monat>\` als JSON und als
 druckfertige HTML ab.
 
+## Ohne Server: Passwortschutz in der Kladde
+
+Lässt sich kein Server einrichten, gibt es den eingebauten Zugriffsschutz —
+*Einstellungen → Zugriffsschutz*:
+
+* Ein **Passwort für den Schreibmodus**, das DGL und V-DGL kennen (z. B. `D219`).
+  Wer es kennt, trägt ein; alle anderen sehen die Leseansicht.
+* Optional ein **zweites Passwort für die Verwaltung**: Dienstgruppen, Wachstärke,
+  Farben, Monatsabschluss. So kann der Wachdienst eintragen, ohne die Grundeinstellungen
+  verstellen zu können.
+* Nach einstellbarer Zeit ohne Änderung **sperrt sich die Kladde von selbst** — auf
+  einem Wachrechner läuft ständig jemand vorbei.
+* Das Passwort wird **nicht im Klartext** abgelegt, sondern als SHA-256-Hash mit
+  Zufallssalz. Wer die Datei im Editor öffnet, liest es dort nicht mit.
+
+Die Freischaltung gilt für die Browsersitzung: nach dem Schließen des Browsers ist
+wieder gesperrt.
+
+### Was dieser Schutz leistet — und was nicht
+
+**Er leistet:** dass niemand versehentlich etwas verstellt, dass ein Kollege nicht
+„mal eben" in fremden Dienstgruppen herumklickt, und dass die Kladde auf einem
+unbeaufsichtigten Rechner nicht offen steht. Für den Alltag einer Wache ist das
+genau der Schutz, um den es meistens geht.
+
+**Er leistet nicht:** eine echte Zugriffskontrolle. Die Prüfung läuft im Browser,
+und die Daten liegen im Ordner. Wer die HTML-Datei bearbeiten kann oder die
+Datendateien direkt öffnet, kommt daran vorbei — kein noch so gutes Passwort ändert
+daran etwas, solange die Prüfung auf demselben Rechner läuft wie die Umgehung.
+
+**Beides zusammen ist die richtige Antwort:** der Server entscheidet verbindlich, wer
+schreiben *darf*; das Passwort verhindert das versehentliche Ändern und die offene
+Sitzung. Ist auf dem Server ein Recht hinterlegt, hat das Vorrang — die Kladde
+übernimmt Name und Rolle von dort und lässt sie nicht überschreiben.
+
 ## Wenn kein Server erlaubt ist
 
 Bleibt der Einzelplatzbetrieb: `Wachkladde.html` per Doppelklick, alles wird im
 Browser gespeichert, Austausch über *Einstellungen → Sicherung schreiben / einlesen*.
-Gemeinsames Arbeiten ist so nicht möglich — das ist die ehrliche Auskunft.
+Gemeinsames Arbeiten ist so nicht möglich — das ist die ehrliche Auskunft. Der
+Passwortschutz oben funktioniert auch hier und ist dann das einzige Mittel.
 
 Die Ordner-Variante bleibt im Programm erhalten und funktioniert, sobald die Seite
 über `http://` läuft. Dann ist sie allerdings überflüssig, weil der Server den
